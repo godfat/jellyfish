@@ -188,6 +188,31 @@ end
 run HugeTank
 ```
 
+### Raise exceptions
+
+``` ruby
+require 'jellyfish'
+class Protector
+  include Jellyfish
+  handle Exception do |e|
+    "Protected: #{e}\n"
+  end
+end
+
+class Tank
+  include Jellyfish
+  handle_exceptions false # default is true, setting false here would make
+                          # the outside Protector handle the exception
+  get '/' do
+    raise "Oops, tank broken"
+  end
+end
+
+use Rack::ContentLength
+use Protector
+run Tank.new
+```
+
 ## CONTRIBUTORS:
 
 * Lin Jen-Shin (@godfat)
