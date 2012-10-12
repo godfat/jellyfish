@@ -26,6 +26,10 @@ class Tank
     "#{env.inspect}\n"
   end
 
+  get '/redirect' do
+    found "#{env[Jellyfish::RACK_SCHEME]}://#{env[Jellyfish::HOST]}/"
+  end
+
   get '/crash' do
     raise 'crash'
   end

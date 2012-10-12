@@ -4,7 +4,9 @@ module Jellyfish
 
   REQUEST_METHOD = 'REQUEST_METHOD'
   PATH_INFO      = 'PATH_INFO'
+  HOST           = 'HTTP_HOST'
   RACK_ERRORS    = 'rack.errors'
+  RACK_SCHEME    = 'rack.url_scheme'
 
   # -----------------------------------------------------------------
 
@@ -14,11 +16,7 @@ module Jellyfish
     end
 
     def body
-      @body ||= [File.read("#{root}/#{status}.html")]
-    end
-
-    def root
-      "#{File.dirname(__FILE__)}/jellyfish/public"
+      @body ||= [File.read("#{Jellyfish.public_root}/#{status}.html")]
     end
   end
 
@@ -28,6 +26,7 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   class Controller
+    include Jellyfish
     attr_reader   :routes, :env
     attr_accessor :raise_exceptions
     def initialize routes, raise_exceptions
@@ -48,8 +47,15 @@ module Jellyfish
     rescue Exception => e
       raise e if raise_exceptions
       log_error(e)
-      call_error(Jellyfish::InternalError.new)
+      call_error(InternalError.new)
     end
+
+    def found url
+      status 302
+      headers_merge 'Location' => url
+      body File.read("#{public_root}/#{status}.html").gsub('VAR_URL', url)
+    end
+    alias_method :redirect, :found
 
     def path_info     ; env[PATH_INFO]      || '/'  ; end
     def request_method; env[REQUEST_METHOD] || 'GET'; end
@@ -93,14 +99,14 @@ module Jellyfish
 
     private
     def actions
-      routes[request_method.downcase] || raise(Jellyfish::NotFound.new)
+      routes[request_method.downcase] || raise(NotFound.new)
     end
 
     def dispatch
       actions.find{ |(route, block)|
         match = route.match(path_info)
         break match, block if match
-      } || raise(Jellyfish::NotFound.new)
+      } || raise(NotFound.new)
     end
 
     def call_error e
@@ -129,5 +135,12 @@ module Jellyfish
         (routes['#{method}'] ||= []) << [route, block]
       end
     RUBY
+  end
+
+  # -----------------------------------------------------------------
+
+  module_function
+  def public_root
+    "#{File.dirname(__FILE__)}/jellyfish/public"
   end
 end
