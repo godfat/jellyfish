@@ -1,5 +1,7 @@
 
 module Jellyfish
+  autoload :VERSION, 'jellyfish/version'
+
   REQUEST_METHOD = 'REQUEST_METHOD'
   PATH_INFO      = 'PATH_INFO'
 

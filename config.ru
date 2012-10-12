@@ -1,16 +1,16 @@
 
 require 'jellyfish'
 
-class App
+class Tank
   extend Jellyfish
   get '/' do |match|
-    "test\n"
+    "Jelly Kelly\n"
   end
 
   get /(\d+)/ do |match|
-    "#{match[1]}\n"
+    "Jelly ##{match[1]}\n"
   end
 end
 
 use Rack::ContentLength
-run App
+run Tank
