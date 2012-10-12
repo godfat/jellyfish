@@ -34,8 +34,8 @@ class Tank
     raise 'crash'
   end
 
-  handle ArgumentError do
-    "catching argument error\n"
+  handle ArgumentError do |e|
+    "catching argument error: #{e.backtrace.first}\n"
   end
 
   get '/argument-error' do

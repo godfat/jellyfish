@@ -40,8 +40,11 @@ module Jellyfish
 
     def call env
       @env = env
-      match, block = dispatch
-      ret = instance_exec(match, &block)
+      block_call(*dispatch)
+    end
+
+    def block_call argument, block
+      ret = instance_exec(argument, &block)
       body ret if body.nil? # prefer explicitly set values
       [status || 200, headers || {}, body]
     end
@@ -115,7 +118,7 @@ module Jellyfish
       end
     end
 
-    def handle exception, &block; (handlers[exception] ||= []) << block; end
+    def handle exception, &block; handlers[exception] = block; end
 
     %w[options get head post put delete patch].each do |method|
       module_eval <<-RUBY
@@ -131,41 +134,47 @@ module Jellyfish
   def initialize app=nil; @app = app; end
 
   def call env
-    Controller.new(self.class.routes).call(env)
-  rescue NotFound => r # forward
+    controller = Controller.new(self.class.routes)
+    controller.call(env)
+  rescue NotFound => e # forward
     if app
-      protect(env){ app.call(env) }
+      protect(controller, env){ app.call(env) }
     else
-      handle_respond(r)
+      handle(controller, e)
     end
-  rescue Respond => r
-    handle_respond(r)
   rescue Exception => e
-    handle_exception(e, env[RACK_ERRORS])
+    handle(controller, e, env[RACK_ERRORS])
   end
 
-  def protect env
+  def protect controller, env
     yield
-  rescue Respond => r
-    handle_respond(r)
   rescue Exception => e
-    handle_exception(e, env[RACK_ERRORS])
+    handle(controller, e, env[RACK_ERRORS])
   end
 
   private
-  def handle_respond r
-    raise r unless self.class.handle_exceptions
-    respond(r)
+  def handle controller, e, stderr=nil
+    case e
+    when Respond
+      respond(controller, e)
+    when Exception
+      log_error(e, stderr)
+      respond(controller, e)
+    end
   end
 
-  def handle_exception e, stderr
+  def respond controller, e
     raise e unless self.class.handle_exceptions
-    log_error(e, stderr)
-    respond(InternalError.new)
-  end
-
-  def respond e
-    [e.status, e.headers, e.body]
+    handler = self.class.handlers.find{ |klass, block|
+      break block if e.kind_of?(klass)
+    }
+    if handler
+      controller.block_call(e, handler)
+    elsif e.kind_of?(Respond) # InternalError ends up here if no handlers
+      [e.status, e.headers, e.body]
+    else # fallback and see if there's any InternalError handler
+      respond(controller, InternalError.new)
+    end
   end
 
   def log_error e, stderr
