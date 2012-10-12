@@ -3,7 +3,7 @@ require 'jellyfish'
 
 class Tank
   include Jellyfish
-  raise_exceptions true
+  handle_exceptions false
 
   get '/' do
     "Jelly Kelly\n"
@@ -34,13 +34,13 @@ class Tank
     raise 'crash'
   end
 
-  # error ArgumentError do
-  #   "catching argument error\n"
-  # end
-  #
-  # get 'argument-error' do
-  #   raise ArgumentError
-  # end
+  handle ArgumentError do
+    "catching argument error\n"
+  end
+
+  get '/argument-error' do
+    raise ArgumentError
+  end
 end
 
 class Heater

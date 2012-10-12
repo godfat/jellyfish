@@ -104,14 +104,18 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   module DSL
-    def routes; @routes ||= {}; end
-    def raise_exceptions value=nil
+    def handlers; @handlers ||= {}; end
+    def routes  ; @routes   ||= {}; end
+
+    def handle_exceptions value=nil
       if value.nil?
-        @raise_exceptions || false
+        @handle_exceptions ||= true
       else
-        @raise_exceptions = value
+        @handle_exceptions   = value
       end
     end
+
+    def handle exception, &block; (handlers[exception] ||= []) << block; end
 
     %w[options get head post put delete patch].each do |method|
       module_eval <<-RUBY
@@ -150,12 +154,12 @@ module Jellyfish
 
   private
   def handle_respond r
-    raise r if self.class.raise_exceptions
+    raise r unless self.class.handle_exceptions
     respond(r)
   end
 
   def handle_exception e, stderr
-    raise e if self.class.raise_exceptions
+    raise e unless self.class.handle_exceptions
     log_error(e, stderr)
     respond(InternalError.new)
   end
