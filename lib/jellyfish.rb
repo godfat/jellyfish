@@ -4,9 +4,8 @@ module Jellyfish
 
   REQUEST_METHOD = 'REQUEST_METHOD'
   PATH_INFO      = 'PATH_INFO'
-  HOST           = 'HTTP_HOST'
+  LOCATION       = 'Location'
   RACK_ERRORS    = 'rack.errors'
-  RACK_SCHEME    = 'rack.url_scheme'
 
   # -----------------------------------------------------------------
 
@@ -26,7 +25,7 @@ module Jellyfish
     attr_reader :url
     def initialize url; @url = url                             ; end
     def status        ; 302                                    ; end
-    def headers       ; super.merge('Location' => url)         ; end
+    def headers       ; super.merge(LOCATION => url)           ; end
     def body          ; super.map{ |b| b.gsub('VAR_URL', url) }; end
   end
 

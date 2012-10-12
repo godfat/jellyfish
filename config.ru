@@ -27,7 +27,7 @@ class Tank
   end
 
   get '/redirect' do
-    found "#{env[Jellyfish::RACK_SCHEME]}://#{env[Jellyfish::HOST]}/"
+    found "#{env['rack.url_scheme']}://#{env['HTTP_HOST']}/"
   end
 
   get '/crash' do
