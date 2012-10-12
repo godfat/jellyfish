@@ -15,9 +15,9 @@ Rack applications or Rack middlewares. Under 200 lines of code.
 
 ## DESIGN:
 
-* Learn HTTP
-* Learn Rack
-* Learn regular expression for routes
+* Learn the HTTP way instead of using some pointless helpers
+* Learn the Rack way instead of wrapping Rack functionality, again
+* Learn regular expression for routes instead of custom syntax
 * Embrace simplicity over convenience
 * Don't make things complicated only for _some_ convenience, but
   _great_ convenience, or simply stay simple for simplicity.
@@ -28,9 +28,9 @@ Rack applications or Rack middlewares. Under 200 lines of code.
 * Simple
 * No templates
 * No ORM
-* String routes, e.g. `get '/'`
 * Regular expression routes, e.g. `get %r{/(\d+)}`
-* Build either Rack applications or Rack middlewares
+* String routes, e.g. `get '/'`
+* Build for either Rack applications or Rack middlewares
 
 ## WHY?
 
@@ -46,9 +46,146 @@ Because Sinatra is too complex and inconsistent for me.
 
 ## SYNOPSIS:
 
-Your lovely config.ru:
+### Hello Jellyfish, your lovely config.ru
 
 ``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  get '/' do
+    "Jelly Kelly\n"
+  end
+end
+use Rack::ContentLength
+run Tank.new
+```
+
+### Regular expression routes
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  get %r{^/(?<id>\d+)$} do |match|
+    "Jelly ##{match[:id]}\n"
+  end
+end
+use Rack::ContentLength
+run Tank.new
+```
+
+### Different HTTP status
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  post '/' do
+    headers       'X-Jellyfish-Life' => '100'
+    headers_merge 'X-Jellyfish-Mana' => '200'
+    body "Jellyfish 100/200\n"
+    status 201
+    'return is ignored in this case'
+  end
+end
+use Rack::ContentLength
+run Tank.new
+```
+
+### Redirect helper
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  get '/lookup' do
+    found "#{env['rack.url_scheme']}://#{env['HTTP_HOST']}/"
+  end
+end
+use Rack::ContentLength
+run Tank.new
+```
+
+### Crash-proof
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  get '/crash' do
+    raise 'crash'
+  end
+end
+use Rack::ContentLength
+run Tank.new
+```
+
+### Custom error handler
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  handle NameError do |e|
+    status 403
+    "No one hears you: #{e.backtrace.first}\n"
+  end
+  get '/yell' do
+    yell
+  end
+end
+use Rack::ContentLength
+run Tank.new
+```
+
+### Jellyfish as a middleware
+
+``` ruby
+require 'jellyfish'
+class Heater
+  include Jellyfish
+  get '/status' do
+    "30\u{2103}\n"
+  end
+end
+
+class Tank
+  include Jellyfish
+  get '/' do
+    "Jelly Kelly\n"
+  end
+end
+
+use Rack::ContentLength
+use Heater
+run Tank.new
+```
+
+### One huge tank
+
+``` ruby
+require 'jellyfish'
+class Heater
+  include Jellyfish
+  get '/status' do
+    "30\u{2103}\n"
+  end
+end
+
+class Tank
+  include Jellyfish
+  get '/' do
+    "Jelly Kelly\n"
+  end
+end
+
+HugeTank = Rack::Builder.new do
+  use Rack::ContentLength
+  use Heater
+  run Tank.new
+end
+
+run HugeTank
 ```
 
 ## CONTRIBUTORS:
