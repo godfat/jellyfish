@@ -26,7 +26,7 @@ class Tank
     "#{env.inspect}\n"
   end
 
-  get '/redirect' do
+  get '/lookup' do
     found "#{env['rack.url_scheme']}://#{env['HTTP_HOST']}/"
   end
 
@@ -34,13 +34,13 @@ class Tank
     raise 'crash'
   end
 
-  handle ArgumentError do |e|
+  handle NameError do |e|
     status 403
-    "catching argument error: #{e.backtrace.first}\n"
+    "No one hears you: #{e.backtrace.first}\n"
   end
 
-  get '/argument-error' do
-    raise ArgumentError
+  get '/yell' do
+    yell
   end
 end
 
