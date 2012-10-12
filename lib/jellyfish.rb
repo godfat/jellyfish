@@ -10,9 +10,9 @@ module Jellyfish
 
   # -----------------------------------------------------------------
 
-  class Error < RuntimeError
+  class Respond < RuntimeError
     def headers
-      {'Content-Type' => 'text/html'}
+      @headers ||= {'Content-Type' => 'text/html'}
     end
 
     def body
@@ -20,8 +20,15 @@ module Jellyfish
     end
   end
 
-  class NotFound      < Error; def status; 404; end; end
-  class InternalError < Error; def status; 500; end; end
+  class NotFound      < Respond; def status; 404; end; end
+  class InternalError < Respond; def status; 500; end; end
+  class Found         < Respond
+    attr_reader :url
+    def initialize url; @url = url                             ; end
+    def status        ; 302                                    ; end
+    def headers       ; super.merge('Location' => url)         ; end
+    def body          ; super.map{ |b| b.gsub('VAR_URL', url) }; end
+  end
 
   # -----------------------------------------------------------------
 
@@ -37,24 +44,21 @@ module Jellyfish
       @env = env
       match, block = dispatch
       ret = instance_exec(match, &block)
+      body ret if body.nil?
       # prefer explicitly set values
-      [status || 200, headers || {}, body || [ret]]
+      [status || 200, headers || {}, body]
 
-    rescue Error     => e
-      raise e if raise_exceptions
-      call_error(e)
+    rescue Respond   => r
+      raise r if raise_exceptions
+      respond(r)
 
     rescue Exception => e
       raise e if raise_exceptions
       log_error(e)
-      call_error(InternalError.new)
+      respond(InternalError.new)
     end
 
-    def found url
-      status 302
-      headers_merge 'Location' => url
-      body File.read("#{public_root}/#{status}.html").gsub('VAR_URL', url)
-    end
+    def found url; raise Found.new(url); end
     alias_method :redirect, :found
 
     def path_info     ; env[PATH_INFO]      || '/'  ; end
@@ -109,7 +113,7 @@ module Jellyfish
       } || raise(NotFound.new)
     end
 
-    def call_error e
+    def respond e
       [e.status, e.headers, e.body]
     end
   end
