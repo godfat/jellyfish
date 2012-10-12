@@ -22,7 +22,7 @@ class Tank
     'ignored return in this case'
   end
 
-  get '/env' do |_, env|
+  get '/env' do
     "#{env.inspect}\n"
   end
 

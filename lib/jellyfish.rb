@@ -28,15 +28,16 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   class Controller
-    attr_reader   :routes
+    attr_reader   :routes, :env
     attr_accessor :raise_exceptions
     def initialize routes, raise_exceptions
       @routes, @raise_exceptions = routes, raise_exceptions
     end
 
     def call env
-      match, block = dispatch(env)
-      ret = instance_exec(match, env, &block)
+      @env = env
+      match, block = dispatch
+      ret = instance_exec(match, &block)
       # prefer explicitly set values
       [status || 200, headers || {}, body || [ret]]
 
@@ -46,14 +47,15 @@ module Jellyfish
 
     rescue Exception => e
       raise e if raise_exceptions
-      log_error(e, env[RACK_ERRORS]) if env[RACK_ERRORS]
+      log_error(e)
       call_error(Jellyfish::InternalError.new)
     end
 
-    def path_info      env; env[PATH_INFO]      || '/'  ; end
-    def request_method env; env[REQUEST_METHOD] || 'GET'; end
+    def path_info     ; env[PATH_INFO]      || '/'  ; end
+    def request_method; env[REQUEST_METHOD] || 'GET'; end
 
-    def log_error e, stderr
+    def log_error e, stderr=env[RACK_ERRORS]
+      return unless stderr
       stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
     end
 
@@ -90,13 +92,13 @@ module Jellyfish
 
 
     private
-    def actions env
-      routes[request_method(env).downcase] || raise(Jellyfish::NotFound.new)
+    def actions
+      routes[request_method.downcase] || raise(Jellyfish::NotFound.new)
     end
 
-    def dispatch env
-      actions(env).find{ |(route, block)|
-        match = route.match(path_info(env))
+    def dispatch
+      actions.find{ |(route, block)|
+        match = route.match(path_info)
         break match, block if match
       } || raise(Jellyfish::NotFound.new)
     end
