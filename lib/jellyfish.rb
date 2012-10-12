@@ -36,7 +36,7 @@ module Jellyfish
 
     def call env
       match, block = dispatch(env)
-      ret = instance_exec(match, &block)
+      ret = instance_exec(match, env, &block)
       # prefer explicitly set values
       [status || 200, headers || {}, body || [ret]]
 
@@ -72,7 +72,7 @@ module Jellyfish
     def body value=nil
       if value.nil?
         @body
-      elsif value.respond_to?(:each)
+      elsif value.respond_to?(:each) # per rack SPEC
         @body = value
       else
         @body = [value]

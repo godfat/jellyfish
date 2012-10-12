@@ -22,6 +22,10 @@ class Tank
     'ignored return in this case'
   end
 
+  get '/env' do |_, env|
+    "#{env.inspect}\n"
+  end
+
   get '/crash' do
     raise 'crash'
   end
