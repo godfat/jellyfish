@@ -154,16 +154,6 @@ module Jellyfish
 
   private
   def handle controller, e, stderr=nil
-    case e
-    when Respond
-      respond(controller, e)
-    when Exception
-      log_error(e, stderr)
-      respond(controller, e)
-    end
-  end
-
-  def respond controller, e
     raise e unless self.class.handle_exceptions
     handler = self.class.handlers.find{ |klass, block|
       break block if e.kind_of?(klass)
@@ -173,7 +163,8 @@ module Jellyfish
     elsif e.kind_of?(Respond) # InternalError ends up here if no handlers
       [e.status, e.headers, e.body]
     else # fallback and see if there's any InternalError handler
-      respond(controller, InternalError.new)
+      log_error(e, stderr)
+      handle(controller, InternalError.new)
     end
   end
 
