@@ -3,7 +3,7 @@ require 'jellyfish'
 
 class Tank
   include Jellyfish
-  raise_exceptions false
+  raise_exceptions true
 
   get '/' do
     "Jelly Kelly\n"
@@ -33,7 +33,23 @@ class Tank
   get '/crash' do
     raise 'crash'
   end
+
+  # error ArgumentError do
+  #   "catching argument error\n"
+  # end
+  #
+  # get 'argument-error' do
+  #   raise ArgumentError
+  # end
+end
+
+class Heater
+  include Jellyfish
+  get '/status' do
+    "30\u{2103}\n"
+  end
 end
 
 use Rack::ContentLength
+use Heater
 run Tank.new

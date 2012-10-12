@@ -34,9 +34,8 @@ module Jellyfish
   class Controller
     include Jellyfish
     attr_reader   :routes, :env
-    attr_accessor :raise_exceptions
-    def initialize routes, raise_exceptions
-      @routes, @raise_exceptions = routes, raise_exceptions
+    def initialize routes
+      @routes = routes
     end
 
     def call env
@@ -45,27 +44,14 @@ module Jellyfish
       ret = instance_exec(match, &block)
       body ret if body.nil? # prefer explicitly set values
       [status || 200, headers || {}, body]
-
-    rescue Respond   => r
-      raise r if raise_exceptions
-      respond(r)
-
-    rescue Exception => e
-      raise e if raise_exceptions
-      log_error(e)
-      respond(InternalError.new)
     end
 
-    def found url; raise Found.new(url); end
+    def forward  ; raise(NotFound.new)  ; end
+    def found url; raise(Found.new(url)); end
     alias_method :redirect, :found
 
     def path_info     ; env[PATH_INFO]      || '/'  ; end
     def request_method; env[REQUEST_METHOD] || 'GET'; end
-
-    def log_error e, stderr=env[RACK_ERRORS]
-      return unless stderr
-      stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
-    end
 
     %w[status headers].each do |field|
       module_eval <<-RUBY
@@ -104,13 +90,14 @@ module Jellyfish
 
     def dispatch
       actions.find{ |(route, block)|
-        match = route.match(path_info)
-        break match, block if match
+        case route
+        when Regexp
+          match = route.match(path_info)
+          break match, block if match
+        when String
+          break route, block if route == path_info
+        end
       } || raise(NotFound.new)
-    end
-
-    def respond e
-      [e.status, e.headers, e.body]
     end
   end
 
@@ -140,7 +127,46 @@ module Jellyfish
   def initialize app=nil; @app = app; end
 
   def call env
-    Controller.new(self.class.routes, self.class.raise_exceptions).call(env)
+    Controller.new(self.class.routes).call(env)
+  rescue NotFound => r # forward
+    if app
+      protect(env){ app.call(env) }
+    else
+      handle_respond(r)
+    end
+  rescue Respond => r
+    handle_respond(r)
+  rescue Exception => e
+    handle_exception(e, env[RACK_ERRORS])
+  end
+
+  def protect env
+    yield
+  rescue Respond => r
+    handle_respond(r)
+  rescue Exception => e
+    handle_exception(e, env[RACK_ERRORS])
+  end
+
+  private
+  def handle_respond r
+    raise r if self.class.raise_exceptions
+    respond(r)
+  end
+
+  def handle_exception e, stderr
+    raise e if self.class.raise_exceptions
+    log_error(e, stderr)
+    respond(InternalError.new)
+  end
+
+  def respond e
+    [e.status, e.headers, e.body]
+  end
+
+  def log_error e, stderr
+    return unless stderr
+    stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
   end
 
   # -----------------------------------------------------------------
