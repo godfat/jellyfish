@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "jellyfish"
-  s.version = "0.1.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Lin Jen-Shin (godfat)"]
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   "Rakefile",
   "TODO.md",
   "config.ru",
+  "jellyfish.gemspec",
   "lib/jellyfish.rb",
   "lib/jellyfish/public/302.html",
   "lib/jellyfish/public/404.html",

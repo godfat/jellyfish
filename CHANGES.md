@@ -1,5 +1,5 @@
 # CHANGES
 
-## Jellyfish 0.1.0 -- ?
+## Jellyfish 0.3.0 -- 2012-10-13
 
 * Birthday!
