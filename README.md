@@ -10,7 +10,31 @@ by Lin Jen-Shin ([godfat](http://godfat.org))
 
 ## DESCRIPTION:
 
-Nano framework for building API web application. Under 200 lines of codes.
+Pico web framework for building API-centric web applications, either
+Rack applications or Rack middlewares. Under 200 lines of code.
+
+## DESIGN:
+
+* Learn HTTP
+* Learn Rack
+* Learn regular expression for routes
+* Embrace simplicity over convenience
+* Don't make things complicated only for _some_ convenience, but
+  _great_ convenience, or simply stay simple for simplicity.
+
+## FEATURES:
+
+* Minimal
+* Simple
+* No templates
+* No ORM
+* String routes, e.g. `get '/'`
+* Regular expression routes, e.g. `get %r{/(\d+)}`
+* Build either Rack applications or Rack middlewares
+
+## WHY?
+
+Because Sinatra is too complex and inconsistent for me.
 
 ## REQUIREMENTS:
 
