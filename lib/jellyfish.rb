@@ -44,8 +44,7 @@ module Jellyfish
       @env = env
       match, block = dispatch
       ret = instance_exec(match, &block)
-      body ret if body.nil?
-      # prefer explicitly set values
+      body ret if body.nil? # prefer explicitly set values
       [status || 200, headers || {}, body]
 
     rescue Respond   => r
