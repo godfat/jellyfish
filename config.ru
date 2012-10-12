@@ -35,6 +35,7 @@ class Tank
   end
 
   handle ArgumentError do |e|
+    status 403
     "catching argument error: #{e.backtrace.first}\n"
   end
 
