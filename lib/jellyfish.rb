@@ -98,8 +98,6 @@ module Jellyfish
       end
     end
 
-
-
     private
     def actions
       routes[request_method.downcase] || raise(NotFound.new)
@@ -119,25 +117,38 @@ module Jellyfish
 
   # -----------------------------------------------------------------
 
-  def initialize; @routes   = {}; end
-  def routes    ; @routes ||= {}; end
+  module DSL
+    def routes; @routes ||= {}; end
+    def raise_exceptions value=nil
+      if value.nil?
+        @raise_exceptions || false
+      else
+        @raise_exceptions = value
+      end
+    end
 
-  def call env  ; Controller.new(routes, raise_exceptions).call(env); end
-
-  def raise_exceptions value=nil
-    if value.nil?
-      @raise_exceptions || false
-    else
-      @raise_exceptions = value
+    %w[options get head post put delete patch].each do |method|
+      module_eval <<-RUBY
+        def #{method} route, &block
+          (routes['#{method}'] ||= []) << [route, block]
+        end
+      RUBY
     end
   end
 
-  %w[options get head post put delete patch].each do |method|
-    module_eval <<-RUBY
-      def #{method} route, &block
-        (routes['#{method}'] ||= []) << [route, block]
-      end
-    RUBY
+  # -----------------------------------------------------------------
+
+  def initialize app=nil; @app = app; end
+
+  def call env
+    Controller.new(self.class.routes, self.class.raise_exceptions).call(env)
+  end
+
+  # -----------------------------------------------------------------
+
+  def self.included mod
+    mod.__send__(:extend, DSL)
+    mod.__send__(:attr_reader, :app)
   end
 
   # -----------------------------------------------------------------

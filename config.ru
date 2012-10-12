@@ -2,7 +2,7 @@
 require 'jellyfish'
 
 class Tank
-  extend Jellyfish
+  include Jellyfish
   raise_exceptions false
 
   get '/' do
@@ -36,4 +36,4 @@ class Tank
 end
 
 use Rack::ContentLength
-run Tank
+run Tank.new
