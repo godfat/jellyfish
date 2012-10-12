@@ -3,6 +3,8 @@ require 'jellyfish'
 
 class Tank
   extend Jellyfish
+  raise_exceptions false
+
   get '/' do |match|
     "Jelly Kelly\n"
   end
