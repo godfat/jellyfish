@@ -16,7 +16,7 @@ Rack applications or Rack middlewares. Under 200 lines of code.
 ## DESIGN:
 
 * Learn the HTTP way instead of using some pointless helpers
-* Learn the Rack way instead of wrapping Rack functionality, again
+* Learn the Rack way instead of wrapping Rack functionalities, again
 * Learn regular expression for routes instead of custom syntax
 * Embrace simplicity over convenience
 * Don't make things complicated only for _some_ convenience, but
@@ -28,6 +28,7 @@ Rack applications or Rack middlewares. Under 200 lines of code.
 * Simple
 * No templates
 * No ORM
+* No `dup` in `call`
 * Regular expression routes, e.g. `get %r{/(\d+)}`
 * String routes, e.g. `get '/'`
 * Build for either Rack applications or Rack middlewares
@@ -74,7 +75,7 @@ use Rack::ContentLength
 run Tank.new
 ```
 
-### Different HTTP status
+### Different HTTP status and custom headers
 
 ``` ruby
 require 'jellyfish'

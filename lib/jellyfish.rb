@@ -19,8 +19,8 @@ module Jellyfish
     end
   end
 
-  class NotFound      < Respond; def status; 404; end; end
   class InternalError < Respond; def status; 500; end; end
+  class NotFound      < Respond; def status; 404; end; end
   class Found         < Respond
     attr_reader :url
     def initialize url; @url = url                             ; end
