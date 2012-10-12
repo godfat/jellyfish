@@ -57,7 +57,7 @@ module Jellyfish
       stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
     end
 
-    %w[status headers body].each do |field|
+    %w[status headers].each do |field|
       module_eval <<-RUBY
         def #{field} value=nil
           if value.nil?
@@ -67,6 +67,24 @@ module Jellyfish
           end
         end
       RUBY
+    end
+
+    def body value=nil
+      if value.nil?
+        @body
+      elsif value.respond_to?(:each)
+        @body = value
+      else
+        @body = [value]
+      end
+    end
+
+    def headers_merge value
+      if headers.nil?
+        headers(value)
+      else
+        headers(headers.merge(value))
+      end
     end
 
 
