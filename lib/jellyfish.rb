@@ -94,11 +94,11 @@ module Jellyfish
     def dispatch
       actions.find{ |(route, block)|
         case route
-        when Regexp
-          match = route.match(path_info)
-          break match, block if match
         when String
           break route, block if route == path_info
+        else#Regexp, using else allows you to use custom matcher
+          match = route.match(path_info)
+          break match, block if match
         end
       } || raise(NotFound.new)
     end
