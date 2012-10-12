@@ -112,9 +112,9 @@ module Jellyfish
 
     def handle_exceptions value=nil
       if value.nil?
-        @handle_exceptions ||= true
+        @handle_exceptions
       else
-        @handle_exceptions   = value
+        @handle_exceptions = value
       end
     end
 
@@ -178,6 +178,7 @@ module Jellyfish
   def self.included mod
     mod.__send__(:extend, DSL)
     mod.__send__(:attr_reader, :app)
+    mod.handle_exceptions(true)
   end
 
   # -----------------------------------------------------------------
