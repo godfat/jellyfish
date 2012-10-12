@@ -4,6 +4,7 @@ module Jellyfish
 
   REQUEST_METHOD = 'REQUEST_METHOD'
   PATH_INFO      = 'PATH_INFO'
+  RACK_ERRORS    = 'rack.errors'
 
   # -----------------------------------------------------------------
 
@@ -35,8 +36,9 @@ module Jellyfish
 
     def call env
       match, block = dispatch(env)
-      body = instance_exec(match, &block)
-      [200, {}, [body]]
+      ret = instance_exec(match, &block)
+      # prefer explicitly set values
+      [status || 200, headers || {}, body || [ret]]
 
     rescue Error     => e
       raise e if raise_exceptions
@@ -44,21 +46,30 @@ module Jellyfish
 
     rescue Exception => e
       raise e if raise_exceptions
-      log_error(env, e)
+      log_error(e, env[RACK_ERRORS]) if env[RACK_ERRORS]
       call_error(Jellyfish::InternalError.new)
-    end
-
-    def call_error e
-      [e.status, e.headers, e.body]
     end
 
     def path_info      env; env[PATH_INFO]      || '/'  ; end
     def request_method env; env[REQUEST_METHOD] || 'GET'; end
-    def log_error env, e
-      stderr = env['rack.errors']
-      return unless stderr
+
+    def log_error e, stderr
       stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
     end
+
+    %w[status headers body].each do |field|
+      module_eval <<-RUBY
+        def #{field} value=nil
+          if value.nil?
+            @#{field}
+          else
+            @#{field} = value
+          end
+        end
+      RUBY
+    end
+
+
 
     private
     def actions env
@@ -70,6 +81,10 @@ module Jellyfish
         match = route.match(path_info(env))
         break match, block if match
       } || raise(Jellyfish::NotFound.new)
+    end
+
+    def call_error e
+      [e.status, e.headers, e.body]
     end
   end
 
