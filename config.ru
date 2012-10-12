@@ -19,7 +19,7 @@ class Tank
     body "Jellyfish 100/200\n"
     status 201
 
-    'ignored return in this case'
+    'return is ignored in this case'
   end
 
   get '/env' do
@@ -51,6 +51,10 @@ class Heater
   end
 end
 
-use Rack::ContentLength
-use Heater
-run Tank.new
+HugeTank = Rack::Builder.new do
+  use Rack::ContentLength
+  use Heater
+  run Tank.new
+end
+
+run HugeTank
