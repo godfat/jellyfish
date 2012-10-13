@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = "jellyfish"
-  s.version = "0.3.1"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Lin Jen-Shin (godfat)"]
-  s.date = "2012-10-13"
+  s.date = "2012-10-14"
   s.description = "Pico web framework for building API-centric web applications, either\nRack applications or Rack middlewares. Under 200 lines of code."
   s.email = ["godfat (XD) godfat.org"]
   s.files = [
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   "lib/jellyfish/public/302.html",
   "lib/jellyfish/public/404.html",
   "lib/jellyfish/public/500.html",
+  "lib/jellyfish/sinatra.rb",
   "lib/jellyfish/version.rb",
   "task/.gitignore",
   "task/gemgem.rb"]

@@ -1,6 +1,6 @@
 # CHANGES
 
-## Jellyfish 0.3.1 -- 2012-10-14
+## Jellyfish 0.4.0 -- 2012-10-14
 
 * Now you can define your own custom controller like:
 
@@ -39,6 +39,22 @@ class Tank
   end
 end
 use Rack::ContentLength
+run Tank.new
+```
+
+* Added a Sinatra flavor controller
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  def controller; Jellyfish::Sinatra; end
+  get %r{^/(?<id>\d+)$} do
+    "Jelly ##{params[:id]}\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 

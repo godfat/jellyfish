@@ -188,6 +188,26 @@ use Rack::ContentType, 'text/plain'
 run Heater.new
 ```
 
+### Sinatra flavor controller
+
+Currently support:
+
+* Indifferent params
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  def controller; Jellyfish::Sinatra; end
+  get %r{^/(?<id>\d+)$} do
+    "Jelly ##{params[:id]}\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
 ### Jellyfish as a middleware
 
 ``` ruby

@@ -1,6 +1,7 @@
 
 module Jellyfish
   autoload :VERSION, 'jellyfish/version'
+  autoload :Sinatra, 'jellyfish/sinatra'
 
   REQUEST_METHOD = 'REQUEST_METHOD'
   PATH_INFO      = 'PATH_INFO'
