@@ -51,7 +51,7 @@ class Tank
     "#{match}\n"
   end
 
-  class Stream
+  class Body
     def each
       if Object.const_defined?(:Rainbows)
         (0..4).each{ |i| yield "#{i}\n"; Rainbows.sleep(0.1) }
@@ -60,8 +60,8 @@ class Tank
       end
     end
   end
-  get '/stream' do
-    body Stream.new
+  get '/chunked' do
+    Body.new
   end
 end
 
