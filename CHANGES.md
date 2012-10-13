@@ -20,6 +20,7 @@ class Heater
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Heater.new
 ```
 
@@ -39,6 +40,7 @@ class Tank
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
