@@ -106,7 +106,7 @@ class Tank
     headers_merge 'X-Jellyfish-Mana' => '200'
     body "Jellyfish 100/200\n"
     status 201
-    'return is ignored in this case'
+    'return is ignored if body has already been set'
   end
 end
 use Rack::ContentLength
