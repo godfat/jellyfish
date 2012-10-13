@@ -47,7 +47,14 @@ end
 class Heater
   include Jellyfish
   get '/status' do
-    "30\u{2103}\n"
+    temperature
+  end
+
+  def controller; Controller; end
+  class Controller < Jellyfish::Controller
+    def temperature
+      "30\u{2103}\n"
+    end
   end
 end
 

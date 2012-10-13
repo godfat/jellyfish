@@ -139,6 +139,27 @@ use Rack::ContentLength
 run Tank.new
 ```
 
+### Custom controller
+
+``` ruby
+require 'jellyfish'
+class Heater
+  include Jellyfish
+  get '/status' do
+    temperature
+  end
+
+  def controller; Controller; end
+  class Controller < Jellyfish::Controller
+    def temperature
+      "30\u{2103}\n"
+    end
+  end
+end
+use Rack::ContentLength
+run Heater.new
+```
+
 ### Jellyfish as a middleware
 
 ``` ruby

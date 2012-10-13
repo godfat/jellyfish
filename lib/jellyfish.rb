@@ -132,39 +132,40 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   def initialize app=nil; @app = app; end
+  def controller        ; Controller; end
 
   def call env
-    controller = Controller.new(self.class.routes)
-    controller.call(env)
+    ctrl = controller.new(self.class.routes)
+    ctrl.call(env)
   rescue NotFound => e # forward
     if app
-      protect(controller, env){ app.call(env) }
+      protect(ctrl, env){ app.call(env) }
     else
-      handle(controller, e)
+      handle(ctrl, e)
     end
   rescue Exception => e
-    handle(controller, e, env[RACK_ERRORS])
+    handle(ctrl, e, env[RACK_ERRORS])
   end
 
-  def protect controller, env
+  def protect ctrl, env
     yield
   rescue Exception => e
-    handle(controller, e, env[RACK_ERRORS])
+    handle(ctrl, e, env[RACK_ERRORS])
   end
 
   private
-  def handle controller, e, stderr=nil
+  def handle ctrl, e, stderr=nil
     raise e unless self.class.handle_exceptions
     handler = self.class.handlers.find{ |klass, block|
       break block if e.kind_of?(klass)
     }
     if handler
-      controller.block_call(e, handler)
+      ctrl.block_call(e, handler)
     elsif e.kind_of?(Respond) # InternalError ends up here if no handlers
       [e.status, e.headers, e.body]
     else # fallback and see if there's any InternalError handler
       log_error(e, stderr)
-      handle(controller, InternalError.new)
+      handle(ctrl, InternalError.new)
     end
   end
 
