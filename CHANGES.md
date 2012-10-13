@@ -1,6 +1,6 @@
 # CHANGES
 
-## Jellyfish 0.3.1 -- 2012-10-13
+## Jellyfish 0.3.1 -- 2012-10-14
 
 * Now you can define your own custom controller like:
 
