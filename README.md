@@ -255,6 +255,27 @@ use Protector
 run Tank.new
 ```
 
+### Chunked transfer encoding (streaming)
+
+You would need a proper server setup.
+Here's an example with Rainbows and fibers:
+
+``` ruby
+class Tank
+  include Jellyfish
+  class Body
+    def each
+      (0..4).each{ |i| yield "#{i}\n"; Rainbows.sleep(0.1) }
+    end
+  end
+  get '/chunked' do
+    Body.new
+  end
+end
+use Rack::Chunked
+run Tank.new
+```
+
 ## CONTRIBUTORS:
 
 * Lin Jen-Shin (@godfat)
