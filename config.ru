@@ -42,6 +42,15 @@ class Tank
   get '/yell' do
     yell
   end
+
+  class Matcher
+    def match path
+      path.reverse == 'match/'
+    end
+  end
+  get Matcher.new do |match|
+    "#{match}\n"
+  end
 end
 
 class Heater

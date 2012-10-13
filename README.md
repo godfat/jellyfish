@@ -31,6 +31,7 @@ Rack applications or Rack middlewares. Under 200 lines of code.
 * No `dup` in `call`
 * Regular expression routes, e.g. `get %r{/(\d+)}`
 * String routes, e.g. `get '/'`
+* Custom routes, e.g. `get Matcher.new`
 * Build for either Rack applications or Rack middlewares
 
 ## WHY?
@@ -69,6 +70,25 @@ class Tank
   include Jellyfish
   get %r{^/(?<id>\d+)$} do |match|
     "Jelly ##{match[:id]}\n"
+  end
+end
+use Rack::ContentLength
+run Tank.new
+```
+
+### Custom matcher routes
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  class Matcher
+    def match path
+      path.reverse == 'match/'
+    end
+  end
+  get Matcher.new do |match|
+    "#{match}\n"
   end
 end
 use Rack::ContentLength
