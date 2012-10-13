@@ -59,6 +59,7 @@ class Tank
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
@@ -73,6 +74,7 @@ class Tank
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
@@ -92,6 +94,7 @@ class Tank
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
@@ -110,6 +113,7 @@ class Tank
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
@@ -124,6 +128,7 @@ class Tank
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
@@ -138,6 +143,7 @@ class Tank
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
@@ -156,6 +162,7 @@ class Tank
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
@@ -177,6 +184,7 @@ class Heater
   end
 end
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 run Heater.new
 ```
 
@@ -199,6 +207,7 @@ class Tank
 end
 
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 use Heater
 run Tank.new
 ```
@@ -223,6 +232,7 @@ end
 
 HugeTank = Rack::Builder.new do
   use Rack::ContentLength
+  use Rack::ContentType, 'text/plain'
   use Heater
   run Tank.new
 end
@@ -251,6 +261,7 @@ class Tank
 end
 
 use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
 use Protector
 run Tank.new
 ```
@@ -273,6 +284,7 @@ class Tank
   end
 end
 use Rack::Chunked
+use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 

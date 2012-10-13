@@ -82,6 +82,7 @@ end
 HugeTank = Rack::Builder.new do
   use Rack::Chunked
   use Rack::ContentLength
+  use Rack::ContentType, 'text/plain'
   use Heater
   run Tank.new
 end
