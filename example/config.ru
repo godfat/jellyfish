@@ -50,6 +50,19 @@ class Tank
   get Matcher.new do |match|
     "#{match}\n"
   end
+
+  class Stream
+    def each
+      if Object.const_defined?(:Rainbows)
+        (0..4).each{ |i| yield "#{i}\n"; Rainbows.sleep(0.1) }
+      else
+        yield "You need Rainbows + FiberSpawn (or so) for this\n"
+      end
+    end
+  end
+  get '/stream' do
+    body Stream.new
+  end
 end
 
 class Heater
@@ -67,6 +80,7 @@ class Heater
 end
 
 HugeTank = Rack::Builder.new do
+  use Rack::Chunked
   use Rack::ContentLength
   use Heater
   run Tank.new
