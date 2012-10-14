@@ -28,7 +28,6 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   class Controller
-    include Jellyfish
     attr_reader   :routes, :env
     def initialize routes
       @routes = routes
@@ -45,8 +44,8 @@ module Jellyfish
       [status || 200, headers || {}, body]
     end
 
-    def forward  ; raise(NotFound.new)  ; end
-    def found url; raise(Found.new(url)); end
+    def forward  ; raise(Jellyfish::NotFound.new)     ; end
+    def found url; raise(Jellyfish::   Found.new(url)); end
     alias_method :redirect, :found
 
     def path_info     ; env['PATH_INFO']      || '/'  ; end
@@ -84,7 +83,7 @@ module Jellyfish
 
     private
     def actions
-      routes[request_method.downcase] || raise(NotFound.new)
+      routes[request_method.downcase] || raise(Jellyfish::NotFound.new)
     end
 
     def dispatch
@@ -96,7 +95,7 @@ module Jellyfish
           match = route.match(path_info)
           break match, block if match
         end
-      } || raise(NotFound.new)
+      } || raise(Jellyfish::NotFound.new)
     end
   end
 
