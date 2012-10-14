@@ -29,7 +29,7 @@ Rack applications or Rack middlewares. Under 200 lines of code.
 * No templates
 * No ORM
 * No `dup` in `call`
-* Regular expression routes, e.g. `get %r{/(\d+)}`
+* Regular expression routes, e.g. `get %r{^/(?<id>\d+)$}`
 * String routes, e.g. `get '/'`
 * Custom routes, e.g. `get Matcher.new`
 * Build for either Rack applications or Rack middlewares
