@@ -3,11 +3,6 @@ module Jellyfish
   autoload :VERSION, 'jellyfish/version'
   autoload :Sinatra, 'jellyfish/sinatra'
 
-  REQUEST_METHOD = 'REQUEST_METHOD'
-  PATH_INFO      = 'PATH_INFO'
-  LOCATION       = 'Location'
-  RACK_ERRORS    = 'rack.errors'
-
   # -----------------------------------------------------------------
 
   class Respond < RuntimeError
@@ -26,7 +21,7 @@ module Jellyfish
     attr_reader :url
     def initialize url; @url = url                             ; end
     def status        ; 302                                    ; end
-    def headers       ; super.merge(LOCATION => url)           ; end
+    def headers       ; super.merge('Location' => url)         ; end
     def body          ; super.map{ |b| b.gsub('VAR_URL', url) }; end
   end
 
@@ -54,8 +49,8 @@ module Jellyfish
     def found url; raise(Found.new(url)); end
     alias_method :redirect, :found
 
-    def path_info     ; env[PATH_INFO]      || '/'  ; end
-    def request_method; env[REQUEST_METHOD] || 'GET'; end
+    def path_info     ; env['PATH_INFO']      || '/'  ; end
+    def request_method; env['REQUEST_METHOD'] || 'GET'; end
 
     %w[status headers].each do |field|
       module_eval <<-RUBY
@@ -145,13 +140,13 @@ module Jellyfish
       handle(ctrl, e)
     end
   rescue Exception => e
-    handle(ctrl, e, env[RACK_ERRORS])
+    handle(ctrl, e, env['rack.errors'])
   end
 
   def protect ctrl, env
     yield
   rescue Exception => e
-    handle(ctrl, e, env[RACK_ERRORS])
+    handle(ctrl, e, env['rack.errors'])
   end
 
   private
