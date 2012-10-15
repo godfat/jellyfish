@@ -150,12 +150,13 @@ module Jellyfish
 
   private
   def handle ctrl, e, stderr=nil
-    raise e unless self.class.handle_exceptions
     handler = self.class.handlers.find{ |klass, block|
       break block if e.kind_of?(klass)
     }
     if handler
       ctrl.block_call(e, handler)
+    elsif self.class.handle_exceptions
+      raise e
     elsif e.kind_of?(Respond) # InternalError ends up here if no handlers
       [e.status, e.headers, e.body]
     else # fallback and see if there's any InternalError handler
