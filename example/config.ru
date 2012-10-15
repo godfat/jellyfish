@@ -1,6 +1,8 @@
 
 require 'jellyfish'
 
+Overheat = Class.new(RuntimeError)
+
 class Tank
   include Jellyfish
   handle_exceptions false
@@ -63,10 +65,19 @@ class Tank
   get '/chunked' do
     Body.new
   end
+
+  get '/overheat' do
+    raise Overheat
+  end
 end
 
 class Heater
   include Jellyfish
+  handle Overheat do
+    status 500
+    "It's overheated\n"
+  end
+
   get '/status' do
     temperature
   end
