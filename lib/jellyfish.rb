@@ -155,7 +155,7 @@ module Jellyfish
     }
     if handler
       ctrl.block_call(e, handler)
-    elsif self.class.handle_exceptions
+    elsif !self.class.handle_exceptions
       raise e
     elsif e.kind_of?(Respond) # InternalError ends up here if no handlers
       [e.status, e.headers, e.body]
