@@ -33,6 +33,15 @@ class Tank
     raise 'crash'
   end
 
+  handle NameError do |e|
+    status 403
+    "No one hears you: #{e.backtrace.first}\n"
+  end
+
+  get '/yell' do
+    yell
+  end
+
   class Matcher
     def match path
       path.reverse == 'match/'
@@ -67,15 +76,6 @@ class Heater
     def temperature
       "30\u{2103}\n"
     end
-  end
-
-  handle NameError do |e|
-    status 403
-    "No one hears you: #{e.backtrace.first}\n"
-  end
-
-  get '/yell' do
-    yell
   end
 end
 
