@@ -5,7 +5,7 @@ module Jellyfish
 
   # -----------------------------------------------------------------
 
-  class Respond < RuntimeError
+  class Response < RuntimeError
     def headers
       @headers ||= {'Content-Type' => 'text/html'}
     end
@@ -15,9 +15,9 @@ module Jellyfish
     end
   end
 
-  class InternalError < Respond; def status; 500; end; end
-  class NotFound      < Respond; def status; 404; end; end
-  class Found         < Respond
+  class InternalError < Response; def status; 500; end; end
+  class NotFound      < Response; def status; 404; end; end
+  class Found         < Response # this would be raised in redirect
     attr_reader :url
     def initialize url; @url = url                             ; end
     def status        ; 302                                    ; end
@@ -157,7 +157,7 @@ module Jellyfish
       ctrl.block_call(e, handler)
     elsif !self.class.handle_exceptions
       raise e
-    elsif e.kind_of?(Respond) # InternalError ends up here if no handlers
+    elsif e.kind_of?(Response) # InternalError ends up here if no handlers
       [e.status, e.headers, e.body]
     else # fallback and see if there's any InternalError handler
       log_error(e, stderr)
