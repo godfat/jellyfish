@@ -86,7 +86,7 @@ describe 'Sinatra base_test.rb' do
 
     class TestMiddleware
       get '/low-level-forward' do
-        status, headers, body = app.app.call(env)
+        status, headers, body = jellyfish.app.call(env)
         self.status  status
         self.headers headers
         body
@@ -103,7 +103,7 @@ describe 'Sinatra base_test.rb' do
     class TestMiddleware
       get '/explicit-forward' do
         headers_merge 'X-Middleware' => 'true'
-        status, headers, _ = app.app.call(env)
+        status, headers, _ = jellyfish.app.call(env)
         self.status  status
         self.headers headers
         'Hello after explicit forward'

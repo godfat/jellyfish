@@ -28,9 +28,9 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   class Controller
-    attr_reader :routes, :app, :env
-    def initialize routes, app
-      @routes, @app = routes, app
+    attr_reader :routes, :jellyfish, :env
+    def initialize routes, jellyfish
+      @routes, @jellyfish = routes, jellyfish
       @status, @headers, @body = nil
     end
 
