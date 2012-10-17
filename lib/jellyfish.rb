@@ -28,9 +28,9 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   class Controller
-    attr_reader   :routes, :env
-    def initialize routes
-      @routes = routes
+    attr_reader :routes, :app, :env
+    def initialize routes, app
+      @routes, @app = routes, app
       @status, @headers, @body = nil
     end
 
@@ -131,7 +131,7 @@ module Jellyfish
   def controller        ; Controller; end
 
   def call env
-    ctrl = controller.new(self.class.routes)
+    ctrl = controller.new(self.class.routes, self)
     ctrl.call(env)
   rescue NotFound => e # forward
     if app
