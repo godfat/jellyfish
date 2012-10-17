@@ -31,7 +31,7 @@ module Jellyfish
     attr_reader   :routes, :env
     def initialize routes
       @routes = routes
-      @headers, @body, @status = nil
+      @status, @headers, @body = nil
     end
 
     def call env
