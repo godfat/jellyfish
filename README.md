@@ -1,4 +1,4 @@
-# Jellyfish
+# Jellyfish[![Build Status](https://secure.travis-ci.org/godfat/jellyfish.png?branch=master)](http://travis-ci.org/godfat/jellyfish)
 
 by Lin Jen-Shin ([godfat](http://godfat.org))
 
