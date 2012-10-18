@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Lin Jen-Shin (godfat)"]
   s.date = "2012-10-18"
-  s.description = "Pico web framework for building API-centric web applications, either\nRack applications or Rack middlewares. Under 200 lines of code."
+  s.description = "Pico web framework for building API-centric web applications.\nFor Rack applications or Rack middlewares. Under 200 lines of code."
   s.email = ["godfat (XD) godfat.org"]
   s.files = [
   ".gitignore",
@@ -36,7 +36,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/godfat/jellyfish"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.24"
-  s.summary = "Pico web framework for building API-centric web applications, either"
+  s.summary = "Pico web framework for building API-centric web applications."
   s.test_files = ["test/sinatra/test_base.rb"]
 
   if s.respond_to? :specification_version then

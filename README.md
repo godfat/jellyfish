@@ -10,8 +10,8 @@ by Lin Jen-Shin ([godfat](http://godfat.org))
 
 ## DESCRIPTION:
 
-Pico web framework for building API-centric web applications, either
-Rack applications or Rack middlewares. Under 200 lines of code.
+Pico web framework for building API-centric web applications.
+For Rack applications or Rack middlewares. Under 200 lines of code.
 
 ## DESIGN:
 
