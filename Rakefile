@@ -16,7 +16,7 @@ task 'gem:spec' do
     require 'jellyfish/version'
     s.name    = 'jellyfish'
     s.version = Jellyfish::VERSION
-    s.add_development_dependency('rack')
+    %w[rack bacon].each{ |g| s.add_development_dependency(g) }
   end
 
   Gemgem.write
