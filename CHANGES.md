@@ -1,5 +1,9 @@
 # CHANGES
 
+## Jellyfish 0.5.1 -- 2012-10-19
+
+* Removed accidentally added sinatra files.
+
 ## Jellyfish 0.5.0 -- 2012-10-18
 
 ### Incompatible changes
