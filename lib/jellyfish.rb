@@ -135,7 +135,11 @@ module Jellyfish
     ctrl.call(env)
   rescue NotFound => e # forward
     if app
-      protect(ctrl, env){ app.call(env) }
+      begin
+        app.call(env)
+      rescue Exception => e
+        handle(ctrl, e, env['rack.errors'])
+      end
     else
       handle(ctrl, e)
     end
@@ -143,11 +147,6 @@ module Jellyfish
     handle(ctrl, e, env['rack.errors'])
   end
 
-  def protect ctrl, env
-    yield
-  rescue Exception => e
-    handle(ctrl, e, env['rack.errors'])
-  end
 
   private
   def handle ctrl, e, stderr=nil
