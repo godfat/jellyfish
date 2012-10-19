@@ -195,6 +195,7 @@ run Heater.new
 Currently support:
 
 * Indifferent params
+* Force params encoding to Encoding.default_external
 
 ``` ruby
 require 'jellyfish'

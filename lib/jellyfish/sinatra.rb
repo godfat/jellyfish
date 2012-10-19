@@ -7,13 +7,13 @@ module Jellyfish
     attr_reader :request, :params
     def block_call argument, block
       @request = Rack::Request.new(env)
-      @params  = indifferent_params(if argument.kind_of?(MatchData)
-      then # merge captured data from matcher into params as sinatra
+      @params  = force_encoding(indifferent_params(
+      if argument.kind_of?(MatchData)
+        # merge captured data from matcher into params as sinatra
         request.params.merge(Hash[argument.names.zip(argument.captures)])
       else
         request.params
-      end)
-
+      end))
       super
     end
 
@@ -32,6 +32,20 @@ module Jellyfish
     # Creates a Hash with indifferent access.
     def indifferent_hash
       Hash.new {|hash,key| hash[key.to_s] if Symbol === key }
+    end
+
+    # stolen from sinatra
+    # Fixes encoding issues by casting params to Encoding.default_external
+    def force_encoding(data, encoding=Encoding.default_external)
+      return data if data.respond_to?(:rewind) # e.g. Tempfile, File, etc
+      if data.respond_to?(:force_encoding)
+        data.force_encoding(encoding).encode!
+      elsif data.respond_to?(:each_value)
+        data.each_value{ |v| force_encoding(v, encoding) }
+      elsif data.respond_to?(:each)
+        data.each{ |v| force_encoding(v, encoding) }
+      end
+      data
     end
   end
 end
