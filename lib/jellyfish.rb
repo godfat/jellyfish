@@ -147,6 +147,10 @@ module Jellyfish
     handle(ctrl, e, env['rack.errors'])
   end
 
+  def log_error e, stderr
+    return unless stderr
+    stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
+  end
 
   private
   def handle ctrl, e, stderr=nil
@@ -163,11 +167,6 @@ module Jellyfish
       log_error(e, stderr)
       handle(ctrl, InternalError.new)
     end
-  end
-
-  def log_error e, stderr
-    return unless stderr
-    stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
   end
 
   # -----------------------------------------------------------------
