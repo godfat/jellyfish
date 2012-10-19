@@ -1,5 +1,19 @@
 # CHANGES
 
+## Jellyfish 0.5.2 -- 2012-10-20
+
+### Incompatible changes
+
+* `protect` method is removed and inlined, reducing the size of call stack.
+
+### Enhancements for Jellyfish core
+
+* `log_error` is now a public method.
+
+### Enhancements for Sinatra flavored controller
+
+* Force params encoding to Encoding.default_external
+
 ## Jellyfish 0.5.1 -- 2012-10-19
 
 * Removed accidentally added sinatra files.
