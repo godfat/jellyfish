@@ -6,18 +6,22 @@ module Jellyfish
   class Sinatra < Controller
     attr_reader :request, :params
     def block_call argument, block
-      @request = Rack::Request.new(env)
-      @params  = force_encoding(indifferent_params(
+      initialize_params(argument)
+      super
+    end
+
+    private
+    def initialize_params argument
+      @request ||= Rack::Request.new(env)
+      @params  ||= force_encoding(indifferent_params(
       if argument.kind_of?(MatchData)
         # merge captured data from matcher into params as sinatra
         request.params.merge(Hash[argument.names.zip(argument.captures)])
       else
         request.params
       end))
-      super
     end
 
-    private
     # stolen from sinatra
     # Enable string or symbol key access to the nested params hash.
     def indifferent_params(params)
