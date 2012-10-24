@@ -44,6 +44,11 @@ module Jellyfish
       body ret if body.nil? # prefer explicitly set values
       body ''  if body.nil? # at least give an empty string
       [status || 200, headers || {}, body]
+    rescue LocalJumpError
+      jellyfish.log(
+        "Use `next' if you're trying to `return' or `break' from the block.",
+        env['rack.errors'])
+      raise
     end
 
     def forward  ; raise(Jellyfish::NotFound.new)     ; end
@@ -150,7 +155,12 @@ module Jellyfish
 
   def log_error e, stderr
     return unless stderr
-    stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
+    log("#{e.inspect} #{e.backtrace}", stderr)
+  end
+
+  def log msg, stderr
+    return unless stderr
+    stderr.puts("[#{self.class.name}] #{msg}")
   end
 
   private

@@ -69,6 +69,11 @@ class Tank
   get '/overheat' do
     raise Overheat
   end
+
+  # get a hint that use `next' instead;
+  get '/return' do; return; end
+  get '/break'  do; break ; end
+  get '/next'   do; next  ; end # this works
 end
 
 class Heater
