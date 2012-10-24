@@ -155,7 +155,7 @@ module Jellyfish
 
   def log_error e, stderr
     return unless stderr
-    log("#{e.inspect} #{e.backtrace}", stderr)
+    stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
   end
 
   def log msg, stderr
