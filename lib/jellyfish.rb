@@ -42,6 +42,7 @@ module Jellyfish
     def block_call argument, block
       ret = instance_exec(argument, &block)
       body ret if body.nil? # prefer explicitly set values
+      body ''  if body.nil? # at least give an empty string
       [status || 200, headers || {}, body]
     end
 
