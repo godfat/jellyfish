@@ -19,33 +19,33 @@
   before calling `block_call`, thus you can customize params more
   easily. An example for making NewRelic work would be like this:
 
-  ``` ruby
-  class Controller < Api::Controller
-    include NewRelic::Agent::Instrumentation::ControllerInstrumentation
+``` ruby
+class Controller < Api::Controller
+  include NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
-    def block_call argument, block
-      path = if argument.respond_to?(:regexp)
-               argument.regexp
-             else
-               argument
-             end.to_s[1..-1]
-      name = "#{env['REQUEST_METHOD']} #{path}"
-      initialize_params(argument)                     # magic category, see:
-                        # NewRelic::MetricParser::WebTransaction::Jellyfish
-      perform_action_with_newrelic_trace(:category => 'Controller/Jellyfish',
-                                         :path     => path                  ,
-                                         :name     => name                  ,
-                                         :request  => request               ,
-                                         :params   => params ){ super }
-    end
+  def block_call argument, block
+    path = if argument.respond_to?(:regexp)
+             argument.regexp
+           else
+             argument
+           end.to_s[1..-1]
+    name = "#{env['REQUEST_METHOD']} #{path}"
+    initialize_params(argument)                     # magic category, see:
+                      # NewRelic::MetricParser::WebTransaction::Jellyfish
+    perform_action_with_newrelic_trace(:category => 'Controller/Jellyfish',
+                                       :path     => path                  ,
+                                       :name     => name                  ,
+                                       :request  => request               ,
+                                       :params   => params ){ super }
   end
+end
 
-  module NewRelic::MetricParser::WebTransaction::Jellyfish
-    include NewRelic::MetricParser::WebTransaction::Pattern
-    def is_web_transaction?; true; end
-    def category ; 'Jellyfish'; end
-  end
-  ```
+module NewRelic::MetricParser::WebTransaction::Jellyfish
+  include NewRelic::MetricParser::WebTransaction::Pattern
+  def is_web_transaction?; true; end
+  def category ; 'Jellyfish'; end
+end
+```
 
 ## Jellyfish 0.5.2 -- 2012-10-20
 
