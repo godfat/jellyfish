@@ -96,7 +96,7 @@ class Heater
 end
 
 HugeTank = Rack::Builder.new do
-  use Rack::Chunked
+  use Rack::Chunked # order does matter, need to check Content-Length first
   use Rack::ContentLength
   use Rack::ContentType, 'text/plain'
   use Heater
