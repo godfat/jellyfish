@@ -5,8 +5,8 @@ require 'rack/request'
 require 'new_relic/agent/instrumentation/controller_instrumentation'
 
 module Jellyfish
-  module Newrelic
-    include NewRelic::Agent::Instrumentation::ControllerInstrumentation
+  module NewRelic
+    include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
 
     def block_call argument, block
       path = if argument.respond_to?(:regexp)

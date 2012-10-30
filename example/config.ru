@@ -94,7 +94,7 @@ class Heater
   def controller; Controller; end
   class Controller < Jellyfish::Controller
     include Jellyfish::Sinatra
-    include Jellyfish::Newrelic
+    include Jellyfish::NewRelic
     def temperature
       "30\u{2103}\n"
     end

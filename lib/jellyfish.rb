@@ -2,7 +2,7 @@
 module Jellyfish
   autoload :VERSION , 'jellyfish/version'
   autoload :Sinatra , 'jellyfish/sinatra'
-  autoload :Newrelic, 'jellyfish/newrelic'
+  autoload :NewRelic, 'jellyfish/newrelic'
 
   class Response < RuntimeError
     def headers
