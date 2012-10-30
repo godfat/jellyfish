@@ -1,5 +1,45 @@
 # CHANGES
 
+## Jellyfish 0.6.0 -- ?
+
+### Enhancements for Jellyfish core
+
+* Extracted Jellyfish::Controller#call and Jellyfish::Controller#block_call
+  into Jellyfish::Controller::Call so that you can have modules which can
+  override call and block_call. See Jellyfish::Sinatra and Jellyfish::NewRelic
+  for an example.
+
+* Now you can use `request` in the controller, which is essentially:
+  `@request ||= Rack::Request.new(env)`. This also means you would need
+  Rack installed and required to use it. Other than this, there's no
+  strict requirement for Rack.
+
+### Enhancements for NewRelic
+
+* Added Jellyfish::NewRelic which makes you work easier with NewRelic.
+  Here's an example of how to use it: (extracted from README)
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  class MyController < Jellyfish::Controller
+    include Jellyfish::NewRelic
+  end
+  def controller; MyController; end
+  get '/' do
+    "OK\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+require 'cgi' # newrelic dev mode needs this and it won't require it itself
+require 'new_relic/rack/developer_mode'
+use NewRelic::Rack::DeveloperMode # GET /newrelic to read stats
+run Tank.new
+NewRelic::Agent.manual_start(:developer_mode => true)
+```
+
 ## Jellyfish 0.5.3 -- 2012-10-26
 
 ### Enhancements for Jellyfish core
