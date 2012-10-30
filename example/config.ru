@@ -87,8 +87,13 @@ class Heater
     temperature
   end
 
+  get %r{^/sinatra/(?<id>\d+)$} do
+    "#{params[:id]}\n"
+  end
+
   def controller; Controller; end
   class Controller < Jellyfish::Controller
+    include Jellyfish::Sinatra
     def temperature
       "30\u{2103}\n"
     end

@@ -3,7 +3,7 @@ require 'jellyfish'
 require 'rack/request'
 
 module Jellyfish
-  class Sinatra < Controller
+  module Sinatra
     attr_reader :request, :params
     def block_call argument, block
       initialize_params(argument)

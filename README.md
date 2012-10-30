@@ -201,7 +201,10 @@ Currently support:
 require 'jellyfish'
 class Tank
   include Jellyfish
-  def controller; Jellyfish::Sinatra; end
+  class MyController < Jellyfish::Controller
+    include Jellyfish::Sinatra
+  end
+  def controller; MyController; end
   get %r{^/(?<id>\d+)$} do
     "Jelly ##{params[:id]}\n"
   end

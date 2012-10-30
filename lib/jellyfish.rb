@@ -28,27 +28,30 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   class Controller
+    module Call
+      def call env
+        @env = env
+        block_call(*dispatch)
+      end
+
+      def block_call argument, block
+        ret = instance_exec(argument, &block)
+        body ret if body.nil? # prefer explicitly set values
+        body ''  if body.nil? # at least give an empty string
+        [status || 200, headers || {}, body]
+      rescue LocalJumpError
+        jellyfish.log(
+          "Use `next' if you're trying to `return' or `break' from the block.",
+          env['rack.errors'])
+        raise
+      end
+    end
+    include Call
+
     attr_reader :routes, :jellyfish, :env
     def initialize routes, jellyfish
       @routes, @jellyfish = routes, jellyfish
       @status, @headers, @body = nil
-    end
-
-    def call env
-      @env = env
-      block_call(*dispatch)
-    end
-
-    def block_call argument, block
-      ret = instance_exec(argument, &block)
-      body ret if body.nil? # prefer explicitly set values
-      body ''  if body.nil? # at least give an empty string
-      [status || 200, headers || {}, body]
-    rescue LocalJumpError
-      jellyfish.log(
-        "Use `next' if you're trying to `return' or `break' from the block.",
-        env['rack.errors'])
-      raise
     end
 
     def forward  ; raise(Jellyfish::NotFound.new)     ; end
