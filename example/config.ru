@@ -94,6 +94,7 @@ class Heater
   def controller; Controller; end
   class Controller < Jellyfish::Controller
     include Jellyfish::Sinatra
+    include Jellyfish::Newrelic
     def temperature
       "30\u{2103}\n"
     end
@@ -109,3 +110,6 @@ HugeTank = Rack::Builder.new do
 end
 
 run HugeTank
+
+NewRelic::Agent.manual_start
+NewRelic::Agent.shutdown
