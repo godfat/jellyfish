@@ -40,9 +40,8 @@ module Jellyfish
         body ''  if body.nil? # at least give an empty string
         [status || 200, headers || {}, body]
       rescue LocalJumpError
-        jellyfish.log(
-          "Use `next' if you're trying to `return' or `break' from the block.",
-          env['rack.errors'])
+        jellyfish.log("Use `next' if you're trying to `return' or" \
+                      " `break' from the block.", env['rack.errors'])
         raise
       end
     end
