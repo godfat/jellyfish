@@ -109,7 +109,10 @@ HugeTank = Rack::Builder.new do
   run Tank.new
 end
 
+require 'cgi' # newrelic needs this
+require 'new_relic/rack/developer_mode'
+use NewRelic::Rack::DeveloperMode
+
 run HugeTank
 
-NewRelic::Agent.manual_start
-NewRelic::Agent.shutdown
+NewRelic::Agent.manual_start(:developer_mode => true)

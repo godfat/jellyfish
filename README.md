@@ -214,6 +214,29 @@ use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
+### Using NewRelic?
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  class MyController < Jellyfish::Controller
+    include Jellyfish::NewRelic
+  end
+  def controller; MyController; end
+  get '/' do
+    "OK\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+require 'cgi' # newrelic dev mode needs this and it won't require it itself
+require 'new_relic/rack/developer_mode'
+use NewRelic::Rack::DeveloperMode # GET /newrelic to read stats
+run Tank.new
+NewRelic::Agent.manual_start(:developer_mode => true)
+```
+
 ### Jellyfish as a middleware
 
 ``` ruby
