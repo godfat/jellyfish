@@ -53,6 +53,7 @@ module Jellyfish
       @status, @headers, @body = nil
     end
 
+    def request  ; @request ||= Rack::Request.new(env); end
     def forward  ; raise(Jellyfish::NotFound.new)     ; end
     def found url; raise(Jellyfish::   Found.new(url)); end
     alias_method :redirect, :found

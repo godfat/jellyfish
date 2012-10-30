@@ -4,7 +4,7 @@ require 'rack/request'
 
 module Jellyfish
   module Sinatra
-    attr_reader :request, :params
+    attr_reader :params
     def block_call argument, block
       initialize_params(argument)
       super
@@ -12,8 +12,7 @@ module Jellyfish
 
     private
     def initialize_params argument
-      @request ||= Rack::Request.new(env)
-      @params  ||= force_encoding(indifferent_params(
+      @params ||= force_encoding(indifferent_params(
       if argument.kind_of?(MatchData)
         # merge captured data from matcher into params as sinatra
         request.params.merge(Hash[argument.names.zip(argument.captures)])
