@@ -1,6 +1,6 @@
 # CHANGES
 
-## Jellyfish 0.6.0 -- ?
+## Jellyfish 0.6.0 -- 2012-11-02
 
 ### Enhancements for Jellyfish core
 
