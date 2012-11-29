@@ -54,7 +54,7 @@ module Jellyfish
 
     def request  ; @request ||= Rack::Request.new(env); end
     def forward  ; raise(Jellyfish::NotFound.new)     ; end
-    def found url; raise(Jellyfish::   Found.new(url)); end
+    def found url; Jellyfish::Found.new(url)          ; end
     alias_method :redirect, :found
 
     def path_info     ; env['PATH_INFO']      || '/'  ; end
