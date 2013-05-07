@@ -65,6 +65,13 @@ use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
+<!---
+GET /
+[200,
+ {'Content-Length' => '12', 'Content-Type' => 'text/plain'},
+ ["Jelly Kelly\n"]]
+-->
+
 ### Regular expression routes
 
 ``` ruby
@@ -79,6 +86,13 @@ use Rack::ContentLength
 use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
+
+<!---
+GET /123
+[200,
+ {'Content-Length' => '11', 'Content-Type' => 'text/plain'},
+ ["Jelly #123\n"]]
+-->
 
 ### Custom matcher routes
 
@@ -100,6 +114,13 @@ use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
+<!---
+GET /hctam
+[200,
+ {'Content-Length' => '5', 'Content-Type' => 'text/plain'},
+ ["true\n"]]
+-->
+
 ### Different HTTP status and custom headers
 
 ``` ruby
@@ -119,6 +140,14 @@ use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
+<!---
+POST /
+[201,
+ {'Content-Length' => '18', 'Content-Type' => 'text/plain',
+  'X-Jellyfish-Life' => '100', 'X-Jellyfish-Mana' => '200'},
+ ["Jellyfish 100/200\n"]]
+-->
+
 ### Redirect helper
 
 ``` ruby
@@ -134,6 +163,17 @@ use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
+<!---
+GET /lookup
+body = File.read("#{File.dirname(
+  File.expand_path(__FILE__))}/../lib/jellyfish/public/302.html").
+  gsub('VAR_URL', ':///')
+[302,
+ {'Content-Length' => body.bytesize.to_s, 'Content-Type' => 'text/html',
+  'Location' => ':///'},
+ [body]]
+-->
+
 ### Crash-proof
 
 ``` ruby
@@ -148,6 +188,15 @@ use Rack::ContentLength
 use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
+
+<!---
+GET /crash
+body = File.read("#{File.dirname(
+  File.expand_path(__FILE__))}/../lib/jellyfish/public/500.html")
+[500,
+ {'Content-Length' => body.bytesize.to_s, 'Content-Type' => 'text/html'},
+ [body]]
+-->
 
 ### Custom error handler
 
@@ -167,6 +216,14 @@ use Rack::ContentLength
 use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
+
+<!---
+GET /yell
+body = "No one hears you: (eval):9:in `block in <class:Tank>'\n"
+[403,
+ {'Content-Length' => body.bytesize.to_s, 'Content-Type' => 'text/plain'},
+ [body]]
+-->
 
 ### Custom controller
 
@@ -190,6 +247,12 @@ use Rack::ContentType, 'text/plain'
 run Heater.new
 ```
 
+<!---
+GET /status
+[200,
+ {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
+ ["30\u{2103}\n"]]
+-->
 
 ### Sinatra flavored controller
 
@@ -219,6 +282,13 @@ use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
 
+<!---
+GET /123
+[200,
+ {'Content-Length' => '18', 'Content-Type' => 'text/plain'},
+ ["Jelly #123 jumps.\n"]]
+-->
+
 ### Using NewRelic?
 
 ``` ruby
@@ -241,6 +311,13 @@ use NewRelic::Rack::DeveloperMode # GET /newrelic to read stats
 run Tank.new
 NewRelic::Agent.manual_start(:developer_mode => true)
 ```
+
+<!---
+GET /
+[200,
+ {'Content-Length' => '3', 'Content-Type' => 'text/plain'},
+ ["OK\n"]]
+-->
 
 ### Jellyfish as a middleware
 
@@ -266,6 +343,13 @@ use Heater
 run Tank.new
 ```
 
+<!---
+GET /
+[200,
+ {'Content-Length' => '12', 'Content-Type' => 'text/plain'},
+ ["Jelly Kelly\n"]]
+-->
+
 ### Simple before action
 
 ``` ruby
@@ -290,6 +374,13 @@ use Rack::ContentType, 'text/plain'
 use Heater
 run Tank.new
 ```
+
+<!---
+GET /status
+[200,
+ {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
+ ["30\u{2103}\n"]]
+-->
 
 ### One huge tank
 
@@ -319,6 +410,13 @@ end
 run HugeTank
 ```
 
+<!---
+GET /status
+[200,
+ {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
+ ["30\u{2103}\n"]]
+-->
+
 ### Raise exceptions
 
 ``` ruby
@@ -345,6 +443,13 @@ use Protector
 run Tank.new
 ```
 
+<!---
+GET /
+[200,
+ {'Content-Length' => '29', 'Content-Type' => 'text/plain'},
+ ["Protected: Oops, tank broken\n"]]
+-->
+
 ### Chunked transfer encoding (streaming)
 
 You would need a proper server setup.
@@ -366,6 +471,14 @@ use Rack::Chunked
 use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
+
+<!---
+GET /chunked
+[200,
+ {'Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'},
+ ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
+  "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n\r\n"]]
+-->
 
 ## CONTRIBUTORS:
 
