@@ -6,17 +6,17 @@ require 'jellyfish'
 module Jellyfish
   module MultiActions
     def call env
-      @env    = env
-      actions = dispatch
+      @env = env
+      acts = dispatch
       catch(:halt){
-        actions[0...-1].each{ |route_block| block_call(*route_block) }
+        acts[0...-1].each{ |route_block| block_call(*route_block) }
         body nil
-        block_call(*actions.last)
+        block_call(*acts.last)
       } || block_call(nil, nil) # respond the default if halted
     end
 
     def dispatch
-      actions.map{ |(route, block)|
+      ret = actions.map{ |(route, block)|
         case route
         when String
           [route, block] if route == path_info
@@ -25,6 +25,12 @@ module Jellyfish
           [match, block] if match
         end
       }.compact
+
+      if ret.empty?
+        raise(Jellyfish::NotFound.new)
+      else
+        ret
+      end
     end
   end
 end
