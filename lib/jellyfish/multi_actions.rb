@@ -16,7 +16,7 @@ module Jellyfish
     end
 
     def dispatch
-      ret = actions.map{ |(route, block)|
+      acts = actions.map{ |(route, block)|
         case route
         when String
           [route, block] if route == path_info
@@ -26,10 +26,10 @@ module Jellyfish
         end
       }.compact
 
-      if ret.empty?
+      if acts.empty?
         raise(Jellyfish::NotFound.new)
       else
-        ret
+        acts
       end
     end
   end
