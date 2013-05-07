@@ -208,11 +208,11 @@ class Tank
     include Jellyfish::Sinatra
   end
   def controller; MyController; end
-  get %r{.*} do
-    @status = 'jumps'
+  get %r{.*} do # wildcard before filter
+    @state = 'jumps'
   end
   get %r{^/(?<id>\d+)$} do
-    "Jelly ##{params[:id]} #{@status}.\n"
+    "Jelly ##{params[:id]} #{@state}.\n"
   end
 end
 use Rack::ContentLength
