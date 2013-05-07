@@ -25,8 +25,8 @@ describe 'from README.md' do
 
       status, headers, body = Rack::Builder.new do
         eval(code)
-      end.call('REQUEST_METHOD' => method, 'PATH_INFO' => path,
-               'rack.input'     => StringIO.new)
+      end.call 'REQUEST_METHOD' => method, 'PATH_INFO' => path,
+               'rack.input'     => StringIO.new#, 'rack.errors' => $stderr
 
       body.extend(Enumerable)
       [status, headers, body.to_a].should.eq eval(expect, binding, __FILE__)
