@@ -219,7 +219,14 @@ run Tank.new
 
 <!---
 GET /yell
-body = "No one hears you: (eval):9:in `block in <class:Tank>'\n"
+body = case RUBY_ENGINE
+       when 'jruby'
+         "No one hears you: (eval):9:in `Tank'\n"
+       when 'rbx'
+         "No one hears you: kernel/delta/kernel.rb:81:in `yell (method_missing)'\n"
+       else
+         "No one hears you: (eval):9:in `block in <class:Tank>'\n"
+       end
 [403,
  {'Content-Length' => body.bytesize.to_s, 'Content-Type' => 'text/plain'},
  [body]]
