@@ -355,7 +355,7 @@ class Tank
   include Jellyfish
   class Body
     def each
-      (0..4).each{ |i| yield "#{i}\n"; Rainbows.sleep(0.1) }
+      (0..4).each{ |i| yield "#{i}\n" }
     end
   end
   get '/chunked' do
