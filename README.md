@@ -261,6 +261,31 @@ use Heater
 run Tank.new
 ```
 
+### Before action
+
+``` ruby
+require 'jellyfish'
+class Heater
+  include Jellyfish
+  get '/status' do
+    request.env['temperature'] = 30
+    forward
+  end
+end
+
+class Tank
+  include Jellyfish
+  get '/status' do
+    "#{request.env['temperature']}\u{2103}\n"
+  end
+end
+
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+use Heater
+run Tank.new
+```
+
 ### One huge tank
 
 ``` ruby
