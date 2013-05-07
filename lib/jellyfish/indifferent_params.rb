@@ -13,7 +13,7 @@ module Jellyfish
 
     private
     def initialize_params argument
-      @params ||= force_encoding(indifferent_params(
+      @params = force_encoding(indifferent_params(
       if argument.kind_of?(MatchData)
         # merge captured data from matcher into params as sinatra
         request.params.merge(Hash[argument.names.zip(argument.captures)])

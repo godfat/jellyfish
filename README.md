@@ -190,10 +190,13 @@ use Rack::ContentType, 'text/plain'
 run Heater.new
 ```
 
+###
+
 ### Sinatra flavored controller
 
 Currently support:
 
+* Multi-actions (Filters)
 * Indifferent params
 * Force params encoding to Encoding.default_external
 
@@ -205,8 +208,11 @@ class Tank
     include Jellyfish::Sinatra
   end
   def controller; MyController; end
+  get %r{.*} do
+    @status = 'jumps'
+  end
   get %r{^/(?<id>\d+)$} do
-    "Jelly ##{params[:id]}\n"
+    "Jelly ##{params[:id]} #{@status}.\n"
   end
 end
 use Rack::ContentLength
@@ -261,7 +267,7 @@ use Heater
 run Tank.new
 ```
 
-### Before action
+### Simple before action
 
 ``` ruby
 require 'jellyfish'

@@ -5,6 +5,7 @@ module Jellyfish
   autoload :NewRelic, 'jellyfish/newrelic'
 
   autoload :IndifferentParams, 'jellyfish/indifferent_params'
+  autoload :MultiActions     , 'jellyfish/multi_actions'
 
   GetValue = Object.new
 
