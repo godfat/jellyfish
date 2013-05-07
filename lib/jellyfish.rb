@@ -4,6 +4,8 @@ module Jellyfish
   autoload :Sinatra , 'jellyfish/sinatra'
   autoload :NewRelic, 'jellyfish/newrelic'
 
+  autoload :IndifferentParams, 'jellyfish/indifferent_params'
+
   GetValue = Object.new
 
   class Response < RuntimeError

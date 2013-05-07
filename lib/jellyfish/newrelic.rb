@@ -1,7 +1,6 @@
 
 require 'jellyfish'
 require 'rack/request'
-
 require 'new_relic/agent/instrumentation/controller_instrumentation'
 
 module Jellyfish
