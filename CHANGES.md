@@ -1,5 +1,18 @@
 # CHANGES
 
+## Jellyfish 0.7.0
+
+### Enhancements for Jellyfish::Sinatra
+
+* Added `Jellyfish::MultiAction` which gives you some kind of ability to do
+  before or after filters. See README.md for usage.
+
+* Added `Jellyfish::IndifferentParams` which gives you some kind of Sinatra
+  flavour to access params.
+
+* Now `Jellyfish::Sinatra` inherits both `Jellyfish::MultiAction` and
+  `Jellyfish::IndifferentParams`.
+
 ## Jellyfish 0.6.0 -- 2012-11-02
 
 ### Enhancements for Jellyfish core
