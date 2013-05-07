@@ -190,7 +190,6 @@ use Rack::ContentType, 'text/plain'
 run Heater.new
 ```
 
-###
 
 ### Sinatra flavored controller
 
