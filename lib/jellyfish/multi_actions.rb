@@ -9,9 +9,8 @@ module Jellyfish
 
     def call env
       @env = env
-      acts = dispatch
       catch(:halt){
-        acts.inject(nil){ |_, route_block| block_call(*route_block) }
+        dispatch.inject(nil){ |_, route_block| block_call(*route_block) }
       } || block_call(nil, Identity) # respond the default if halted
     end
 
