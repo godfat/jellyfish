@@ -3,6 +3,12 @@ require 'jellyfish/test'
 require 'stringio'
 
 describe 'from README.md' do
+  after do
+    [:Tank, :Heater, :Protector].each do |const|
+      Object.send(:remove_const, const) if Object.const_defined?(const)
+    end
+  end
+
   readme = File.read(
              "#{File.dirname(File.expand_path(__FILE__))}/../README.md")
   codes  = readme.scan(
