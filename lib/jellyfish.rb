@@ -4,6 +4,8 @@ module Jellyfish
   autoload :Sinatra , 'jellyfish/sinatra'
   autoload :NewRelic, 'jellyfish/newrelic'
 
+  GetValue = Object.new
+
   class Response < RuntimeError
     def headers
       @headers ||= {'Content-Type' => 'text/html'}
@@ -62,8 +64,8 @@ module Jellyfish
 
     %w[status headers].each do |field|
       module_eval <<-RUBY
-        def #{field} value=nil
-          if value.nil?
+        def #{field} value=GetValue
+          if value == GetValue
             @#{field}
           else
             @#{field} = value
@@ -72,10 +74,10 @@ module Jellyfish
       RUBY
     end
 
-    def body value=nil
-      if value.nil?
+    def body value=GetValue
+      if value == GetValue
         @body
-      elsif value.respond_to?(:each) # per rack SPEC
+      elsif value.respond_to?(:each) || value.nil?
         @body = value
       else
         @body = [value]
