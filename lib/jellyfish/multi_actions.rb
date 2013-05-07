@@ -11,9 +11,7 @@ module Jellyfish
       @env = env
       acts = dispatch
       catch(:halt){
-        acts[0...-1].each{ |route_block| block_call(*route_block) }
-        body nil
-        block_call(*acts.last)
+        acts.inject(nil){ |_, route_block| block_call(*route_block) }
       } || block_call(nil, Identity) # respond the default if halted
     end
 

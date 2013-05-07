@@ -39,10 +39,8 @@ module Jellyfish
       end
 
       def block_call argument, block
-        ret = instance_exec(argument, &block)
-        body ret if body.nil? # prefer explicitly set values
-        body ''  if body.nil? # at least give an empty string
-        [status || 200, headers || {}, body]
+        val = instance_exec(argument, &block)
+        [status || 200, headers || {}, body || with_each(val || '')]
       rescue LocalJumpError
         jellyfish.log("Use `next' if you're trying to `return' or" \
                       " `break' from the block.", env['rack.errors'])
@@ -80,10 +78,10 @@ module Jellyfish
     def body value=GetValue
       if value == GetValue
         @body
-      elsif value.respond_to?(:each) || value.nil?
+      elsif value.nil?
         @body = value
       else
-        @body = [value]
+        @body = with_each(value)
       end
     end
 
@@ -110,6 +108,10 @@ module Jellyfish
           break match, block if match
         end
       } || raise(Jellyfish::NotFound.new)
+    end
+
+    def with_each value
+      if value.respond_to?(:each) then value else [value] end
     end
   end
 
