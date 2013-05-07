@@ -5,6 +5,8 @@ require 'jellyfish'
 
 module Jellyfish
   module MultiActions
+    Identity = lambda{|_|_}
+
     def call env
       @env = env
       acts = dispatch
@@ -12,7 +14,7 @@ module Jellyfish
         acts[0...-1].each{ |route_block| block_call(*route_block) }
         body nil
         block_call(*acts.last)
-      } || block_call(nil, nil) # respond the default if halted
+      } || block_call(nil, Identity) # respond the default if halted
     end
 
     def dispatch

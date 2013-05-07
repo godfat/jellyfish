@@ -389,6 +389,37 @@ GET /status
  ["30\u{2103}\n"]]
 -->
 
+### Halt in before action
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  class MyController < Jellyfish::Controller
+    include Jellyfish::MultiActions
+  end
+  def controller; MyController; end
+  get %r{.*} do # wildcard before filter
+    body "Done!\n"
+    throw :halt
+  end
+  get '/' do
+    "Never reach.\n"
+  end
+end
+
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /status
+[200,
+ {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
+ ["Done!\n"]]
+-->
+
 ### One huge tank
 
 ``` ruby
