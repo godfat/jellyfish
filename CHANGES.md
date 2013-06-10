@@ -2,6 +2,13 @@
 
 ## Jellyfish 0.7.0
 
+### Enhancements for Jellyfish core
+
+* Added `Jellyfish::ChunkedBody` which is similar to `Sinatra::Stream`.
+* Now default route is `//`. Using `get{ 'Hello, World!' }` is effectively
+  the same as `get(//){ 'Hello, World!' }`
+* Now inheritance works.
+
 ### Enhancements for Jellyfish::Sinatra
 
 * Added `Jellyfish::MultiAction` which gives you some kind of ability to do
