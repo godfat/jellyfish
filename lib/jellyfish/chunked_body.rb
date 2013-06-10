@@ -3,6 +3,7 @@ require 'jellyfish'
 
 module Jellyfish
   class ChunkedBody
+    include Enumerable
     attr_reader :body
     def initialize &body
       @body = body
