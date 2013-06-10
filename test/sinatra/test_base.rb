@@ -39,8 +39,28 @@ describe 'Sinatra base_test.rb' do
   describe 'Jellyfish as a Rack middleware' do
     behaves_like :jellyfish
 
-    class TestMiddleware
-      include Jellyfish
+    def app
+      @app ||= Class.new{
+        include Jellyfish
+        get '/' do
+          'Hello from middleware'
+        end
+
+        get '/low-level-forward' do
+          status, headers, body = jellyfish.app.call(env)
+          self.status  status
+          self.headers headers
+          body
+        end
+
+        get '/explicit-forward' do
+          headers_merge 'X-Middleware' => 'true'
+          status, headers, _ = jellyfish.app.call(env)
+          self.status  status
+          self.headers headers
+          'Hello after explicit forward'
+        end
+      }.new(inner_app)
     end
 
     def inner_app
@@ -49,22 +69,12 @@ describe 'Sinatra base_test.rb' do
       }
     end
 
-    def app
-      @app ||= TestMiddleware.new(inner_app)
-    end
-
     should 'create a middleware that responds to #call with .new' do
       app.respond_to?(:call).should.eq true
     end
 
     should 'expose the downstream app' do
       app.app.object_id.should.eq inner_app.object_id
-    end
-
-    class TestMiddleware
-      get '/' do
-        'Hello from middleware'
-      end
     end
 
     should 'intercept requests' do
@@ -80,30 +90,11 @@ describe 'Sinatra base_test.rb' do
       body                   .should.eq ['Hello from downstream']
     end
 
-    class TestMiddleware
-      get '/low-level-forward' do
-        status, headers, body = jellyfish.app.call(env)
-        self.status  status
-        self.headers headers
-        body
-      end
-    end
-
     should 'call the downstream app directly and return result' do
       status, headers, body = get('/low-level-forward')
       status                 .should.eq 210
       headers['X-Downstream'].should.eq 'true'
       body                   .should.eq ['Hello from downstream']
-    end
-
-    class TestMiddleware
-      get '/explicit-forward' do
-        headers_merge 'X-Middleware' => 'true'
-        status, headers, _ = jellyfish.app.call(env)
-        self.status  status
-        self.headers headers
-        'Hello after explicit forward'
-      end
     end
 
     should 'forward the request and integrate the response' do
