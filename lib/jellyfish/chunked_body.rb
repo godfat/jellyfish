@@ -10,7 +10,11 @@ module Jellyfish
     end
 
     def each &block
-      body.call(block)
+      if block
+        body.call(block)
+      else
+        to_enum(:each)
+      end
     end
   end
 end
