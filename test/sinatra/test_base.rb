@@ -5,36 +5,32 @@ require 'jellyfish/test'
 describe 'Sinatra base_test.rb' do
   behaves_like :jellyfish
 
-  class TestApp
-    include Jellyfish
-    get '/' do
-      'Hello World'
-    end
-  end
-
-  def app
-    @app ||= TestApp.new
-  end
-
   should 'process requests with #call' do
+    app = Class.new{
+      include Jellyfish
+      get '/' do
+        'Hello World'
+      end
+    }.new
     app.respond_to?(:call).should.eq true
-    status, _, body = get('/')
+    status, _, body = get('/', app)
     status.should.eq 200
     body  .should.eq ['Hello World']
   end
 
-  class TestApp
-    get '/state' do
-      @foo ||= 'new'
-      body = "Foo: #{@foo}"
-      @foo = 'discard'
-      body
-    end
-  end
-
   should 'not maintain state between requests' do
+    app = Class.new{
+      include Jellyfish
+      get '/state' do
+        @foo ||= 'new'
+        body = "Foo: #{@foo}"
+        @foo = 'discard'
+        body
+      end
+    }.new
+
     2.times do
-      status, _, body = get('/state')
+      status, _, body = get('/state', app)
       status.should.eq 200
       body  .should.eq ['Foo: new']
     end
