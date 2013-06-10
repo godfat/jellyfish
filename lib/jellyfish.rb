@@ -140,6 +140,13 @@ module Jellyfish
         end
       RUBY
     end
+
+    def inherited sub
+      [:handlers, :routes].each{ |m|
+        val = __send__(m).inject({}){ |r, (k, v)| r[k] = v.dup; r }
+        sub.__send__(m).replace(val) # dup the routing arrays
+      }
+    end
   end
 
   # -----------------------------------------------------------------
