@@ -135,7 +135,7 @@ module Jellyfish
 
     %w[options get head post put delete patch].each do |method|
       module_eval <<-RUBY
-        def #{method} route, &block
+        def #{method} route=//, &block
           (routes['#{method}'] ||= []) << [route, block]
         end
       RUBY
