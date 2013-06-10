@@ -488,10 +488,34 @@ GET /
  ["Protected: Oops, tank broken\n"]]
 -->
 
-### Chunked transfer encoding (streaming)
+### Chunked transfer encoding (streaming) with Jellyfish::ChunkedBody
 
 You would need a proper server setup.
 Here's an example with Rainbows and fibers:
+
+``` ruby
+class Tank
+  include Jellyfish
+  get '/chunked' do
+    ChunkedBody.new{ |out|
+      (0..4).each{ |i| out.call("#{i}\n") }
+    }
+  end
+end
+use Rack::Chunked
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /chunked
+[200,
+ {'Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'},
+ ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
+  "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n\r\n"]]
+-->
+
+### Chunked transfer encoding (streaming) with custom body
 
 ``` ruby
 class Tank

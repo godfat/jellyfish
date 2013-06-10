@@ -7,6 +7,8 @@ module Jellyfish
   autoload :IndifferentParams, 'jellyfish/indifferent_params'
   autoload :MultiActions     , 'jellyfish/multi_actions'
 
+  autoload :ChunkedBody, 'jellyfish/chunked_body'
+
   GetValue = Object.new
 
   class Response < RuntimeError
