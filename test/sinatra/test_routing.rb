@@ -51,7 +51,7 @@ describe 'Sinatra routing_test.rb' do
       def controller
         Class.new(Jellyfish::Controller){ include Jellyfish::NormalizedPath }
       end
-      get('/föö'){}
+      get("/f\u{f6}\u{f6}"){}
     }.new
     status, _, _ = get('/f%C3%B6%C3%B6', app)
     status.should.eq 200
