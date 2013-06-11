@@ -6,7 +6,7 @@ module Jellyfish
 
   autoload :IndifferentParams, 'jellyfish/indifferent_params'
   autoload :MultiActions     , 'jellyfish/multi_actions'
-  autoload :UnescapePath     , 'jellyfish/unescape_path'
+  autoload :NormalizedPath   , 'jellyfish/normalized_path'
 
   autoload :ChunkedBody, 'jellyfish/chunked_body'
 

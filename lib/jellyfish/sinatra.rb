@@ -7,6 +7,6 @@ module Jellyfish
   module Sinatra
     include IndifferentParams
     include MultiActions
-    include UnescapePath
+    include NormalizedPath
   end
 end

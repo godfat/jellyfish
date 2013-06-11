@@ -319,14 +319,14 @@ GET /123
  ["Jelly jumps.\n"]]
 -->
 
-### Extension: UnescapePath
+### Extension: NormalizedPath
 
 ``` ruby
 require 'jellyfish'
 class Tank
   include Jellyfish
   class MyController < Jellyfish::Controller
-    include Jellyfish::UnescapePath
+    include Jellyfish::NormalizedPath
   end
   def controller; MyController; end
   get '/囧' do
@@ -351,7 +351,7 @@ It's an extension collection contains:
 
 * IndifferentParams
 * MultiActions
-* UnescapePath
+* NormalizedPath
 
 ``` ruby
 require 'jellyfish'

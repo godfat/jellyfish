@@ -18,13 +18,13 @@
 * Added `Jellyfish::IndifferentParams` which gives you some kind of Sinatra
   flavoured params.
 
-* Added `Jellyfish::UnescapePath` which would unescape incoming PATH_INFO
+* Added `Jellyfish::NormalizedPath` which would unescape incoming PATH_INFO
   so you could match '/f%C3%B6%C3%B6' with '/föö'.
 
 ### Enhancements for Jellyfish::Sinatra
 
 * Now `Jellyfish::Sinatra` includes `Jellyfish::IndifferentParams`,
-  `Jellyfish::MultiAction`, and `Jellyfish::UnescapePath`.
+  `Jellyfish::MultiAction`, and `Jellyfish::NormalizedPath`.
 
 ## Jellyfish 0.6.0 -- 2012-11-02
 
