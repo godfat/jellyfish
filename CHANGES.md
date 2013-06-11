@@ -4,21 +4,27 @@
 
 ### Enhancements for Jellyfish core
 
-* Added `Jellyfish::ChunkedBody` which is similar to `Sinatra::Stream`.
 * Now default route is `//`. Using `get{ 'Hello, World!' }` is effectively
   the same as `get(//){ 'Hello, World!' }`
 * Now inheritance works.
 
-### Enhancements for Jellyfish::Sinatra
+### Enhancements for Jellyfish extension
+
+* Added `Jellyfish::ChunkedBody` which is similar to `Sinatra::Stream`.
 
 * Added `Jellyfish::MultiAction` which gives you some kind of ability to do
   before or after filters. See README.md for usage.
 
 * Added `Jellyfish::IndifferentParams` which gives you some kind of Sinatra
-  flavour to access params.
+  flavoured params.
 
-* Now `Jellyfish::Sinatra` inherits both `Jellyfish::MultiAction` and
-  `Jellyfish::IndifferentParams`.
+* Added `Jellyfish::UnescapePath` which would unescape incoming PATH_INFO
+  so you could match '/f%C3%B6%C3%B6' with '/föö'.
+
+### Enhancements for Jellyfish::Sinatra
+
+* Now `Jellyfish::Sinatra` includes `Jellyfish::IndifferentParams`,
+  `Jellyfish::MultiAction`, and `Jellyfish::UnescapePath`.
 
 ## Jellyfish 0.6.0 -- 2012-11-02
 

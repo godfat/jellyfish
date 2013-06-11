@@ -13,7 +13,7 @@ by Lin Jen-Shin ([godfat](http://godfat.org))
 ## DESCRIPTION:
 
 Pico web framework for building API-centric web applications.
-For Rack applications or Rack middlewares. Under 200 lines of code.
+For Rack applications or Rack middlewares. Around 200 lines of code.
 
 ## DESIGN:
 
@@ -23,18 +23,21 @@ For Rack applications or Rack middlewares. Under 200 lines of code.
 * Embrace simplicity over convenience
 * Don't make things complicated only for _some_ convenience, but
   _great_ convenience, or simply stay simple for simplicity.
+* More features are added as extensions
 
 ## FEATURES:
 
 * Minimal
 * Simple
-* No templates
+* Modular
+* No templates (You could use [tilt](https://github.com/rtomayko/tilt))
 * No ORM
 * No `dup` in `call`
 * Regular expression routes, e.g. `get %r{^/(?<id>\d+)$}`
 * String routes, e.g. `get '/'`
 * Custom routes, e.g. `get Matcher.new`
-* Build for either Rack applications or Rack middlewares
+* Build for either Rack applications or Rack middleware
+* Include extensions for more features (There's a Sinatra extension)
 
 ## WHY?
 
@@ -261,13 +264,19 @@ GET /status
  ["30\u{2103}\n"]]
 -->
 
-### Sinatra flavored controller
+### Extension: IndifferentParams (with force_encoding)
 
-Currently support:
+### Extension: MultiActions (Filters)
 
-* Multi-actions (Filters)
-* Indifferent params
-* Force params encoding to Encoding.default_external
+### Extension: UnescapePath
+
+### Extension: Sinatra flavoured controller
+
+It's an extension collection contains:
+
+* IndifferentParams
+* MultiActions
+* UnescapePath
 
 ``` ruby
 require 'jellyfish'
@@ -277,7 +286,7 @@ class Tank
     include Jellyfish::Sinatra
   end
   def controller; MyController; end
-  get %r{.*} do # wildcard before filter
+  get do # wildcard before filter
     @state = 'jumps'
   end
   get %r{^/(?<id>\d+)$} do
@@ -296,7 +305,7 @@ GET /123
  ["Jelly #123 jumps.\n"]]
 -->
 
-### Using NewRelic?
+### Extension: NewRelic
 
 ``` ruby
 require 'jellyfish'
