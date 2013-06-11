@@ -113,4 +113,107 @@ describe 'Sinatra filter_test.rb' do
     par      .routes['get'].size.should.eq 1
     app.class.routes['get'].size.should.eq 2
   end
+
+  should 'take an optional route pattern' do
+    ran_filter = false
+    app = new_app{
+      get(%r{^/b}){ ran_filter = true }
+      get('/foo') {}
+      get('/bar') {}
+    }
+    get('/foo', app)
+    ran_filter.should.eq false
+    get('/bar', app)
+    ran_filter.should.eq true
+  end
+
+  should 'generate block arguments from route pattern' do
+    subpath = nil
+    app = new_app{
+      get(%r{^/foo/(\w+)}){ |m| subpath = m[1] }
+    }
+    get('/foo/bar', app)
+    subpath.should.eq 'bar'
+  end
+
+  should 'execute before and after filters in correct order' do
+    invoked = 0
+    app = new_app{
+      get     { invoked  = 2 }
+      get('/'){ invoked += 2; body 'hello' }
+      get     { invoked *= 2 }
+    }
+
+    status, _, body = get('/', app)
+    status .should.eq 200
+    body   .should.eq ['hello']
+    invoked.should.eq 8
+  end
+
+  should 'execute filters in the order defined' do
+    count = 0
+    app = new_app{
+      get('/'){ body 'Hello World' }
+      get{
+        count.should.eq 0
+        count = 1
+      }
+      get{
+        count.should.eq 1
+        count = 2
+      }
+    }
+
+    status, _, body = get('/', app)
+    status.should.eq 200
+    count .should.eq 2
+    body  .should.eq ['Hello World']
+  end
+
+  should 'allow redirects' do
+    app = new_app{
+      get('/foo'){ 'ORLY' }
+      get        { found '/bar' }
+    }
+
+    status, headers, body = get('/foo', app)
+    status             .should.eq 302
+    headers['Location'].should.eq '/bar'
+    body.join          .should =~ %r{<h1>Jellyfish found: /bar</h1>}
+  end
+
+  should 'not modify the response with its return value' do
+    app = new_app{
+      get('/foo'){ body 'cool' }
+      get        { 'Hello World!' }
+    }
+
+    status, _, body = get('/foo', app)
+    status.should.eq 200
+    body  .should.eq ['cool']
+  end
+
+  should 'modify the response with halt' do
+    app = new_app{
+      get('/foo'){ 'should not be returned' }
+      get{ throw :halt, [302, {}, ['Hi']] }
+    }
+
+    status, _, body = get('/foo', app)
+    status.should.eq 302
+    body  .should.eq ['Hi']
+  end
+
+  should 'take an optional route pattern' do
+    ran_filter = false
+    app = new_app{
+      get('/foo') {}
+      get('/bar') {}
+      get(%r{^/b}){ ran_filter = true }
+    }
+    get('/foo', app)
+    ran_filter.should.eq false
+    get('/bar', app)
+    ran_filter.should.eq true
+  end
 end
