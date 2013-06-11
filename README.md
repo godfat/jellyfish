@@ -441,6 +441,42 @@ GET /
  ["Jelly Kelly\n"]]
 -->
 
+### Modify response as a middleware
+
+``` ruby
+require 'jellyfish'
+class Heater
+  include Jellyfish
+  get '/status' do
+    status, headers, body = jellyfish.app.call(env)
+    self.status  status
+    self.headers headers
+    self.body    body
+    headers_merge('X-Temperature' => "30\u{2103}")
+  end
+end
+
+class Tank
+  include Jellyfish
+  get '/status' do
+    "See header X-Temperature\n"
+  end
+end
+
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+use Heater
+run Tank.new
+```
+
+<!---
+GET /status
+[200,
+ {'Content-Length' => '25', 'Content-Type' => 'text/plain',
+  'X-Temperature'  => "30\u{2103}"},
+ ["See header X-Temperature\n"]]
+-->
+
 ### Simple before action
 
 ``` ruby
