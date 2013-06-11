@@ -98,7 +98,7 @@ describe 'Sinatra filter_test.rb' do
       get('/foo'){ @foo.reverse }
     }
 
-    status, _, body = get('/foo', app, 'foo=cool')
+    status, _, body = get('/foo', app, 'QUERY_STRING' => 'foo=cool')
     status.should.eq 200
     body  .should.eq ['looc']
   end
