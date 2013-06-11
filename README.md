@@ -264,32 +264,6 @@ GET /status
  ["30\u{2103}\n"]]
 -->
 
-### Extension: IndifferentParams (with force_encoding)
-
-``` ruby
-require 'jellyfish'
-class Tank
-  include Jellyfish
-  class MyController < Jellyfish::Controller
-    include Jellyfish::IndifferentParams
-  end
-  def controller; MyController; end
-  get %r{^/(?<id>\d+)$} do
-    "Jelly ##{params[:id]}\n"
-  end
-end
-use Rack::ContentLength
-use Rack::ContentType, 'text/plain'
-run Tank.new
-```
-
-<!---
-GET /123
-[200,
- {'Content-Length' => '11', 'Content-Type' => 'text/plain'},
- ["Jelly #123\n"]]
--->
-
 ### Extension: MultiActions (Filters)
 
 ``` ruby
@@ -319,7 +293,33 @@ GET /123
  ["Jelly jumps.\n"]]
 -->
 
-### Extension: NormalizedPath
+### Extension: NormalizedParams (with force_encoding)
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  class MyController < Jellyfish::Controller
+    include Jellyfish::NormalizedParams
+  end
+  def controller; MyController; end
+  get %r{^/(?<id>\d+)$} do
+    "Jelly ##{params[:id]}\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /123
+[200,
+ {'Content-Length' => '11', 'Content-Type' => 'text/plain'},
+ ["Jelly #123\n"]]
+-->
+
+### Extension: NormalizedPath (with unescaping)
 
 ``` ruby
 require 'jellyfish'
@@ -349,8 +349,8 @@ GET /%E5%9B%A7
 
 It's an extension collection contains:
 
-* IndifferentParams
 * MultiActions
+* NormalizedParams
 * NormalizedPath
 
 ``` ruby

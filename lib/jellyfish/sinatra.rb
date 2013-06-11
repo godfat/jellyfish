@@ -1,12 +1,13 @@
 
 require 'jellyfish'
-require 'jellyfish/indifferent_params'
 require 'jellyfish/multi_actions'
+require 'jellyfish/normalized_params'
+require 'jellyfish/normalized_path'
 
 module Jellyfish
   module Sinatra
-    include IndifferentParams
     include MultiActions
+    include NormalizedParams
     include NormalizedPath
   end
 end

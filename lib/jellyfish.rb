@@ -4,9 +4,9 @@ module Jellyfish
   autoload :Sinatra , 'jellyfish/sinatra'
   autoload :NewRelic, 'jellyfish/newrelic'
 
-  autoload :IndifferentParams, 'jellyfish/indifferent_params'
-  autoload :MultiActions     , 'jellyfish/multi_actions'
-  autoload :NormalizedPath   , 'jellyfish/normalized_path'
+  autoload :MultiActions    , 'jellyfish/multi_actions'
+  autoload :NormalizedParams, 'jellyfish/normalized_params'
+  autoload :NormalizedPath  , 'jellyfish/normalized_path'
 
   autoload :ChunkedBody, 'jellyfish/chunked_body'
 

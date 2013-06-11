@@ -15,7 +15,7 @@
 * Added `Jellyfish::MultiAction` which gives you some kind of ability to do
   before or after filters. See README.md for usage.
 
-* Added `Jellyfish::IndifferentParams` which gives you some kind of Sinatra
+* Added `Jellyfish::NormalizedParams` which gives you some kind of Sinatra
   flavoured params.
 
 * Added `Jellyfish::NormalizedPath` which would unescape incoming PATH_INFO
@@ -23,8 +23,8 @@
 
 ### Enhancements for Jellyfish::Sinatra
 
-* Now `Jellyfish::Sinatra` includes `Jellyfish::IndifferentParams`,
-  `Jellyfish::MultiAction`, and `Jellyfish::NormalizedPath`.
+* Now `Jellyfish::Sinatra` includes `Jellyfish::MultiAction`,
+  `Jellyfish::NormalizedParams`, and `Jellyfish::NormalizedPath`.
 
 ## Jellyfish 0.6.0 -- 2012-11-02
 

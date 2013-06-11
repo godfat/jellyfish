@@ -4,7 +4,7 @@ require 'rack/request'
 
 
 module Jellyfish
-  module IndifferentParams
+  module NormalizedParams
     attr_reader :params
     def block_call argument, block
       initialize_params(argument)
