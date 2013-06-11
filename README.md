@@ -448,7 +448,7 @@ require 'jellyfish'
 class Heater
   include Jellyfish
   get '/status' do
-    request.env['temperature'] = 30
+    env['temperature'] = 30
     forward
   end
 end
@@ -456,7 +456,7 @@ end
 class Tank
   include Jellyfish
   get '/status' do
-    "#{request.env['temperature']}\u{2103}\n"
+    "#{env['temperature']}\u{2103}\n"
   end
 end
 
