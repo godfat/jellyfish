@@ -477,7 +477,45 @@ GET /status
  ["See header X-Temperature\n"]]
 -->
 
-### Simple before action
+### Default headers as a middleware
+
+``` ruby
+require 'jellyfish'
+class Heater
+  include Jellyfish
+  handle_exceptions false
+  get '/status' do
+    status, headers, body = jellyfish.app.call(env)
+    self.status  status
+    self.headers({'X-Temperature' => "30\u{2103}"}.merge(headers))
+    self.body    body
+  end
+end
+
+class Tank
+  include Jellyfish
+  handle_exceptions false
+  get '/status' do
+    headers_merge('X-Temperature' => "35\u{2103}")
+    "\n"
+  end
+end
+
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+use Heater
+run Tank.new
+```
+
+<!---
+GET /status
+[200,
+ {'Content-Length' => '1', 'Content-Type' => 'text/plain',
+  'X-Temperature'  => "35\u{2103}"},
+ ["\n"]]
+-->
+
+### Simple before action as a middleware
 
 ``` ruby
 require 'jellyfish'
