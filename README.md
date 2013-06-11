@@ -266,9 +266,84 @@ GET /status
 
 ### Extension: IndifferentParams (with force_encoding)
 
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  class MyController < Jellyfish::Controller
+    include Jellyfish::IndifferentParams
+  end
+  def controller; MyController; end
+  get %r{^/(?<id>\d+)$} do
+    "Jelly ##{params[:id]}\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /123
+[200,
+ {'Content-Length' => '11', 'Content-Type' => 'text/plain'},
+ ["Jelly #123\n"]]
+-->
+
 ### Extension: MultiActions (Filters)
 
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  class MyController < Jellyfish::Controller
+    include Jellyfish::MultiActions
+  end
+  def controller; MyController; end
+  get do # wildcard before filter
+    @state = 'jumps'
+  end
+  get do
+    "Jelly #{@state}.\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /123
+[200,
+ {'Content-Length' => '13', 'Content-Type' => 'text/plain'},
+ ["Jelly jumps.\n"]]
+-->
+
 ### Extension: UnescapePath
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  class MyController < Jellyfish::Controller
+    include Jellyfish::UnescapePath
+  end
+  def controller; MyController; end
+  get '/囧' do
+    "#{env['PATH_INFO']}=#{path_info}\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /%E5%9B%A7
+[200,
+ {'Content-Length' => '16', 'Content-Type' => 'text/plain'},
+ ["/%E5%9B%A7=/囧\n"]]
+-->
 
 ### Extension: Sinatra flavoured controller
 
