@@ -329,7 +329,7 @@ class Tank
     include Jellyfish::NormalizedPath
   end
   def controller; MyController; end
-  get '/囧' do
+  get "/\u{56e7}" do
     "#{env['PATH_INFO']}=#{path_info}\n"
   end
 end
@@ -342,7 +342,7 @@ run Tank.new
 GET /%E5%9B%A7
 [200,
  {'Content-Length' => '16', 'Content-Type' => 'text/plain'},
- ["/%E5%9B%A7=/囧\n"]]
+ ["/%E5%9B%A7=/\u{56e7}\n"]]
 -->
 
 ### Extension: Sinatra flavoured controller
