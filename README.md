@@ -257,7 +257,43 @@ GET /report?name=godfat
  ["Your name is godfat\n"]]
 -->
 
-### Custom controller
+### Include custom helper in built-in controller
+
+Basically it's the same as defining a custom controller and then
+include the helper. This is merely a short hand. See next section
+for defining a custom controller.
+
+``` ruby
+require 'jellyfish'
+class Heater
+  include Jellyfish
+  module Helper
+    def temperature
+      "30\u{2103}\n"
+    end
+  end
+  controller_include Helper
+
+  get '/status' do
+    temperature
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Heater.new
+```
+
+<!---
+GET /status
+[200,
+ {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
+ ["30\u{2103}\n"]]
+-->
+
+### Define custom controller manually
+
+This is effectively the same as defining a helper module as above and
+include it, but more flexible and extensible.
 
 ``` ruby
 require 'jellyfish'
@@ -267,7 +303,7 @@ class Heater
     temperature
   end
 
-  def controller; Controller; end
+  def self.controller; Controller; end
   class Controller < Jellyfish::Controller
     def temperature
       "30\u{2103}\n"
@@ -292,10 +328,8 @@ GET /status
 require 'jellyfish'
 class Tank
   include Jellyfish
-  class MyController < Jellyfish::Controller
-    include Jellyfish::MultiActions
-  end
-  def controller; MyController; end
+  controller_include Jellyfish::MultiActions
+
   get do # wildcard before filter
     @state = 'jumps'
   end
@@ -321,10 +355,8 @@ GET /123
 require 'jellyfish'
 class Tank
   include Jellyfish
-  class MyController < Jellyfish::Controller
-    include Jellyfish::NormalizedParams
-  end
-  def controller; MyController; end
+  controller_include Jellyfish::NormalizedParams
+
   get %r{^/(?<id>\d+)$} do
     "Jelly ##{params[:id]}\n"
   end
@@ -347,10 +379,8 @@ GET /123
 require 'jellyfish'
 class Tank
   include Jellyfish
-  class MyController < Jellyfish::Controller
-    include Jellyfish::NormalizedPath
-  end
-  def controller; MyController; end
+  controller_include Jellyfish::NormalizedPath
+
   get "/\u{56e7}" do
     "#{env['PATH_INFO']}=#{path_info}\n"
   end
@@ -379,10 +409,8 @@ It's an extension collection contains:
 require 'jellyfish'
 class Tank
   include Jellyfish
-  class MyController < Jellyfish::Controller
-    include Jellyfish::Sinatra
-  end
-  def controller; MyController; end
+  controller_include Jellyfish::Sinatra
+
   get do # wildcard before filter
     @state = 'jumps'
   end
@@ -408,10 +436,8 @@ GET /123
 require 'jellyfish'
 class Tank
   include Jellyfish
-  class MyController < Jellyfish::Controller
-    include Jellyfish::NewRelic
-  end
-  def controller; MyController; end
+  controller_include Jellyfish::NewRelic
+
   get '/' do
     "OK\n"
   end
@@ -573,10 +599,8 @@ GET /status
 require 'jellyfish'
 class Tank
   include Jellyfish
-  class MyController < Jellyfish::Controller
-    include Jellyfish::MultiActions
-  end
-  def controller; MyController; end
+  controller_include Jellyfish::MultiActions
+
   get %r{.*} do # wildcard before filter
     body "Done!\n"
     throw :halt

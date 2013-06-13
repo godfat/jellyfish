@@ -35,27 +35,24 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   class Controller
-    module Call
-      def call env
-        @env = env
-        block_call(*dispatch)
-      end
-
-      def block_call argument, block
-        val = instance_exec(argument, &block)
-        [status || 200, headers || {}, body || with_each(val || '')]
-      rescue LocalJumpError
-        jellyfish.log("Use `next' if you're trying to `return' or" \
-                      " `break' from the block.", env['rack.errors'])
-        raise
-      end
-    end
-    include Call
-
     attr_reader :routes, :jellyfish, :env
     def initialize routes, jellyfish
       @routes, @jellyfish = routes, jellyfish
       @status, @headers, @body = nil
+    end
+
+    def call env
+      @env = env
+      block_call(*dispatch)
+    end
+
+    def block_call argument, block
+      val = instance_exec(argument, &block)
+      [status || 200, headers || {}, body || with_each(val || '')]
+    rescue LocalJumpError
+      jellyfish.log("Use `next' if you're trying to `return' or" \
+                    " `break' from the block.", env['rack.errors'])
+      raise
     end
 
     def request  ; @request ||= Rack::Request.new(env); end
@@ -121,9 +118,9 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   module DSL
-    def handlers; @handlers ||= {}; end
     def routes  ; @routes   ||= {}; end
-
+    def handlers; @handlers ||= {}; end
+    def handle exception, &block; handlers[exception] = block; end
     def handle_exceptions value=GetValue
       if value == GetValue
         @handle_exceptions
@@ -132,7 +129,15 @@ module Jellyfish
       end
     end
 
-    def handle exception, &block; handlers[exception] = block; end
+    def controller_include *value
+      (@controller_include ||= []).push(*value)
+    end
+
+    def controller
+      @controller ||= controller_include.inject(
+        const_set(:Controller, Class.new(Controller))){ |ctrl, mod|
+          ctrl.__send__(:include, mod)}
+    end
 
     %w[options get head post put delete patch].each do |method|
       module_eval <<-RUBY
@@ -155,10 +160,9 @@ module Jellyfish
   # -----------------------------------------------------------------
 
   def initialize app=nil; @app = app; end
-  def controller        ; Controller; end
 
   def call env
-    ctrl = controller.new(self.class.routes, self)
+    ctrl = self.class.controller.new(self.class.routes, self)
     ctrl.call(env)
   rescue NotFound => e # forward
     if app

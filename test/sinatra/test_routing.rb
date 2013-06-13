@@ -48,9 +48,7 @@ describe 'Sinatra routing_test.rb' do
   should 'allows using unicode' do
     app = Class.new{
       include Jellyfish
-      def controller
-        Class.new(Jellyfish::Controller){ include Jellyfish::NormalizedPath }
-      end
+      controller_include Jellyfish::NormalizedPath
       get("/f\u{f6}\u{f6}"){}
     }.new
     status, _, _ = get('/f%C3%B6%C3%B6', app)
@@ -60,9 +58,7 @@ describe 'Sinatra routing_test.rb' do
   should 'handle encoded slashes correctly' do
     app = Class.new{
       include Jellyfish
-      def controller
-        Class.new(Jellyfish::Controller){ include Jellyfish::NormalizedPath }
-      end
+      controller_include Jellyfish::NormalizedPath
       get(%r{^/(.+)}){ |m| m[1] }
     }.new
     status, _, body = get('/foo%2Fbar', app)
@@ -98,12 +94,8 @@ describe 'Sinatra routing_test.rb' do
   should 'match empty PATH_INFO to "/" if no route is defined for ""' do
     app = Class.new{
       include Jellyfish
-      def controller
-        Class.new(Jellyfish::Controller){ include Jellyfish::NormalizedPath }
-      end
-      get '/' do
-        'worked'
-      end
+      controller_include Jellyfish::NormalizedPath
+      get('/'){ 'worked' }
     }.new
 
     status, headers, body = get('', app)
@@ -114,9 +106,8 @@ describe 'Sinatra routing_test.rb' do
   should 'exposes params with indifferent hash' do
     app = Class.new{
       include Jellyfish
-      def controller
-        Class.new(Jellyfish::Controller){include Jellyfish::NormalizedParams}
-      end
+      controller_include Jellyfish::NormalizedParams
+
       get %r{^/(?<foo>\w+)} do
         params['foo'].should.eq 'bar'
         params[:foo ].should.eq 'bar'
@@ -131,9 +122,8 @@ describe 'Sinatra routing_test.rb' do
   should 'merges named params and query string params in params' do
     app = Class.new{
       include Jellyfish
-      def controller
-        Class.new(Jellyfish::Controller){include Jellyfish::NormalizedParams}
-      end
+      controller_include Jellyfish::NormalizedParams
+
       get %r{^/(?<foo>\w+)} do
         params['foo'].should.eq 'bar'
         params['baz'].should.eq 'biz'
@@ -180,9 +170,8 @@ describe 'Sinatra routing_test.rb' do
   should 'not concatinate params with the same name' do
     app = Class.new{
       include Jellyfish
-      def controller
-        Class.new(Jellyfish::Controller){include Jellyfish::NormalizedParams}
-      end
+      controller_include Jellyfish::NormalizedParams
+
       get(%r{^/(?<foo>\w+)}){ |m| params[:foo] }
     }.new
 

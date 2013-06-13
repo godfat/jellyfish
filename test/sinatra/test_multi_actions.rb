@@ -8,9 +8,7 @@ describe 'Sinatra filter_test.rb' do
   def new_app base=Object, &block
     Class.new(base){
       include Jellyfish
-      def controller
-        Class.new(Jellyfish::Controller){ include Jellyfish::MultiActions }
-      end
+      controller_include(Jellyfish::MultiActions)
       instance_eval(&block)
     }.new
   end
