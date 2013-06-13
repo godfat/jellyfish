@@ -505,7 +505,6 @@ GET /status
 require 'jellyfish'
 class Heater
   include Jellyfish
-  handle_exceptions false
   get '/status' do
     status, headers, body = jellyfish.app.call(env)
     self.status  status
@@ -516,7 +515,6 @@ end
 
 class Tank
   include Jellyfish
-  handle_exceptions false
   get '/status' do
     headers_merge('X-Temperature' => "35\u{2103}")
     "\n"
