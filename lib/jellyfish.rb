@@ -135,12 +135,16 @@ module Jellyfish
 
     def controller value=GetValue
       if value == GetValue
-        @controller ||= controller_include.inject(
-          const_set(:Controller, Class.new(Controller))){ |ctrl, mod|
-            ctrl.__send__(:include, mod) }
+        @controller ||= controller_inject(
+          const_set(:Controller, Class.new(Controller)))
       else
-        @controller = value
+        @controller   = controller_inject(value)
       end
+    end
+
+    def controller_inject value
+      controller_include.
+        inject(value){ |ctrl, mod| ctrl.__send__(:include, mod) }
     end
 
     %w[options get head post put delete patch].each do |method|
