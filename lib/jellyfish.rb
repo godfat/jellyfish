@@ -137,7 +137,7 @@ module Jellyfish
       if value == GetValue
         @controller ||= controller_include.inject(
           const_set(:Controller, Class.new(Controller))){ |ctrl, mod|
-            ctrl.__send__(:include, mod)}
+            ctrl.__send__(:include, mod) }
       else
         @controller = value
       end
