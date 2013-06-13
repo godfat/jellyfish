@@ -22,11 +22,14 @@ describe 'from README.md' do
     should "pass from README.md #%02d #{title}" % index do
       method_path, expect = test.strip.split("\n", 2)
       method, path        = method_path.split(' ')
+      uri                 = URI.parse(path)
+      pinfo, query        = uri.path, uri.query
 
       status, headers, body = Rack::Builder.new do
         eval(code)
-      end.call 'REQUEST_METHOD' => method, 'PATH_INFO' => path,
-               'rack.input'     => StringIO.new#, 'rack.errors' => $stderr
+      end.call 'REQUEST_METHOD' => method, 'PATH_INFO' => pinfo,
+               'QUERY_STRING'   => query, 'rack.input' => StringIO.new
+               #, 'rack.errors' => $stderr
 
       body.extend(Enumerable)
       [status, headers, body.to_a].should.eq eval(expect, binding, __FILE__)

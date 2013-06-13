@@ -235,6 +235,28 @@ body = case RUBY_ENGINE
  [body]]
 -->
 
+### Access Rack::Request and params
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  get '/report' do
+    "Your name is #{request.params['name']}\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /report?name=godfat
+[200,
+ {'Content-Length' => '20', 'Content-Type' => 'text/plain'},
+ ["Your name is godfat\n"]]
+-->
+
 ### Custom controller
 
 ``` ruby
