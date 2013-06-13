@@ -303,12 +303,12 @@ class Heater
     temperature
   end
 
-  def self.controller; Controller; end
   class Controller < Jellyfish::Controller
     def temperature
       "30\u{2103}\n"
     end
   end
+  self.controller = Controller
 end
 use Rack::ContentLength
 use Rack::ContentType, 'text/plain'

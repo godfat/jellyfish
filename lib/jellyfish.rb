@@ -133,6 +133,7 @@ module Jellyfish
       (@controller_include ||= []).push(*value)
     end
 
+    def controller= ctrl; @controller = ctrl; end
     def controller
       @controller ||= controller_include.inject(
         const_set(:Controller, Class.new(Controller))){ |ctrl, mod|
