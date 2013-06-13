@@ -1,12 +1,51 @@
 # CHANGES
 
-## Jellyfish 0.7.0
+## Jellyfish 0.8.0
+
+### Incompatible changes
+
+* Now there's no longer Jellyfish#controller but Jellyfish.controller,
+  as there's no much point for making the controller per-instance.
+  You do this to override the controller method instead:
+
+``` ruby
+class MyApp
+  include Jellyfish
+  def self.controller
+    MyController
+  end
+  class MyController < Jellyfish::Controller
+    def hi
+      'hi'
+    end
+  end
+  get{ hi }
+end
+```
+
+* You can also change the controller by assigning it. The same as above:
+
+``` ruby
+class MyApp
+  include Jellyfish
+  class MyController < Jellyfish::Controller
+    def hi
+      'hi'
+    end
+  end
+  controller MyController
+  get{ hi }
+end
+```
 
 ### Enhancements for Jellyfish core
 
+* Introduced Jellyfish.controller_include which makes it easy to pick
+  modules to be included in built-in controller.
 * Now default route is `//`. Using `get{ 'Hello, World!' }` is effectively
   the same as `get(//){ 'Hello, World!' }`
 * Now inheritance works.
+* Now it raises TypeError if passing a route doesn't respond to :match.
 
 ### Enhancements for Jellyfish extension
 
