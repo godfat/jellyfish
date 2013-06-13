@@ -267,16 +267,16 @@ for defining a custom controller.
 require 'jellyfish'
 class Heater
   include Jellyfish
+  get '/status' do
+    temperature
+  end
+
   module Helper
     def temperature
       "30\u{2103}\n"
     end
   end
   controller_include Helper
-
-  get '/status' do
-    temperature
-  end
 end
 use Rack::ContentLength
 use Rack::ContentType, 'text/plain'
