@@ -124,8 +124,8 @@ module Jellyfish
     def handlers; @handlers ||= {}; end
     def routes  ; @routes   ||= {}; end
 
-    def handle_exceptions value=nil
-      if value.nil?
+    def handle_exceptions value=GetValue
+      if value == GetValue
         @handle_exceptions
       else
         @handle_exceptions = value
