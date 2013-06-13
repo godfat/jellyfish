@@ -19,6 +19,7 @@ describe 'from README.md' do
       warn "Skip NewRelic Test" unless Bacon.kind_of?(Bacon::TestUnitOutput)
       next
     end
+
     should "pass from README.md #%02d #{title}" % index do
       method_path, expect = test.strip.split("\n", 2)
       method, path        = method_path.split(' ')

@@ -8,7 +8,6 @@ describe 'Sinatra streaming_test.rb' do
   should 'return the concatinated body' do
     app = Class.new{
       include Jellyfish
-      handle_exceptions false
       get '/' do
         Jellyfish::ChunkedBody.new{ |out|
           out['Hello']
