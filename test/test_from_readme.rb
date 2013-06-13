@@ -1,6 +1,6 @@
 
 require 'jellyfish/test'
-require 'stringio'
+require 'uri'
 
 describe 'from README.md' do
   after do
@@ -25,11 +25,11 @@ describe 'from README.md' do
       uri                 = URI.parse(path)
       pinfo, query        = uri.path, uri.query
 
-      status, headers, body = Rack::Builder.new do
-        eval(code)
-      end.call 'REQUEST_METHOD' => method, 'PATH_INFO' => pinfo,
-               'QUERY_STRING'   => query, 'rack.input' => StringIO.new
-               #, 'rack.errors' => $stderr
+      status, headers, body = File.open(File::NULL) do |input|
+        Rack::Builder.new{ eval(code) }.call(
+          'REQUEST_METHOD' => method, 'PATH_INFO'  => pinfo,
+          'QUERY_STRING'   => query , 'rack.input' => input)
+      end
 
       body.extend(Enumerable)
       [status, headers, body.to_a].should.eq eval(expect, binding, __FILE__)
