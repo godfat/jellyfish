@@ -458,6 +458,41 @@ GET /
  ["OK\n"]]
 -->
 
+### Extension: Using multiple extensions with custom controller
+
+This is effectively the same as using Jellyfish::Sinatra extension.
+Note that the controller should be assigned lastly in order to include
+modules remembered in controller_include.
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  class MyController < Jellyfish::Controller
+    include Jellyfish::MultiActions
+  end
+  controller_include NormalizedParams, NormalizedPath
+  controller MyController
+
+  get do # wildcard before filter
+    @state = 'jumps'
+  end
+  get %r{^/(?<id>\d+)$} do
+    "Jelly ##{params[:id]} #{@state}.\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /123
+[200,
+ {'Content-Length' => '18', 'Content-Type' => 'text/plain'},
+ ["Jelly #123 jumps.\n"]]
+-->
+
 ### Jellyfish as a middleware
 
 ``` ruby
