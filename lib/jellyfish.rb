@@ -133,11 +133,14 @@ module Jellyfish
       (@controller_include ||= []).push(*value)
     end
 
-    def controller= ctrl; @controller = ctrl; end
-    def controller
-      @controller ||= controller_include.inject(
-        const_set(:Controller, Class.new(Controller))){ |ctrl, mod|
-          ctrl.__send__(:include, mod)}
+    def controller value=GetValue
+      if value == GetValue
+        @controller ||= controller_include.inject(
+          const_set(:Controller, Class.new(Controller))){ |ctrl, mod|
+            ctrl.__send__(:include, mod)}
+      else
+        @controller = value
+      end
     end
 
     %w[options get head post put delete patch].each do |method|

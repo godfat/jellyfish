@@ -308,7 +308,7 @@ class Heater
       "30\u{2103}\n"
     end
   end
-  self.controller = Controller
+  controller Controller
 end
 use Rack::ContentLength
 use Rack::ContentType, 'text/plain'
