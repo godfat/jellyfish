@@ -178,4 +178,158 @@ describe 'Sinatra routing_test.rb' do
     _, _, body = get('/a', app, 'QUERY_STRING' => 'foo=b')
     body.should.eq ['a']
   end
+
+  should 'support basic nested params' do
+    app = Class.new{
+      include Jellyfish
+      get('/hi'){ request.params['person']['name'] }
+    }.new
+
+    status, _, body = get('/hi', app,
+                          'QUERY_STRING' => 'person[name]=John+Doe')
+    status.should.eq 200
+    body.should.eq ['John Doe']
+  end
+
+  should "expose nested params with indifferent hash" do
+    app = Class.new{
+      include Jellyfish
+      controller_include Jellyfish::NormalizedParams
+
+      get '/testme' do
+        params['bar']['foo'].should.eq 'baz'
+        params['bar'][:foo ].should.eq 'baz'
+        'well, alright'
+      end
+    }.new
+
+    _, _, body = get('/testme', app, 'QUERY_STRING' => 'bar[foo]=baz')
+    body.should.eq ['well, alright']
+  end
+
+  should 'preserve non-nested params' do
+    app = Class.new{
+      include Jellyfish
+      get '/foo' do
+        request.params['article_id']     .should.eq '2'
+        request.params['comment']['body'].should.eq 'awesome'
+        request.params['comment[body]']  .should.eq nil
+        'looks good'
+      end
+    }.new
+
+    status, _, body = get('/foo', app,
+      'QUERY_STRING' => 'article_id=2&comment[body]=awesome')
+    status.should.eq 200
+    body  .should.eq ['looks good']
+  end
+
+  should 'match paths that include spaces encoded with %20' do
+    app = Class.new{
+      include Jellyfish
+      controller_include Jellyfish::NormalizedPath
+      get('/path with spaces'){ 'looks good' }
+    }.new
+
+    status, _, body = get('/path%20with%20spaces', app)
+    status.should.eq 200
+    body  .should.eq ['looks good']
+  end
+
+  should 'match paths that include spaces encoded with +' do
+    app = Class.new{
+      include Jellyfish
+      controller_include Jellyfish::NormalizedPath
+      get('/path with spaces'){ 'looks good' }
+    }.new
+
+    status, _, body = get('/path+with+spaces', app)
+    status.should.eq 200
+    body  .should.eq ['looks good']
+  end
+
+  should 'make regular expression captures available' do
+    app = Class.new{
+      include Jellyfish
+      get(/^\/fo(.*)\/ba(.*)/) do |m|
+        m[1..-1].should.eq ['orooomma', 'f']
+        'right on'
+      end
+    }.new
+
+    status, _, body = get('/foorooomma/baf', app)
+    status.should.eq 200
+    body  .should.eq ['right on']
+  end
+
+  it 'supports regular expression look-alike routes' do
+    app = Class.new{
+      include Jellyfish
+      controller_include Jellyfish::NormalizedParams
+      matcher = Object.new
+      def matcher.match path
+        %r{/(?<one>\w+)/(?<two>\w+)/(?<three>\w+)/(?<four>\w+)}.match(path)
+      end
+
+      get(matcher) do |m|
+        [m, params].each do |q|
+          q[:one]  .should.eq 'this'
+          q[:two]  .should.eq 'is'
+          q[:three].should.eq 'a'
+          q[:four] .should.eq 'test'
+        end
+        'right on'
+      end
+    }.new
+
+    status, _, body = get('/this/is/a/test/', app)
+    status.should.eq 200
+    body  .should.eq ['right on']
+  end
+
+  should 'raise a TypeError when pattern is not a String or Regexp' do
+    lambda{ Class.new{ include Jellyfish; get(42){} } }.
+      should.raise(TypeError)
+  end
+
+  should 'return response immediately on next or halt' do
+    app = Class.new{
+      include Jellyfish
+      controller_include Jellyfish::MultiActions
+
+      get '/next' do
+        body 'Hello World'
+        next
+        'Boo-hoo World'
+      end
+
+      get '/halt' do
+        body 'Hello World'
+        throw :halt
+        'Boo-hoo World'
+      end
+    }.new
+
+    %w[/next /halt].each do |path|
+      status, _, body = get(path, app)
+      status.should.eq 200
+      body  .should.eq ['Hello World']
+    end
+  end
+
+  should 'halt with a response tuple' do
+    app = Class.new{
+      include Jellyfish
+      controller_include Jellyfish::MultiActions
+
+      get '/' do
+        throw :halt, [295, {'Content-Type' => 'text/plain'}, ['Hello World']]
+      end
+    }.new
+
+    status, headers, body = get('/', app)
+    status                 .should.eq 295
+    headers['Content-Type'].should.eq 'text/plain'
+    body                   .should.eq ['Hello World']
+  end
 end
