@@ -214,7 +214,9 @@ module Jellyfish
 
   def best_handler e
     handlers = self.class.handlers
-    handlers[e.class] || begin # or find the nearest match and cache it
+    if handlers.key?(e.class)
+      handlers[e.class]
+    else # or find the nearest match and cache it
       ancestors         = e.class.ancestors
       handlers[e.class] = handlers.
         inject([nil, Float::INFINITY]){ |(handler, val), (klass, block)|
