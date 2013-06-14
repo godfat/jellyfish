@@ -200,10 +200,7 @@ module Jellyfish
 
   private
   def handle ctrl, e, stderr=nil
-    handler = self.class.handlers.find{ |klass, block|
-      break block if e.kind_of?(klass)
-    }
-    if handler
+    if handler = best_handler(e)
       ctrl.block_call(e, handler)
     elsif !self.class.handle_exceptions
       raise e
@@ -212,6 +209,17 @@ module Jellyfish
     else # fallback and see if there's any InternalError handler
       log_error(e, stderr)
       handle(ctrl, InternalError.new)
+    end
+  end
+
+  def best_handler e
+    handlers = self.class.handlers
+    handlers[e.class] || begin # or find the nearest match and cache it
+      ancestors         = e.class.ancestors
+      handlers[e.class] = handlers.
+        inject([nil, Float::INFINITY]){ |(handler, val), (klass, block)|
+          idx = ancestors.index(klass) || Float::INFINITY # lower is better
+          if idx < val then [block, idx] else [handler, val] end }.first
     end
   end
 
