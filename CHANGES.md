@@ -46,6 +46,11 @@ end
   the same as `get(//){ 'Hello, World!' }`
 * Now inheritance works.
 * Now it raises TypeError if passing a route doesn't respond to :match.
+* Now Jellyfish would find the most suitable error handler to handle
+  errors, i.e. It would find the error handler which would handle the
+  nearest exception class in the ancestors chain. Previously it would
+  only find the first one which matches, ignoring the rest. It would
+  also cache the result upon a lookup.
 
 ### Enhancements for Jellyfish extension
 
