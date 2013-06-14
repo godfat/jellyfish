@@ -102,13 +102,13 @@ describe 'Sinatra filter_test.rb' do
   end
 
   should 'run filters defined in superclasses' do
-    par = new_app{ get{ @foo = 'hello from superclass' } }.class
-    app = new_app(par){ get('/foo'){ @foo } }
+    sup = new_app{ get{ @foo = 'hello from superclass' } }.class
+    app = new_app(sup){ get('/foo'){ @foo } }
 
     _, _, body = get('/foo', app)
     body.should.eq ['hello from superclass']
 
-    par      .routes['get'].size.should.eq 1
+    sup      .routes['get'].size.should.eq 1
     app.class.routes['get'].size.should.eq 2
   end
 
