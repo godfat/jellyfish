@@ -12,6 +12,7 @@ shared :jellyfish do
         File.open(File::NULL) do |input|
           app.call({'PATH_INFO'      => path              ,
                     'REQUEST_METHOD' => '#{method}'.upcase,
+                    'SCRIPT_NAME'    => ''                ,
                     'rack.input'     => input             }.merge(env))
         end
       end
