@@ -257,6 +257,32 @@ GET /report?name=godfat
  ["Your name is godfat\n"]]
 -->
 
+### Re-dispatch the request with modified env
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  get '/report' do
+    status, headers, body = jellyfish.call(env.merge('PATH_INFO' => '/info'))
+    self.status  status
+    self.headers headers
+    self.body    body
+  end
+  get('/info'){ "OK\n" }
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /report
+[200,
+ {'Content-Length' => '3', 'Content-Type' => 'text/plain'},
+ ["OK\n"]]
+-->
+
 ### Include custom helper in built-in controller
 
 Basically it's the same as defining a custom controller and then
