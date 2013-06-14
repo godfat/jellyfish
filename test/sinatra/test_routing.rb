@@ -332,4 +332,94 @@ describe 'Sinatra routing_test.rb' do
     headers['Content-Type'].should.eq 'text/plain'
     body                   .should.eq ['Hello World']
   end
+
+  should 'transition to the next matching route on next' do
+    app = Class.new{
+      include Jellyfish
+      controller_include Jellyfish::MultiActions, Jellyfish::NormalizedParams
+      get %r{^/(?<foo>\w+)} do
+        params['foo'].should.eq 'bar'
+        next
+        'Hello Foo'
+      end
+
+      get do
+        params.should.not.include?('foo')
+        'Hello World'
+      end
+    }.new
+
+    status, _, body = get('/bar', app)
+    status.should.eq 200
+    body  .should.eq ['Hello World']
+  end
+
+  should 'match routes defined in superclasses' do
+    sup = Class.new{
+      include Jellyfish
+      get('/foo'){ 'foo' }
+    }
+    app = Class.new(sup){
+      get('/bar'){ 'bar' }
+    }.new
+
+    %w[foo bar].each do |path|
+      status, _, body = get("/#{path}", app)
+      status.should.eq 200
+      body  .should.eq [path]
+    end
+  end
+
+  should 'match routes itself first then downward app' do
+    sup = Class.new{
+      include Jellyfish
+      get('/foo'){ 'foo sup' }
+      get('/bar'){ 'bar sup' }
+    }
+    app = Class.new{
+      include Jellyfish
+      get('/foo'){ 'foo sub' }
+    }.new(sup.new)
+
+    status, _, body = get('/foo', app)
+    status.should.eq 200
+    body  .should.eq ['foo sub']
+
+    status, _, body = get('/bar', app)
+    status.should.eq 200
+    body  .should.eq ['bar sup']
+  end
+
+  should 'allow using call to fire another request internally' do
+    app = Class.new{
+      include Jellyfish
+      get '/foo' do
+        status, headers, body = call(env.merge('PATH_INFO' => '/bar'))
+        self.status  status
+        self.headers headers
+        self.body    body.map(&:upcase)
+      end
+
+      get '/bar' do
+        'bar'
+      end
+    }.new
+
+    status, _, body = get('/foo', app)
+    status.should.eq 200
+    body  .should.eq ['BAR']
+  end
+
+  should 'play well with other routing middleware' do
+    middleware = Class.new{include Jellyfish}
+    inner_app  = Class.new{include Jellyfish; get('/foo'){ 'hello' } }
+    builder    = Rack::Builder.new do
+      use middleware
+      map('/test'){ run inner_app.new }
+    end
+
+    status, _, body = get('/test/foo', builder.to_app)
+    status.should.eq 200
+    body  .should.eq ['hello']
+  end
 end
