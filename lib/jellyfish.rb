@@ -158,6 +158,8 @@ module Jellyfish
     end
 
     def inherited sub
+      sub.handle_exceptions(handle_exceptions)
+      sub.controller_include(*controller_include)
       [:handlers, :routes].each{ |m|
         val = __send__(m).inject({}){ |r, (k, v)| r[k] = v.dup; r }
         sub.__send__(m).replace(val) # dup the routing arrays
