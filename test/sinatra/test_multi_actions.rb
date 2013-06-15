@@ -80,9 +80,9 @@ describe 'Sinatra filter_test.rb' do
 
   should 'modify the response with halt' do
     app = new_app{
-      get('/foo'){ throw :halt, [302, {}, ['Hi']] }
+      get('/foo'){ halt [302, {}, ['Hi']] }
       get('/foo'){ 'should not happen' }
-      get('/bar'){ status 402; body 'Ho'; throw :halt }
+      get('/bar'){ status 402; body 'Ho'; halt }
       get('/bar'){ 'should not happen' }
     }
 
@@ -194,7 +194,7 @@ describe 'Sinatra filter_test.rb' do
   should 'modify the response with halt' do
     app = new_app{
       get('/foo'){ 'should not be returned' }
-      get{ throw :halt, [302, {}, ['Hi']] }
+      get{ halt [302, {}, ['Hi']] }
     }
 
     status, _, body = get('/foo', app)

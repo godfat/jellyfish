@@ -42,6 +42,7 @@ end
 
 * Introduced Jellyfish.controller_include which makes it easy to pick
   modules to be included in built-in controller.
+* Introduced Controller#halt as a short hand for `throw :halt`
 * Now default route is `//`. Using `get{ 'Hello, World!' }` is effectively
   the same as `get(//){ 'Hello, World!' }`
 * Now inheritance works.

@@ -305,7 +305,7 @@ describe 'Sinatra routing_test.rb' do
 
       get '/halt' do
         body 'Hello World'
-        throw :halt
+        halt
         'Boo-hoo World'
       end
     }.new
@@ -323,7 +323,7 @@ describe 'Sinatra routing_test.rb' do
       controller_include Jellyfish::MultiActions
 
       get '/' do
-        throw :halt, [295, {'Content-Type' => 'text/plain'}, ['Hello World']]
+        halt [295, {'Content-Type' => 'text/plain'}, ['Hello World']]
       end
     }.new
 

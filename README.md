@@ -664,7 +664,7 @@ class Tank
 
   get do # wildcard before filter
     body "Done!\n"
-    throw :halt
+    halt
   end
   get '/' do
     "Never reach.\n"
