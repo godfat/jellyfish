@@ -662,7 +662,7 @@ class Tank
   include Jellyfish
   controller_include Jellyfish::MultiActions
 
-  get %r{.*} do # wildcard before filter
+  get do # wildcard before filter
     body "Done!\n"
     throw :halt
   end
