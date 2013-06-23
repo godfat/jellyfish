@@ -37,37 +37,31 @@ describe 'Sinatra base_test.rb' do
   end
 
   describe 'Jellyfish as a Rack middleware' do
-    behaves_like :jellyfish
+    inner_app ||= lambda{ |env|
+      [210, {'X-Downstream' => 'true'}, ['Hello from downstream']]
+    }
 
-    def app
-      @app ||= Class.new{
-        include Jellyfish
-        get '/' do
-          'Hello from middleware'
-        end
+    app = Class.new{
+      include Jellyfish
+      get '/' do
+        'Hello from middleware'
+      end
 
-        get '/low-level-forward' do
-          status, headers, body = jellyfish.app.call(env)
-          self.status  status
-          self.headers headers
-          body
-        end
+      get '/low-level-forward' do
+        status, headers, body = jellyfish.app.call(env)
+        self.status  status
+        self.headers headers
+        body
+      end
 
-        get '/explicit-forward' do
-          headers_merge 'X-Middleware' => 'true'
-          status, headers, _ = jellyfish.app.call(env)
-          self.status  status
-          self.headers headers
-          'Hello after explicit forward'
-        end
-      }.new(inner_app)
-    end
-
-    def inner_app
-      @inner_app ||= lambda{ |env|
-        [210, {'X-Downstream' => 'true'}, ['Hello from downstream']]
-      }
-    end
+      get '/explicit-forward' do
+        headers_merge 'X-Middleware' => 'true'
+        status, headers, _ = jellyfish.app.call(env)
+        self.status  status
+        self.headers headers
+        'Hello after explicit forward'
+      end
+    }.new(inner_app)
 
     should 'create a middleware that responds to #call with .new' do
       app.respond_to?(:call).should.eq true
@@ -78,20 +72,20 @@ describe 'Sinatra base_test.rb' do
     end
 
     should 'intercept requests' do
-      status, _, body = get('/')
+      status, _, body = get('/', app)
       status.should.eq 200
       body  .should.eq ['Hello from middleware']
     end
 
     should 'forward requests downstream when no matching route found' do
-      status, headers, body = get('/missing')
+      status, headers, body = get('/missing', app)
       status                 .should.eq 210
       headers['X-Downstream'].should.eq 'true'
       body                   .should.eq ['Hello from downstream']
     end
 
     should 'call the downstream app directly and return result' do
-      status, headers, body = get('/low-level-forward')
+      status, headers, body = get('/low-level-forward', app)
       status                 .should.eq 210
       headers['X-Downstream'].should.eq 'true'
       body                   .should.eq ['Hello from downstream']

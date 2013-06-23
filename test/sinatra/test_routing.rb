@@ -98,7 +98,7 @@ describe 'Sinatra routing_test.rb' do
       get('/'){ 'worked' }
     }.new
 
-    status, headers, body = get('', app)
+    status, _, body = get('', app)
     status.should.eq 200
     body  .should.eq ['worked']
   end
@@ -300,7 +300,6 @@ describe 'Sinatra routing_test.rb' do
       get '/next' do
         body 'Hello World'
         next
-        'Boo-hoo World'
       end
 
       get '/halt' do
@@ -340,7 +339,6 @@ describe 'Sinatra routing_test.rb' do
       get %r{^/(?<foo>\w+)} do
         params['foo'].should.eq 'bar'
         next
-        'Hello Foo'
       end
 
       get do

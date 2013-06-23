@@ -111,7 +111,7 @@ describe 'Sinatra mapped_error_test.rb' do
       get('/'){ raise e }
     }.new
 
-    status, _, body = get('/', app)
+    status, _, _ = get('/', app)
     status.should.eq 404
   end
 
