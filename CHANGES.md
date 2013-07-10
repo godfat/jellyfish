@@ -1,5 +1,20 @@
 # CHANGES
 
+## Jellyfish 0.9.0
+
+### Enhancements for Jellyfish core
+
+* We no longer use exceptions to control the flow. Use
+  `halt(InternalError.new)` instead. However, raising exceptions
+  would still work. Just prefer to use `halt` if you would like
+  some performance boost.
+
+### Incompatible changes
+
+* If you're raising `NotFound` instead of using `forward` in your app,
+  it would no longer forward the request but show a 404 page. Always
+  use `forward` if you intend to forward the request.
+
 ## Jellyfish 0.8.0
 
 ### Incompatible changes

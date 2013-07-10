@@ -13,7 +13,7 @@ by Lin Jen-Shin ([godfat](http://godfat.org))
 ## DESCRIPTION:
 
 Pico web framework for building API-centric web applications.
-For Rack applications or Rack middlewares. Around 200 lines of code.
+For Rack applications or Rack middlewares. Around 250 lines of code.
 
 ## DESIGN:
 

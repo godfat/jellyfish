@@ -11,6 +11,7 @@ module Jellyfish
   autoload :ChunkedBody, 'jellyfish/chunked_body'
 
   GetValue = Object.new
+  Identity = lambda{|_|_}
 
   class Response < RuntimeError
     def headers
@@ -57,8 +58,8 @@ module Jellyfish
 
     def request   ; @request ||= Rack::Request.new(env); end
     def halt *args; throw(:halt, *args)                ; end
-    def forward   ; raise(Jellyfish::NotFound.new)     ; end
-    def found  url; raise(Jellyfish::   Found.new(url)); end
+    def forward   ;  halt(Jellyfish::NotFound.new)     ; end
+    def found  url;  halt(Jellyfish::   Found.new(url)); end
     alias_method :redirect, :found
 
     def path_info     ; env['PATH_INFO']      || '/'  ; end
@@ -96,7 +97,7 @@ module Jellyfish
 
     private
     def actions
-      routes[request_method.downcase] || raise(Jellyfish::NotFound.new)
+      routes[request_method.downcase] || halt(Jellyfish::NotFound.new)
     end
 
     def dispatch
@@ -108,7 +109,7 @@ module Jellyfish
           match = route.match(path_info)
           break match, block if match
         end
-      } || raise(Jellyfish::NotFound.new)
+      } || halt(Jellyfish::NotFound.new)
     end
 
     def with_each value
@@ -174,16 +175,13 @@ module Jellyfish
 
   def call env
     ctrl = self.class.controller.new(self.class.routes, self)
-    ctrl.call(env)
-  rescue NotFound => e # forward
-    if app
-      begin
-        app.call(env)
-      rescue Exception => e
-        handle(ctrl, e, env['rack.errors'])
-      end
+    case res = catch(:halt){ ctrl.call(env) }
+    when NotFound
+      app && forward(ctrl, env) || handle(ctrl, res)
+    when Response
+      handle(ctrl, res, env['rack.errors'])
     else
-      handle(ctrl, e)
+      res || ctrl.block_call(nil, Identity)
     end
   rescue Exception => e
     handle(ctrl, e, env['rack.errors'])
@@ -200,6 +198,12 @@ module Jellyfish
   end
 
   private
+  def forward ctrl, env
+    app.call(env)
+  rescue Exception => e
+    handle(ctrl, e, env['rack.errors'])
+  end
+
   def handle ctrl, e, stderr=nil
     if handler = best_handler(e)
       ctrl.block_call(e, handler)

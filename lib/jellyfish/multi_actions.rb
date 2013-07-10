@@ -5,13 +5,9 @@ require 'jellyfish'
 
 module Jellyfish
   module MultiActions
-    Identity = lambda{|_|_}
-
     def call env
       @env = env
-      catch(:halt){
-        dispatch.inject(nil){ |_, route_block| block_call(*route_block) }
-      } || block_call(nil, Identity) # respond the default if halted
+      dispatch.inject(nil){ |_, route_block| block_call(*route_block) }
     end
 
     def dispatch
@@ -26,7 +22,7 @@ module Jellyfish
       }.compact
 
       if acts.empty?
-        raise(Jellyfish::NotFound.new)
+        halt(Jellyfish::NotFound.new)
       else
         acts
       end
