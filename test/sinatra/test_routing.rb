@@ -411,12 +411,12 @@ describe 'Sinatra routing_test.rb' do
   should 'play well with other routing middleware' do
     middleware = Class.new{include Jellyfish}
     inner_app  = Class.new{include Jellyfish; get('/foo'){ 'hello' } }
-    builder    = Rack::Builder.new do
+    app = Rack::Builder.app do
       use middleware
       map('/test'){ run inner_app.new }
     end
 
-    status, _, body = get('/test/foo', builder.to_app)
+    status, _, body = get('/test/foo', app)
     status.should.eq 200
     body  .should.eq ['hello']
   end

@@ -27,7 +27,7 @@ describe 'from README.md' do
       pinfo, query        = uri.path, uri.query
 
       status, headers, body = File.open(File::NULL) do |input|
-        Rack::Builder.new{ eval(code) }.call(
+        Rack::Builder.app{ eval(code) }.call(
           'REQUEST_METHOD' => method, 'PATH_INFO'  => pinfo,
           'QUERY_STRING'   => query , 'rack.input' => input)
       end

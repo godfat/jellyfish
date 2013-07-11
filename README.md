@@ -701,7 +701,7 @@ class Tank
   end
 end
 
-HugeTank = Rack::Builder.new do
+HugeTank = Rack::Builder.app do
   use Rack::ContentLength
   use Rack::ContentType, 'text/plain'
   use Heater
