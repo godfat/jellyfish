@@ -53,6 +53,10 @@ Because Sinatra is too complex and inconsistent for me.
 
 ## SYNOPSIS:
 
+You could also take a look at [Saya][] as an example Jellyfish application.
+
+[Saya]: https://github.com/godfat/saya
+
 ### Hello Jellyfish, your lovely config.ru
 
 ``` ruby
