@@ -1,6 +1,10 @@
 # CHANGES
 
-## Jellyfish 0.9.0
+## Jellyfish 0.9.1 -- 2013-08-23
+
+* Fixed a thread safety bug for initializing exception handlers.
+
+## Jellyfish 0.9.0 -- 2013-07-11
 
 ### Enhancements for Jellyfish core
 
@@ -15,7 +19,7 @@
   it would no longer forward the request but show a 404 page. Always
   use `forward` if you intend to forward the request.
 
-## Jellyfish 0.8.0
+## Jellyfish 0.8.0 -- 2013-06-15
 
 ### Incompatible changes
 
