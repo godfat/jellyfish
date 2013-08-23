@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Lin Jen-Shin (godfat)"]
-  s.date = "2013-07-11"
+  s.date = "2013-08-23"
   s.description = "Pico web framework for building API-centric web applications.\nFor Rack applications or Rack middlewares. Around 250 lines of code."
   s.email = ["godfat (XD) godfat.org"]
   s.files = [
@@ -41,11 +41,12 @@ Gem::Specification.new do |s|
   "test/sinatra/test_multi_actions.rb",
   "test/sinatra/test_routing.rb",
   "test/test_from_readme.rb",
-  "test/test_inheritance.rb"]
+  "test/test_inheritance.rb",
+  "test/test_threads.rb"]
   s.homepage = "https://github.com/godfat/jellyfish"
   s.licenses = ["Apache License 2.0"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "2.0.4"
+  s.rubygems_version = "2.0.6"
   s.summary = "Pico web framework for building API-centric web applications."
   s.test_files = [
   "test/sinatra/test_base.rb",
@@ -54,7 +55,8 @@ Gem::Specification.new do |s|
   "test/sinatra/test_multi_actions.rb",
   "test/sinatra/test_routing.rb",
   "test/test_from_readme.rb",
-  "test/test_inheritance.rb"]
+  "test/test_inheritance.rb",
+  "test/test_threads.rb"]
 
   if s.respond_to? :specification_version then
     s.specification_version = 4
@@ -62,12 +64,15 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rack>, [">= 0"])
       s.add_development_dependency(%q<bacon>, [">= 0"])
+      s.add_development_dependency(%q<muack>, [">= 0"])
     else
       s.add_dependency(%q<rack>, [">= 0"])
       s.add_dependency(%q<bacon>, [">= 0"])
+      s.add_dependency(%q<muack>, [">= 0"])
     end
   else
     s.add_dependency(%q<rack>, [">= 0"])
     s.add_dependency(%q<bacon>, [">= 0"])
+    s.add_dependency(%q<muack>, [">= 0"])
   end
 end

@@ -223,7 +223,7 @@ module Jellyfish
       handlers[e.class]
     else # or find the nearest match and cache it
       ancestors         = e.class.ancestors
-      handlers[e.class] = handlers.
+      handlers[e.class] = handlers.dup. # thread safe iteration
         inject([nil, Float::INFINITY]){ |(handler, val), (klass, block)|
           idx = ancestors.index(klass) || Float::INFINITY # lower is better
           if idx < val then [block, idx] else [handler, val] end }.first
