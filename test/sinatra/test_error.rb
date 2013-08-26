@@ -29,23 +29,23 @@ describe 'Sinatra mapped_error_test.rb' do
     get('/', app)
   end
 
-  should 'use the Exception handler if no matching handler found' do
+  should 'use the StandardError handler if no matching handler found' do
     app = Class.new{
       include Jellyfish
-      handle(Exception){ 'Exception!' }
+      handle(StandardError){ 'StandardError!' }
       get('/'){ raise exp }
     }.new
 
     status, _, body = get('/', app)
     status.should.eq 200
-    body  .should.eq ['Exception!']
+    body  .should.eq ['StandardError!']
   end
 
   should 'favour subclass handler over superclass handler if available' do
     app = Class.new{
       include Jellyfish
-      handle(Exception)   { 'Exception!'     }
-      handle(RuntimeError){ 'RuntimeError!'  }
+      handle(StandardError){ 'StandardError!' }
+      handle(RuntimeError) { 'RuntimeError!'  }
       get('/'){ raise exp }
     }.new
 

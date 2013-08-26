@@ -728,7 +728,7 @@ GET /status
 require 'jellyfish'
 class Protector
   include Jellyfish
-  handle Exception do |e|
+  handle StandardError do |e|
     "Protected: #{e}\n"
   end
 end

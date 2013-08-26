@@ -11,7 +11,7 @@ describe Jellyfish do
 
   app = Class.new{
     include Jellyfish
-    handle(Exception){ |env| 0 }
+    handle(StandardError){ |env| 0 }
   }.new
 
   exp = RuntimeError.new

@@ -183,7 +183,7 @@ module Jellyfish
     else
       res || ctrl.block_call(nil, Identity)
     end
-  rescue Exception => e
+  rescue => e
     handle(ctrl, e, env['rack.errors'])
   end
 
@@ -200,7 +200,7 @@ module Jellyfish
   private
   def forward ctrl, env
     app.call(env)
-  rescue Exception => e
+  rescue => e
     handle(ctrl, e, env['rack.errors'])
   end
 
