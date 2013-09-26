@@ -1,5 +1,10 @@
 # CHANGES
 
+## Jellyfish 0.9.2 -- 2013-09-26
+
+* Do not rescue Exception since we don't really want to rescue something
+  like SignalException, which would break signal handling.
+
 ## Jellyfish 0.9.1 -- 2013-08-23
 
 * Fixed a thread safety bug for initializing exception handlers.
