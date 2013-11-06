@@ -230,7 +230,7 @@ body = case RUBY_ENGINE
        when 'jruby'
          "No one hears you: (eval):9:in `Tank'\n"
        when 'rbx'
-         "No one hears you: kernel/delta/kernel.rb:81:in `yell (method_missing)'\n"
+         "No one hears you: kernel/delta/kernel.rb:78:in `yell (method_missing)'\n"
        else
          "No one hears you: (eval):9:in `block in <class:Tank>'\n"
        end
