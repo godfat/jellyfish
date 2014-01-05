@@ -10,5 +10,5 @@ Gemgem.init(dir) do |s|
   require 'jellyfish/version'
   s.name    = 'jellyfish'
   s.version = Jellyfish::VERSION
-  %w[rack bacon muack].each{ |g| s.add_development_dependency(g) }
+  %w[].each{ |g| s.add_runtime_dependency(g) }
 end
