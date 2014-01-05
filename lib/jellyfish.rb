@@ -52,11 +52,12 @@ module Jellyfish
       val = instance_exec(argument, &block)
       [status || 200, headers || {}, body || with_each(val || '')]
     rescue LocalJumpError
-      jellyfish.log("Use `next' if you're trying to `return' or" \
-                    " `break' from the block.", env['rack.errors'])
+      log("Use `next' if you're trying to `return' or `break' from a block.")
       raise
     end
 
+    def log     message; jellyfish.log(    message, env['rack.errors']); end
+    def log_error error; jellyfish.log_error(error, env['rack.errors']); end
     def request   ; @request ||= Rack::Request.new(env); end
     def halt *args; throw(:halt, *args)                ; end
     def forward   ;  halt(Jellyfish::NotFound.new)     ; end
