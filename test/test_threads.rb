@@ -21,7 +21,7 @@ describe Jellyfish do
     ancestors = RuntimeError.ancestors
     stub(RuntimeError).ancestors{ancestors}
     flip = true
-    stub(ancestors).index(anything).proxy.returns do |i|
+    stub(ancestors).index(anything).peek_return do |i|
       if flip
         flip = false
         sleep 0.0001

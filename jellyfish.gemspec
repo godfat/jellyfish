@@ -6,8 +6,9 @@ Gem::Specification.new do |s|
   s.version = "0.9.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.require_paths = ["lib"]
   s.authors = ["Lin Jen-Shin (godfat)"]
-  s.date = "2013-11-05"
+  s.date = "2014-01-06"
   s.description = "Pico web framework for building API-centric web applications.\nFor Rack applications or Rack middlewares. Around 250 lines of code."
   s.email = ["godfat (XD) godfat.org"]
   s.files = [
@@ -35,7 +36,7 @@ Gem::Specification.new do |s|
   "lib/jellyfish/swagger.rb",
   "lib/jellyfish/test.rb",
   "lib/jellyfish/version.rb",
-  "task/.gitignore",
+  "task/README.md",
   "task/gemgem.rb",
   "test/sinatra/test_base.rb",
   "test/sinatra/test_chunked_body.rb",
@@ -44,11 +45,11 @@ Gem::Specification.new do |s|
   "test/sinatra/test_routing.rb",
   "test/test_from_readme.rb",
   "test/test_inheritance.rb",
+  "test/test_log.rb",
   "test/test_threads.rb"]
   s.homepage = "https://github.com/godfat/jellyfish"
   s.licenses = ["Apache License 2.0"]
-  s.require_paths = ["lib"]
-  s.rubygems_version = "2.1.10"
+  s.rubygems_version = "2.2.0"
   s.summary = "Pico web framework for building API-centric web applications."
   s.test_files = [
   "test/sinatra/test_base.rb",
@@ -58,6 +59,7 @@ Gem::Specification.new do |s|
   "test/sinatra/test_routing.rb",
   "test/test_from_readme.rb",
   "test/test_inheritance.rb",
+  "test/test_log.rb",
   "test/test_threads.rb"]
 
   if s.respond_to? :specification_version then
