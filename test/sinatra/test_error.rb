@@ -104,7 +104,7 @@ describe 'Sinatra mapped_error_test.rb' do
     status.should.eq 404
   end
 
-  should 'cascade for subclasses of Jellyfish::NotFound' do
+  should 'handle subclasses of Jellyfish::NotFound' do
     e   = Class.new(Jellyfish::NotFound)
     app = Class.new{
       include Jellyfish
@@ -113,6 +113,33 @@ describe 'Sinatra mapped_error_test.rb' do
 
     status, _, _ = get('/', app)
     status.should.eq 404
+  end
+
+  should 'no longer cascade with Jellyfish::NotFound' do
+    app = Class.new{
+      include Jellyfish
+      get('/'){ not_found }
+    }.new(Class.new{
+      include Jellyfish
+      get('/'){ 'never'.should.eq 'reach' }
+    })
+
+    status, _, _ = get('/', app)
+    status.should.eq 404
+  end
+
+  should 'cascade with Jellyfish::Cascade' do
+    app = Class.new{
+      include Jellyfish
+      get('/'){ cascade }
+    }.new(Class.new{
+      include Jellyfish
+      get('/'){ 'reach' }
+    }.new)
+
+    status, _, body = get('/', app)
+    status.should.eq 200
+    body  .should.eq ['reach']
   end
 
   should 'inherit error mappings from base class' do
