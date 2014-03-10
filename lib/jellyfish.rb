@@ -11,6 +11,7 @@ module Jellyfish
 
   autoload :ChunkedBody, 'jellyfish/chunked_body'
 
+  Cascade  = Object.new
   GetValue = Object.new
   Identity = lambda{|_|_}
 
@@ -60,7 +61,8 @@ module Jellyfish
     def log_error error; jellyfish.log_error(error, env['rack.errors']); end
     def request   ; @request ||= Rack::Request.new(env); end
     def halt *args; throw(:halt, *args)                ; end
-    def forward   ;  halt(Jellyfish::NotFound.new)     ; end
+    def cascade   ;  halt(Jellyfish:: Cascade)         ; end
+    def not_found ;  halt(Jellyfish::NotFound.new)     ; end
     def found  url;  halt(Jellyfish::   Found.new(url)); end
     alias_method :redirect, :found
 
@@ -99,7 +101,7 @@ module Jellyfish
 
     private
     def actions
-      routes[request_method.downcase] || halt(Jellyfish::NotFound.new)
+      routes[request_method.downcase] || action_missing
     end
 
     def dispatch
@@ -111,7 +113,11 @@ module Jellyfish
           match = route.match(path_info)
           break match, block if match
         end
-      } || halt(Jellyfish::NotFound.new)
+      } || action_missing
+    end
+
+    def action_missing
+      if jellyfish.app then cascade else not_found end
     end
 
     def with_each value
@@ -178,12 +184,12 @@ module Jellyfish
   def call env
     ctrl = self.class.controller.new(self.class.routes, self)
     case res = catch(:halt){ ctrl.call(env) }
-    when NotFound
-      app && forward(ctrl, env) || handle(ctrl, res)
+    when Cascade
+      cascade(ctrl, env)
     when Response
       handle(ctrl, res, env['rack.errors'])
     else
-      res || ctrl.block_call(nil, Identity)
+      res || ctrl.block_call(nil, Identity) # make sure we return rack triple
     end
   rescue => e
     handle(ctrl, e, env['rack.errors'])
@@ -200,7 +206,7 @@ module Jellyfish
   end
 
   private
-  def forward ctrl, env
+  def cascade ctrl, env
     app.call(env)
   rescue => e
     handle(ctrl, e, env['rack.errors'])

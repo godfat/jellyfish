@@ -634,7 +634,7 @@ class Heater
   include Jellyfish
   get '/status' do
     env['temperature'] = 30
-    forward
+    cascade
   end
 end
 

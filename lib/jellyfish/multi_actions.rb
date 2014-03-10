@@ -22,7 +22,7 @@ module Jellyfish
       }.compact
 
       if acts.empty?
-        halt(Jellyfish::NotFound.new)
+        action_missing
       else
         acts
       end
