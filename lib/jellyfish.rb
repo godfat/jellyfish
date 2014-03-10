@@ -61,7 +61,7 @@ module Jellyfish
     def log_error error; jellyfish.log_error(error, env['rack.errors']); end
     def request   ; @request ||= Rack::Request.new(env); end
     def halt *args; throw(:halt, *args)                ; end
-    def cascade   ;  halt(Jellyfish:: Cascade)         ; end
+    def cascade   ;  halt(Jellyfish::Cascade)          ; end
     def not_found ;  halt(Jellyfish::NotFound.new)     ; end
     def found  url;  halt(Jellyfish::   Found.new(url)); end
     alias_method :redirect, :found
