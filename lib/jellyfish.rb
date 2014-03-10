@@ -15,7 +15,7 @@ module Jellyfish
   GetValue = Object.new
   Identity = lambda{|_|_}
 
-  class Response < RuntimeError
+  class Response
     def headers
       @headers ||= {'Content-Type' => 'text/html'}
     end

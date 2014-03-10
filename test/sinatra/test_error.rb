@@ -94,10 +94,10 @@ describe 'Sinatra mapped_error_test.rb' do
     body.should.eq ["she's there."]
   end
 
-  should 'never raises Jellyfish::NotFound beyond the application' do
+  should 'catch Jellyfish::NotFound' do
     app = Class.new{
       include Jellyfish
-      get('/'){ raise Jellyfish::NotFound }
+      get('/'){ not_found }
     }.new
 
     status, _, _ = get('/', app)
@@ -108,7 +108,7 @@ describe 'Sinatra mapped_error_test.rb' do
     e   = Class.new(Jellyfish::NotFound)
     app = Class.new{
       include Jellyfish
-      get('/'){ raise e }
+      get('/'){ halt e.new }
     }.new
 
     status, _, _ = get('/', app)
