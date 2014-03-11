@@ -27,16 +27,31 @@ class Jelly
     '1.0.0'
   end
 
-  get '/users', :summary => 'summary', :notes => 'notes' do
+  handle Jellyfish::NotFound do |e|
+    status 404
+    body   %Q|{"error":{"name":"NotFound"}}\n|
+  end
+
+  get '/users',
+    :summary => 'List users',
+    :notes   => 'Note that we do not really have users.' do
     render [:name => 'jellyfish']
   end
 
-  post '/users', :summary => 'summary', :notes => 'notes' do
-    render :message => 'jellyfish created.'
+  post '/users',
+    :summary => 'Create a user',
+    :parameters => {:name => {:type => :string, :required => true,
+                              :description => 'The name of the user'},
+                    :sane => {:type => :boolean,
+                              :description => 'If the user is sane'},
+                    :type => {:type => :string,
+                              :description => 'What kind of user',
+                              :enum => %w[good neutral evil]}} do
+    render :message => "jellyfish #{request.params['name']} created."
   end
 
   put %r{\A/users/(?<id>\d+)},
-    :summary => 'Update a user', :notes => 'Update a user',
+    :summary => 'Update a user',
     :parameters => {:id => {:type => :integer,
                             :description => 'The id of the user'}} do |match|
     render :message => "jellyfish ##{match[:id]} updated."
@@ -47,11 +62,12 @@ class Jelly
   end
 
   get %r{\A/posts/(?<year>\d+)-(?<month>\d+)/(?<name>\w+)},
-    :summary => 'summary', :notes => 'notes' do |match|
+    :summary => 'Get a post' do |match|
     render Hash[match.names.zip(match.captures)]
   end
 
-  get '/posts/latest' do
+  get '/posts/tags/ruby' do
+    render []
   end
 end
 

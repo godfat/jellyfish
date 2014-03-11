@@ -60,7 +60,9 @@ module Jellyfish
 
     def jellyfish_apis
       @jellyfish_apis ||= app.routes.flat_map{ |meth, routes|
-        routes.map{ |(path, _, meta)| operation(meth, path, meta) }
+        routes.map{ |(path, _, meta)|
+          meta.merge(operation(meth, path, meta))
+        }
       }.group_by{ |api| api[:path] }.inject({}){ |r, (path, operations)|
         r[path] = operations.group_by{ |op| op[:nickname] }
         r
@@ -71,19 +73,19 @@ module Jellyfish
     def operation meth, path, meta
       if path.respond_to?(:source)
         nick = nickname(path)
-        {:path       => swagger_path(nick)    ,
-         :method     => meth.to_s.upcase      ,
-         :nickname   => nick                  ,
-         :summary    => meta[:summary]        ,
-         :notes      => notes(meta)           ,
-         :parameters => parameters(path, meta)}
+        {:path       => swagger_path(nick)          ,
+         :method     => meth.to_s.upcase            ,
+         :nickname   => nick                        ,
+         :summary    => meta[:summary]              ,
+         :notes      => notes(meta)                 ,
+         :parameters => path_parameters(path, meta) }
       else
-        {:path       => swagger_path(path)    ,
-         :method     => meth.to_s.upcase      ,
-         :nickname   => path                  ,
-         :summary    => meta[:summary]        ,
-         :notes      => notes(meta)           ,
-         :parameters => []                    }
+        {:path       => swagger_path(path)          ,
+         :method     => meth.to_s.upcase            ,
+         :nickname   => path                        ,
+         :summary    => meta[:summary]              ,
+         :notes      => notes(meta)                 ,
+         :parameters => query_parameters(path, meta)}
       end
     end
 
@@ -107,19 +109,31 @@ module Jellyfish
       end
     end
 
-    def parameters path, meta
+    def path_parameters path, meta
       Hash[path.source.scan(param_pattern)].map{ |name, pattern|
-        path_params(name, pattern, meta)
+        path_param(name, pattern, meta)
       }
     end
 
-    def path_params name, pattern, meta
-      params = (meta[:parameters] || {})[name.to_sym] || {}
-      {:name        => name                                ,
-       :type        => params[:type] || param_type(pattern),
-       :description => params[:description]                ,
-       :required    => true                                ,
-       :paramType   => 'path'}
+    def query_parameters path, meta
+      if meta[:parameters]
+        meta[:parameters].map{ |(name, param)|
+          param.merge(:name      => name,
+                      :type      => param[:type] || 'string',
+                      :required  => !!param[:required],
+                      :paramType => param[:paramType] || 'query')
+        }
+      else
+        []
+      end
+    end
+
+    def path_param name, pattern, meta
+      param = (meta[:parameters] || {})[name.to_sym] || {}
+      param.merge(:name      => name                               ,
+                  :type      => param[:type] || param_type(pattern),
+                  :required  => true                               ,
+                  :paramType => 'path'                             )
     end
 
     def param_type pattern
