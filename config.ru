@@ -19,8 +19,12 @@ class Jelly
 
   def self.info
     {:title       => 'Jellyfish Swagger UI',
-     :description => 'This is a simple example for using Jellyfish and' \
-                     ' Swagger UI altogether.'}
+     :description =>
+       'This is a simple example for using Jellyfish and' \
+       ' Swagger UI altogether. You could also try the'   \
+       ' <a href="http://swagger.wordnik.com/">official Swagger UI app</a>,' \
+       ' and fill it with the swagger URL.'
+     }
   end
 
   def self.swagger_apiVersion
