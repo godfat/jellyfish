@@ -13,25 +13,25 @@ module Jellyfish
 
     get '/' do
       [Jellyfish::Json.encode(
-        'apiVersion'     => '1.0.0'               ,
-        'swaggerVersion' => '1.2'                 ,
-        'info'           => jellyfish.swagger_info,
-        'apis'           => jellyfish.swagger_apis)]
+        :apiVersion     => '1.0.0'               ,
+        :swaggerVersion => '1.2'                 ,
+        :info           => jellyfish.swagger_info,
+        :apis           => jellyfish.swagger_apis)]
     end
 
     get %r{\A/(?<name>.+)\Z} do |match|
       basePath = "#{request.scheme}://#{request.host_with_port}"
       name     = "/#{match[:name]}"
       apis     = jellyfish.jellyfish_apis[name].map{ |path, operations|
-        {'path' => path, 'operations' => operations}
+        {:path => path, :operations => operations}
       }
 
       [Jellyfish::Json.encode(
-        'swaggerVersion' => '1.2'                       ,
-        'basePath'       => basePath                    ,
-        'resourcePath'   => name                        ,
-        'apiVersion'     => jellyfish.swagger_apiVersion,
-        'apis'           => apis                        )]
+        :swaggerVersion => '1.2'                       ,
+        :basePath       => basePath                    ,
+        :resourcePath   => name                        ,
+        :apiVersion     => jellyfish.swagger_apiVersion,
+        :apis           => apis                        )]
     end
 
     # The application should define the API description.
@@ -54,15 +54,15 @@ module Jellyfish
 
     def swagger_apis
       @swagger_apis ||= jellyfish_apis.keys.map do |name|
-        {'path' => name}
+        {:path => name}
       end
     end
 
     def jellyfish_apis
       @jellyfish_apis ||= app.routes.flat_map{ |meth, routes|
         routes.map{ |(path, _, meta)| operation(meth, path, meta) }
-      }.group_by{ |api| api['path'] }.inject({}){ |r, (path, operations)|
-        r[path] = operations.group_by{ |op| op['nickname'] }
+      }.group_by{ |api| api[:path] }.inject({}){ |r, (path, operations)|
+        r[path] = operations.group_by{ |op| op[:nickname] }
         r
       }
     end
@@ -71,19 +71,19 @@ module Jellyfish
     def operation meth, path, meta
       if path.respond_to?(:source)
         nick = nickname(path)
-        {'path'       => swagger_path(nick)    ,
-         'method'     => meth.to_s.upcase      ,
-         'nickname'   => nick                  ,
-         'summary'    => meta[:summary]        ,
-         'notes'      => notes(meta)           ,
-         'parameters' => parameters(path, meta)}
+        {:path       => swagger_path(nick)    ,
+         :method     => meth.to_s.upcase      ,
+         :nickname   => nick                  ,
+         :summary    => meta[:summary]        ,
+         :notes      => notes(meta)           ,
+         :parameters => parameters(path, meta)}
       else
-        {'path'       => swagger_path(path)    ,
-         'method'     => meth.to_s.upcase      ,
-         'nickname'   => path                  ,
-         'summary'    => meta[:summary]        ,
-         'notes'      => notes(meta)           ,
-         'parameters' => []                    }
+        {:path       => swagger_path(path)    ,
+         :method     => meth.to_s.upcase      ,
+         :nickname   => path                  ,
+         :summary    => meta[:summary]        ,
+         :notes      => notes(meta)           ,
+         :parameters => []                    }
       end
     end
 
@@ -115,11 +115,11 @@ module Jellyfish
 
     def path_params name, pattern, meta
       params = (meta[:parameters] || {})[name.to_sym] || {}
-      {'name'        => name                                ,
-       'type'        => params[:type] || param_type(pattern),
-       'description' => params[:description]                ,
-       'required'    => true                                ,
-       'paramType'   => 'path'}
+      {:name        => name                                ,
+       :type        => params[:type] || param_type(pattern),
+       :description => params[:description]                ,
+       :required    => true                                ,
+       :paramType   => 'path'}
     end
 
     def param_type pattern
