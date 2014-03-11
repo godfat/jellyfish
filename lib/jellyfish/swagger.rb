@@ -4,7 +4,6 @@ require 'jellyfish/json'
 module Jellyfish
   class Swagger
     include Jellyfish
-    attr_reader :swagger_apis, :jellyfish_apis
     controller_include Jellyfish::NormalizedPath, Module.new{
       def block_call argument, block
         headers_merge 'Content-Type' => 'application/json; charset=utf-8'
@@ -21,22 +20,22 @@ module Jellyfish
     end
 
     get %r{\A/(?<name>.+)\Z} do |match|
-      name     = "/#{match[:name]}"
       basePath = "#{request.scheme}://#{request.host_with_port}"
-
-      apis = jellyfish.jellyfish_apis[name].map{ |nickname, operations|
-        {'path' => nickname, 'operations' => operations}
+      name     = "/#{match[:name]}"
+      apis     = jellyfish.jellyfish_apis[name].map{ |path, operations|
+        {'path' => path, 'operations' => operations}
       }
 
       [Jellyfish::Json.encode(
-        'apiVersion'     => '1.0.0'                   ,
-        'swaggerVersion' => '1.2'                     ,
-        'basePath'       => basePath                  ,
-        'resourcePath'   => name                      ,
-        'produces'       => jellyfish.swagger_produces,
-        'apis'           => apis                      )]
+        'swaggerVersion' => '1.2'                       ,
+        'basePath'       => basePath                    ,
+        'resourcePath'   => name                        ,
+        'apiVersion'     => jellyfish.swagger_apiVersion,
+        'produces'       => jellyfish.swagger_produces  ,
+        'apis'           => apis                        )]
     end
 
+    # The application should define the API description.
     def swagger_info
       if app.respond_to?(:info)
         app.info
@@ -45,11 +44,21 @@ module Jellyfish
       end
     end
 
+    # The application should define the content types for the API.
     def swagger_produces
       if app.respond_to?(:swagger_produces)
         app.swagger_produces
       else
         []
+      end
+    end
+
+    # The application should define the API version.
+    def swagger_apiVersion
+      if app.respond_to?(:swagger_apiVersion)
+        app.swagger_apiVersion
+      else
+        '0.1.0'
       end
     end
 
@@ -68,6 +77,7 @@ module Jellyfish
       }
     end
 
+    private
     def operation meth, path, meta
       if path.respond_to?(:source)
         nick = nickname(path)
@@ -78,13 +88,12 @@ module Jellyfish
          'notes'      => meta[:notes]          ,
          'parameters' => parameters(path, meta)}
       else
-        nick = swagger_path(path)
-        {'path'       => nick,
+        {'path'       => swagger_path(path)    ,
          'method'     => meth.to_s.upcase      ,
-         'nickname'   => nick                  ,
+         'nickname'   => path                  ,
          'summary'    => meta[:summary]        ,
          'notes'      => meta[:notes]          ,
-         'parameters' => {}}
+         'parameters' => []                    }
       end
     end
 
@@ -128,7 +137,7 @@ module Jellyfish
     end
 
     def param_pattern
-       /\(\?<(\w+)>([^\)]+)\)/
+      /\(\?<(\w+)>([^\)]+)\)/
     end
   end
 end

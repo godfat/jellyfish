@@ -23,8 +23,8 @@ class Jelly
                      ' Swagger UI altogether.'}
   end
 
-  def self.produces
-    ['application/json']
+  def self.swagger_apiVersion
+    '1.0.0'
   end
 
   get '/users', :summary => 'summary', :notes => 'notes' do
@@ -49,6 +49,9 @@ class Jelly
   get %r{\A/posts/(?<year>\d+)-(?<month>\d+)/(?<name>\w+)},
     :summary => 'summary', :notes => 'notes' do |match|
     render Hash[match.names.zip(match.captures)]
+  end
+
+  get '/posts/latest' do
   end
 end
 
