@@ -6,7 +6,8 @@ module Jellyfish
     include Jellyfish
     controller_include Jellyfish::NormalizedPath, Module.new{
       def block_call argument, block
-        headers_merge 'Content-Type' => 'application/json; charset=utf-8'
+        headers_merge 'Content-Type' => 'application/json; charset=utf-8',
+                      'Access-Control-Allow-Origin' => '*'
         super
       end
     }
