@@ -75,14 +75,14 @@ module Jellyfish
          'method'     => meth.to_s.upcase      ,
          'nickname'   => nick                  ,
          'summary'    => meta[:summary]        ,
-         'notes'      => meta[:notes]          ,
+         'notes'      => notes(meta)           ,
          'parameters' => parameters(path, meta)}
       else
         {'path'       => swagger_path(path)    ,
          'method'     => meth.to_s.upcase      ,
          'nickname'   => path                  ,
          'summary'    => meta[:summary]        ,
-         'notes'      => meta[:notes]          ,
+         'notes'      => notes(meta)           ,
          'parameters' => []                    }
       end
     end
@@ -96,6 +96,14 @@ module Jellyfish
         path.source.gsub(param_pattern, '{\1}').gsub(/\\\w+/, '')
       else
         path.to_s
+      end
+    end
+
+    def notes meta
+      if meta[:notes]
+        "#{meta[:summary]}<br>#{meta[:notes]}"
+      else
+        meta[:summary]
       end
     end
 
