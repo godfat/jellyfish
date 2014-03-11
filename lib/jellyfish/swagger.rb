@@ -4,7 +4,7 @@ require 'jellyfish/json'
 module Jellyfish
   class Swagger
     include Jellyfish
-    attr_reader :swagger_apis, :jellyfish_apis
+    attr_reader :app, :swagger_apis, :jellyfish_apis
     controller_include Jellyfish::NormalizedPath, Module.new{
       def block_call argument, block
         headers_merge 'Content-Type' => 'application/json; charset=utf-8'
@@ -12,8 +12,9 @@ module Jellyfish
       end
     }
 
-    def initialize target
-      @jellyfish_apis = target.routes.flat_map{ |meth, routes|
+    def initialize app
+      @app = app
+      @jellyfish_apis = app.routes.flat_map{ |meth, routes|
         routes.map do |(path, _)|
           nickname, params = if path.respond_to?(:source)
             [path.source.gsub(/\(\?<(\w+)>(.+)\)/, '{\1}').gsub(/\\\w+/, ''),
@@ -39,10 +40,19 @@ module Jellyfish
       end
     end
 
+    def swagger_info
+      if app.respond_to?(:info)
+        app.info
+      else
+        {}
+      end
+    end
+
     get '/' do
       [Jellyfish::Json.encode(
-        'apiVersion'     => '1.0.0'     ,
-        'swaggerVersion' => '1.2'       ,
+        'apiVersion'     => '1.0.0'               ,
+        'swaggerVersion' => '1.2'                 ,
+        'info'           => jellyfish.swagger_info,
         'apis'           => jellyfish.swagger_apis)]
     end
 

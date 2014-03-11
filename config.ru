@@ -17,6 +17,12 @@ class Jelly
     end
   }
 
+  def self.info
+    {:title => 'Jellyfish Swagger UI',
+     :description => 'This is a simple example for using Jellyfish and' \
+                     ' Swagger UI altogether.'}
+  end
+
   get '/users' do
     render :name => 'jellyfish'
   end
