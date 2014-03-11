@@ -1,9 +1,19 @@
 
+require 'jellyfish/json'
+
 module Jellyfish
-  module Swagger
-    module_function
-    def inject jellyfish
-      jellyfish_apis = jellyfish.routes.flat_map{ |meth, routes|
+  class Swagger
+    include Jellyfish
+    attr_reader :swagger_apis, :jellyfish_apis
+    controller_include Jellyfish::NormalizedPath, Module.new{
+      def block_call argument, block
+        headers_merge 'Content-Type' => 'application/json; charset=utf-8'
+        super
+      end
+    }
+
+    def initialize target
+      @jellyfish_apis = target.routes.flat_map{ |meth, routes|
         routes.map do |(path, _)|
           nickname, params = if path.respond_to?(:source)
             [path.source.gsub(/\(\?<(\w+)>(.+)\)/, '{\1}').gsub(/\\\w+/, ''),
@@ -24,29 +34,33 @@ module Jellyfish
         r
       }
 
-      swagger_apis = jellyfish_apis.keys.map do |name|
+      @swagger_apis = jellyfish_apis.keys.map do |name|
         {'path' => name}
       end
+    end
 
-      jellyfish.get('/swagger') do
-        o = {'apiVersion'     => '1.0.0',
-             'swaggerVersion' => '1.2',
-             'apis'           => swagger_apis}
-        [Yajl::Encoder.encode(o)]
-      end
+    get '/' do
+      [Jellyfish::Json.encode(
+        'apiVersion'     => '1.0.0'     ,
+        'swaggerVersion' => '1.2'       ,
+        'apis'           => jellyfish.swagger_apis)]
+    end
 
-      jellyfish.get %r{\A/swagger/(?<name>.+)\Z} do |match|
-        name = "/#{match[:name]}"
-        basePath = "#{request.scheme}://#{request.host_with_port}"
-        apis = jellyfish_apis[name].map{ |nickname, operations|
-          {'path' => nickname, 'operations' => operations}
-        }
+    get %r{\A/(?<name>.+)\Z} do |match|
+      name     = "/#{match[:name]}"
+      basePath = "#{request.scheme}://#{request.host_with_port}"
 
-        o = {'apiVersion' => '1.0.0', 'swaggerVersion' => '1.2',
-             'basePath' => basePath, 'resourcePath' => name,
-             'produces' => ['application/json'], 'apis' => apis}
-        [Yajl::Encoder.encode(o)]
-      end
+      apis = jellyfish.jellyfish_apis[name].map{ |nickname, operations|
+        {'path' => nickname, 'operations' => operations}
+      }
+
+      [Jellyfish::Json.encode(
+        'apiVersion'     => '1.0.0'             ,
+        'swaggerVersion' => '1.2'               ,
+        'basePath'       => basePath            ,
+        'resourcePath'   => name                ,
+        'produces'       => ['application/json'],
+        'apis'           => apis                )]
     end
   end
 end
