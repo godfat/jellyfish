@@ -40,13 +40,15 @@ class Jelly
 
   post '/users',
     :summary => 'Create a user',
+    :note    => 'Here we demonstrate how to write the swagger doc.',
     :parameters => {:name => {:type => :string, :required => true,
                               :description => 'The name of the user'},
                     :sane => {:type => :boolean,
                               :description => 'If the user is sane'},
                     :type => {:type => :string,
                               :description => 'What kind of user',
-                              :enum => %w[good neutral evil]}} do
+                              :enum => %w[good neutral evil]}},
+    :responseMessages => [{:code => 400, :message => 'Invalid name'}] do
     render :message => "jellyfish #{request.params['name']} created."
   end
 
