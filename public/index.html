@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Jellyfish Swagger UI</title>
+
+  <link href="//fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet" type="text/css"/>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/styles/tomorrow.min.css" rel="stylesheet" type="text/css"/>
+  <link href="css/screen.css" rel="stylesheet" type="text/css"/>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/shred/0.7.12/shred.bundle.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+  <!-- jquery.slideto.min.js -->
+  <!-- jquery.wiggle.min.js -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.ba-bbq/1.2.1/jquery.ba-bbq.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+  <!-- doesn't work with backbone 1.1+ -->
+  <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+
+  <script src="js/swagger.js"></script>
+  <script src="js/swagger-ui.js"></script>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/highlight.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.0/languages/json.min.js"></script>
+
+  <script type="text/javascript">
+    $(function(){
+      var swaggerUi = new SwaggerUi({
+        url: "/swagger",
+        dom_id: "swagger-ui-container",
+        supportedSubmitMethods: ["get", "post", "put", "delete"],
+        onComplete: function(swaggerApi, swaggerUi){
+          $('pre code').each(function(i, e){hljs.highlightBlock(e)});
+        },
+        docExpansion: "list"});
+      swaggerUi.load();
+    });
+  </script>
+</head>
+<body>
+  <div id="message-bar" class="swagger-ui-wrap"></div>
+  <div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+</body>
+</html>
