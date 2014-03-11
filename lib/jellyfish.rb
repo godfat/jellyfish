@@ -13,7 +13,6 @@ module Jellyfish
 
   Cascade  = Object.new
   GetValue = Object.new
-  Identity = lambda{|_|_}
 
   class Response
     def headers
@@ -188,8 +187,8 @@ module Jellyfish
       cascade(ctrl, env)
     when Response
       handle(ctrl, res, env['rack.errors'])
-    else
-      res || ctrl.block_call(nil, Identity) # make sure we return rack triple
+    else     # make sure we return rack triple
+      res || ctrl.block_call(nil, lambda{|_|_})
     end
   rescue => e
     handle(ctrl, e, env['rack.errors'])
