@@ -162,7 +162,7 @@ module Jellyfish
         def #{method} route=//, payload={}, &block
           raise TypeError.new("Route \#{route} should respond to :match") \
             unless route.respond_to?(:match)
-          (routes['#{method}'] ||= []) << [route, block, payload]
+          (routes['#{method}'] ||= []) << [route, block||lambda{|_|}, payload]
         end
       RUBY
     end
