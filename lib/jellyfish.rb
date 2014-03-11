@@ -158,10 +158,10 @@ module Jellyfish
 
     %w[options get head post put delete patch].each do |method|
       module_eval <<-RUBY
-        def #{method} route=//, payload={}, &block
+        def #{method} route=//, meta={}, &block
           raise TypeError.new("Route \#{route} should respond to :match") \
             unless route.respond_to?(:match)
-          (routes['#{method}'] ||= []) << [route, block||lambda{|_|}, payload]
+          (routes['#{method}'] ||= []) << [route, block || lambda{|_|}, meta]
         end
       RUBY
     end
