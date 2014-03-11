@@ -36,6 +36,16 @@ class Jelly
     body   %Q|{"error":{"name":"NotFound"}}\n|
   end
 
+  handle StandardError do |error|
+    jellyfish.log_error(error, env['rack.errors'])
+
+    name    = error.class.name
+    message = error.message
+
+    status 500
+    body render('error' => {'name' => name, 'message' => message})
+  end
+
   get '/users',
     :summary => 'List users',
     :notes   => 'Note that we do not really have users.' do
