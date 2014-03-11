@@ -29,12 +29,12 @@ module Jellyfish
       }
 
       [Jellyfish::Json.encode(
-        'apiVersion'     => '1.0.0'             ,
-        'swaggerVersion' => '1.2'               ,
-        'basePath'       => basePath            ,
-        'resourcePath'   => name                ,
-        'produces'       => ['application/json'],
-        'apis'           => apis                )]
+        'apiVersion'     => '1.0.0'                   ,
+        'swaggerVersion' => '1.2'                     ,
+        'basePath'       => basePath                  ,
+        'resourcePath'   => name                      ,
+        'produces'       => jellyfish.swagger_produces,
+        'apis'           => apis                      )]
     end
 
     def swagger_info
@@ -42,6 +42,14 @@ module Jellyfish
         app.info
       else
         {}
+      end
+    end
+
+    def swagger_produces
+      if app.respond_to?(:swagger_produces)
+        app.swagger_produces
+      else
+        []
       end
     end
 
@@ -53,25 +61,74 @@ module Jellyfish
 
     def jellyfish_apis
       @jellyfish_apis ||= app.routes.flat_map{ |meth, routes|
-        routes.map do |(path, _)|
-          nickname, params = if path.respond_to?(:source)
-            [path.source.gsub(/\(\?<(\w+)>(.+)\)/, '{\1}').gsub(/\\\w+/, ''),
-             path.names.map{ |name|
-               {'name' => name, 'type' => 'integer',
-                'description' => 'argument description',
-                'required' => true, 'paramType' => 'path'}
-             }]
-          else
-            [path.to_s, []]
-          end
-          {'method' => meth.to_s.upcase, 'summary' => 'api summary',
-           'name' => nickname[%r{^/[^/]+}], 'parameters' => params,
-           'nickname' => nickname}
-        end
-      }.group_by{ |api| api['name'] }.inject({}){ |r, (name, operations)|
-        r[name] = operations.group_by{ |op| op['nickname'] }
+        routes.map{ |(path, _, meta)| operation(meth, path, meta) }
+      }.group_by{ |api| api['path'] }.inject({}){ |r, (path, operations)|
+        r[path] = operations.group_by{ |op| op['nickname'] }
         r
       }
+    end
+
+    def operation meth, path, meta
+      if path.respond_to?(:source)
+        nick = nickname(path)
+        {'path'       => swagger_path(nick)    ,
+         'method'     => meth.to_s.upcase      ,
+         'nickname'   => nick                  ,
+         'summary'    => meta[:summary]        ,
+         'notes'      => meta[:notes]          ,
+         'parameters' => parameters(path, meta)}
+      else
+        nick = swagger_path(path)
+        {'path'       => nick,
+         'method'     => meth.to_s.upcase      ,
+         'nickname'   => nick                  ,
+         'summary'    => meta[:summary]        ,
+         'notes'      => meta[:notes]          ,
+         'parameters' => {}}
+      end
+    end
+
+    def swagger_path nickname
+      nickname[%r{^/[^/]+}]
+    end
+
+    def nickname path
+      if path.respond_to?(:source)
+        path.source.gsub(param_pattern, '{\1}').gsub(/\\\w+/, '')
+      else
+        path.to_s
+      end
+    end
+
+    def parameters path, meta
+      Hash[path.source.scan(param_pattern)].map{ |name, pattern|
+        path_params(name, pattern, meta)
+      }
+    end
+
+    def path_params name, pattern, meta
+      params = (meta[:parameters] || {})[name.to_sym] || {}
+      {'name'        => name                                ,
+       'type'        => params[:type] || param_type(pattern),
+       'description' => params[:description]                ,
+       'required'    => true                                ,
+       'paramType'   => 'path'}
+    end
+
+    def param_type pattern
+      if pattern.start_with?('\\d')
+        if pattern.include?('.')
+          'number'
+        else
+          'integer'
+        end
+      else
+        'string'
+      end
+    end
+
+    def param_pattern
+       /\(\?<(\w+)>([^\)]+)\)/
     end
   end
 end
