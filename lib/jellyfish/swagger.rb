@@ -31,7 +31,6 @@ module Jellyfish
         'basePath'       => basePath                    ,
         'resourcePath'   => name                        ,
         'apiVersion'     => jellyfish.swagger_apiVersion,
-        'produces'       => jellyfish.swagger_produces  ,
         'apis'           => apis                        )]
     end
 
@@ -41,15 +40,6 @@ module Jellyfish
         app.info
       else
         {}
-      end
-    end
-
-    # The application should define the content types for the API.
-    def swagger_produces
-      if app.respond_to?(:swagger_produces)
-        app.swagger_produces
-      else
-        []
       end
     end
 
