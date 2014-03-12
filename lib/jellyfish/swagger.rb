@@ -59,15 +59,24 @@ module Jellyfish
       end
     end
 
+    attr_reader :jellys
+    def initialize *apps
+      super(apps.first)
+      @jellys = apps
+    end
+
     def jellyfish_apis
-      @jellyfish_apis ||= app.routes.flat_map{ |meth, routes|
-        routes.map{ |(path, _, meta)|
-          meta.merge(operation(meth, path, meta))
+      @jellyfish_apis ||= jellys.flat_map{ |j|
+        j.routes.flat_map{ |meth, routes|
+          routes.map{ |(path, _, meta)|
+            meta.merge(operation(meth, path, meta))
+          }
         }
-      }.group_by{ |api| api[:path] }.inject({}){ |r, (path, operations)|
-        r[path] = operations.group_by{ |op| op[:nickname] }
-        r
-      }
+      }.group_by{ |api| api[:path] }.
+        inject({}){ |r, (path, operations)|
+          r[path] = operations.group_by{ |op| op[:nickname] }
+          r
+        }
     end
 
     private
