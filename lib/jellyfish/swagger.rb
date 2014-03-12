@@ -21,7 +21,8 @@ module Jellyfish
     end
 
     get %r{\A/(?<name>.+)\Z} do |match|
-      basePath = "#{request.scheme}://#{request.host_with_port}"
+      basePath = "#{request.scheme}://#{request.host_with_port}" +
+                 jellyfish.swagger_path_prefix
       name     = "/#{match[:name]}"
       apis     = jellyfish.jellyfish_apis[name].map{ |path, operations|
         {:path => path, :operations => operations}
@@ -50,6 +51,14 @@ module Jellyfish
         app.swagger_apiVersion
       else
         '0.1.0'
+      end
+    end
+
+    def swagger_path_prefix
+      if app.respond_to?(:swagger_path_prefix)
+        app.swagger_path_prefix
+      else
+        ''
       end
     end
 
