@@ -50,7 +50,7 @@ module Jellyfish
 
     def block_call argument, block
       val = instance_exec(argument, &block)
-      [status || 200, headers || {}, body || with_each(val || '')]
+      [status || 200, headers || {}, body || rack_body(val || '')]
     rescue LocalJumpError
       log("Use `next' if you're trying to `return' or `break' from a block.")
       raise
@@ -86,7 +86,7 @@ module Jellyfish
       elsif value.nil?
         @body = value
       else
-        @body = with_each(value)
+        @body = rack_body(value)
       end
     end
 
@@ -119,8 +119,8 @@ module Jellyfish
       if jellyfish.app then cascade else not_found end
     end
 
-    def with_each value
-      if value.respond_to?(:each) then value else [value] end
+    def rack_body v
+      if v.respond_to?(:each) || v.respond_to?(:to_path) then v else [v] end
     end
   end
 
