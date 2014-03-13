@@ -14,7 +14,7 @@ module Jellyfish
   Cascade  = Object.new
   GetValue = Object.new
 
-  class Response
+  class Response < RuntimeError
     def headers
       @headers ||= {'Content-Type' => 'text/html'}
     end
