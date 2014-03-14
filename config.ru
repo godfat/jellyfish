@@ -6,7 +6,7 @@ class Jelly
   include Jellyfish
 
   controller_include Module.new{
-    def block_call argument, block
+    def dispatch
       headers_merge 'Content-Type' => 'application/json; charset=utf-8',
                     'Access-Control-Allow-Origin' => '*'
       super
