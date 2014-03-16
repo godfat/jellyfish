@@ -5,9 +5,8 @@ module Jellyfish
   class Swagger
     include Jellyfish
     controller_include Jellyfish::NormalizedPath, Module.new{
-      def block_call argument, block
-        headers_merge 'Content-Type' => 'application/json; charset=utf-8',
-                      'Access-Control-Allow-Origin' => '*'
+      def dispatch
+        headers_merge 'Content-Type' => 'application/json; charset=utf-8'
         super
       end
     }
