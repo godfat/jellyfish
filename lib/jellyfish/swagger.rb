@@ -101,7 +101,7 @@ module Jellyfish
     end
 
     def swagger_path nickname
-      nickname[%r{^/[^/]+}]
+      nickname[%r{^/[^/]*}]
     end
 
     def nickname path
