@@ -96,7 +96,7 @@ module Jellyfish
          :nickname   => path                        ,
          :summary    => meta[:summary]              ,
          :notes      => notes(meta)                 ,
-         :parameters => query_parameters(path, meta)}
+         :parameters => query_parameters(meta)      }
       end
     end
 
@@ -126,7 +126,7 @@ module Jellyfish
       }
     end
 
-    def query_parameters path, meta
+    def query_parameters meta
       if meta[:parameters]
         meta[:parameters].map{ |(name, param)|
           param.merge(:name      => name,
