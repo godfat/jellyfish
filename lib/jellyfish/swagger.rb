@@ -106,7 +106,7 @@ module Jellyfish
 
     def nickname path
       if path.respond_to?(:source)
-        path.source.gsub(param_pattern, '{\1}').gsub(/\\\w+/, '')
+        path.source.gsub(param_pattern, '{\1}').gsub(/\\\w+|[\^\$]/, '')
       else
         path.to_s
       end
