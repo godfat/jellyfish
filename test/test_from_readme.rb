@@ -29,7 +29,8 @@ describe 'from README.md' do
       status, headers, body = File.open(File::NULL) do |input|
         Rack::Builder.app{ eval(code) }.call(
           'REQUEST_METHOD' => method, 'PATH_INFO'  => pinfo,
-          'QUERY_STRING'   => query , 'rack.input' => input)
+          'QUERY_STRING'   => query , 'rack.input' => input,
+          'SCRIPT_NAME'    => '')
       end
 
       body.extend(Enumerable)
