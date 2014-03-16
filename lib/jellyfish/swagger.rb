@@ -13,10 +13,10 @@ module Jellyfish
 
     get '/' do
       [Jellyfish::Json.encode(
-        :apiVersion     => '1.0.0'               ,
-        :swaggerVersion => '1.2'                 ,
-        :info           => jellyfish.swagger_info,
-        :apis           => jellyfish.swagger_apis)]
+        :swaggerVersion => '1.2'                       ,
+        :info           => jellyfish.swagger_info      ,
+        :apiVersion     => jellyfish.swagger_apiVersion,
+        :apis           => jellyfish.swagger_apis      )]
     end
 
     get %r{\A/(?<name>.+)\Z} do |match|
