@@ -13,7 +13,10 @@ shared :jellyfish do
           app.call({'PATH_INFO'      => path              ,
                     'REQUEST_METHOD' => '#{method}'.upcase,
                     'SCRIPT_NAME'    => ''                ,
-                    'rack.input'     => input             }.merge(env))
+                    'rack.input'     => input             ,
+                    'rack.url_scheme'=> 'https'           ,
+                    'SERVER_NAME'    => 'localhost'       ,
+                    'SERVER_PORT'    => '8080'}.merge(env))
         end
       end
     RUBY
