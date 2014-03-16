@@ -17,13 +17,13 @@ For Rack applications or Rack middlewares. Around 250 lines of code.
 
 ## DESIGN:
 
-* Learn the HTTP way instead of using some pointless helpers
-* Learn the Rack way instead of wrapping Rack functionalities, again
-* Learn regular expression for routes instead of custom syntax
-* Embrace simplicity over convenience
-* Don't make things complicated only for _some_ convenience, but
+* Learn the HTTP way instead of using some pointless helpers.
+* Learn the Rack way instead of wrapping around Rack functionalities.
+* Learn regular expression for routes instead of custom syntax.
+* Embrace simplicity over convenience.
+* Don't make things complicated only for _some_ convenience, but for
   _great_ convenience, or simply stay simple for simplicity.
-* More features are added as extensions
+* More features are added as extensions.
 
 ## FEATURES:
 
@@ -31,7 +31,7 @@ For Rack applications or Rack middlewares. Around 250 lines of code.
 * Simple
 * Modular
 * No templates (You could use [tilt](https://github.com/rtomayko/tilt))
-* No ORM
+* No ORM (You could use [sequel](http://sequel.jeremyevans.net/))
 * No `dup` in `call`
 * Regular expression routes, e.g. `get %r{^/(?<id>\d+)$}`
 * String routes, e.g. `get '/'`
@@ -45,7 +45,7 @@ Because Sinatra is too complex and inconsistent for me.
 
 ## REQUIREMENTS:
 
-* Tested with MRI (official CRuby) 1.9.3, 2.0.0, Rubinius and JRuby.
+* Tested with MRI (official CRuby), Rubinius and JRuby.
 
 ## INSTALLATION:
 
