@@ -21,8 +21,8 @@ module Jellyfish
     end
 
     get %r{\A/(?<name>.+)\Z} do |match|
-      basePath = "#{request.scheme}://#{request.host_with_port}" +
-                 jellyfish.swagger_path_prefix
+      basePath =
+      "#{request.scheme}://#{request.host_with_port}#{jellyfish.path_prefix}"
       name     = "/#{match[:name]}"
       apis     = jellyfish.jellyfish_apis[name].map{ |path, operations|
         {:path => path, :operations => operations}
@@ -54,24 +54,17 @@ module Jellyfish
       end
     end
 
-    def swagger_path_prefix
-      if app.respond_to?(:swagger_path_prefix)
-        app.swagger_path_prefix
-      else
-        ''
-      end
-    end
-
     def swagger_apis
       @swagger_apis ||= jellyfish_apis.keys.map do |name|
         {:path => name}
       end
     end
 
-    attr_reader :jellys
-    def initialize *apps
+    attr_reader :jellys, :path_prefix
+    def initialize path_prefix='', *apps
       super(apps.first)
-      @jellys = apps
+      @jellys      = apps
+      @path_prefix = path_prefix
     end
 
     def jellyfish_apis

@@ -94,7 +94,7 @@ App = Rack::Builder.app do
   use Rack::Deflater
 
   map '/swagger' do
-    run Jellyfish::Swagger.new(Jelly)
+    run Jellyfish::Swagger.new('', Jelly)
   end
 
   run Rack::Cascade.new([Rack::File.new('public/index.html'),
