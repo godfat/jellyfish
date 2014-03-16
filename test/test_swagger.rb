@@ -5,7 +5,7 @@ describe Jellyfish do
   behaves_like :jellyfish
 
   app = Rack::Builder.app do
-    eval File.read("#{__dir__}/../config.ru")
+    eval File.read("#{File.dirname(__FILE__)}/../config.ru")
   end
 
   def string_keys hash
