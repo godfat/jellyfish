@@ -53,9 +53,9 @@ Because Sinatra is too complex and inconsistent for me.
 
 ## SYNOPSIS:
 
-You could also take a look at [config.ru][] as an example, which also uses
-[Swagger](https://helloreverb.com/developers/swagger) to generate API
-documentation.
+You could also take a look at [config.ru](config.ru) as an example, which
+also uses [Swagger](https://helloreverb.com/developers/swagger) to generate
+API documentation.
 
 ### Hello Jellyfish, your lovely config.ru
 
@@ -882,7 +882,7 @@ GET /chunked
 
 ### Use Swagger to generate API documentation
 
-For a complete example, checkout [config.ru][].
+For a complete example, checkout [config.ru](config.ru).
 
 ``` ruby
 require 'jellyfish'
