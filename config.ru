@@ -54,7 +54,7 @@ class Jelly
 
   post '/users',
     :summary => 'Create a user',
-    :note    => 'Here we demonstrate how to write the swagger doc.',
+    :notes   => 'Here we demonstrate how to write the swagger doc.',
     :parameters => {:name => {:type => :string, :required => true,
                               :description => 'The name of the user'},
                     :sane => {:type => :boolean,
