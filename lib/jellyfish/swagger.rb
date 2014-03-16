@@ -129,7 +129,7 @@ module Jellyfish
     def query_parameters meta
       if meta[:parameters]
         meta[:parameters].map{ |(name, param)|
-          param.merge(:name      => name,
+          param.merge(:name      => name.to_s,
                       :type      => param[:type] || 'string',
                       :required  => !!param[:required],
                       :paramType => param[:paramType] || 'query')
