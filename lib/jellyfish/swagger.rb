@@ -74,7 +74,7 @@ module Jellyfish
           }
         }
       }.group_by{ |api| api[:path] }.
-        inject({}){ |r, (path, operations)|
+        inject(Hash.new{[]}){ |r, (path, operations)|
           r[path] = operations.group_by{ |op| op[:nickname] }
           r
         }
