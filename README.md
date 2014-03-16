@@ -53,9 +53,9 @@ Because Sinatra is too complex and inconsistent for me.
 
 ## SYNOPSIS:
 
-You could also take a look at [Saya][] as an example Jellyfish application.
-
-[Saya]: https://github.com/godfat/saya
+You could also take a look at [config.ru][] as an example, which also uses
+[Swagger](https://helloreverb.com/developers/swagger) to generate API
+documentation.
 
 ### Hello Jellyfish, your lovely config.ru
 
@@ -239,6 +239,29 @@ body = case RUBY_ENGINE
  [body]]
 -->
 
+### Custom error 404 handler
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  handle Jellyfish::NotFound do |e|
+    status 404
+    "You found nothing."
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /
+[404,
+ {'Content-Length' => '18', 'Content-Type' => 'text/plain'},
+ ["You found nothing."]]
+-->
+
 ### Access Rack::Request and params
 
 ``` ruby
@@ -350,6 +373,38 @@ GET /status
 [200,
  {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
  ["30\u{2103}\n"]]
+-->
+
+### Override dispatch for processing before action
+
+We don't have before action built-in, but we could override `dispatch` in
+the controller to do the same thing. CAVEAT: Remember to call `super`.
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  controller_include Module.new{
+    def dispatch
+      @state = 'jumps'
+      super
+    end
+  }
+
+  get do
+    "Jelly #{@state}.\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /123
+[200,
+ {'Content-Length' => '13', 'Content-Type' => 'text/plain'},
+ ["Jelly jumps.\n"]]
 -->
 
 ### Extension: MultiActions (Filters)
@@ -525,6 +580,9 @@ GET /123
 
 ### Jellyfish as a middleware
 
+If the Jellyfish middleware cannot find a corresponding action, it would
+then forward the request to the lower application. We call this `cascade`.
+
 ``` ruby
 require 'jellyfish'
 class Heater
@@ -555,6 +613,9 @@ GET /
 -->
 
 ### Modify response as a middleware
+
+We could also explicitly call the lower app. This would give us more
+flexibility than simply forwarding it.
 
 ``` ruby
 require 'jellyfish'
@@ -590,24 +651,34 @@ GET /status
  ["See header X-Temperature\n"]]
 -->
 
-### Default headers as a middleware
+### Override cascade for customized forwarding
+
+We could also override `cascade` in order to craft custom response when
+forwarding is happening. Note that whenever this forwarding is happening,
+Jellyfish won't try to merge the headers from `dispatch` method, because
+in this case Jellyfish is served as a pure proxy. As result we need to
+explicitly merge the headers if we really want.
 
 ``` ruby
 require 'jellyfish'
 class Heater
   include Jellyfish
-  get '/status' do
-    status, headers, body = jellyfish.app.call(env)
-    self.status  status
-    self.headers({'X-Temperature' => "30\u{2103}"}.merge(headers))
-    self.body    body
-  end
+  controller_include Module.new{
+    def dispatch
+      headers_merge('X-Temperature' => "35\u{2103}")
+      super
+    end
+
+    def cascade
+      status, headers, body = jellyfish.app.call(env)
+      halt [status, headers_merge(headers), body]
+    end
+  }
 end
 
 class Tank
   include Jellyfish
   get '/status' do
-    headers_merge('X-Temperature' => "35\u{2103}")
     "\n"
   end
 end
@@ -807,6 +878,34 @@ GET /chunked
  {'Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'},
  ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
   "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n\r\n"]]
+-->
+
+### Use Swagger to generate API documentation
+
+For a complete example, checkout [config.ru][].
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  get %r{^/(?<id>\d+)$}, :notes => 'This is an API note' do |match|
+    "Jelly ##{match[:id]}\n"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+map '/swagger' do
+  run Jellyfish::Swagger.new('', Tank)
+end
+run Tank.new
+```
+
+<!---
+GET /swagger
+[200,
+ {'Content-Type'   => 'application/json; charset=utf-8',
+  'Content-Length' => '81'},
+ ['{"swaggerVersion":"1.2","info":{},"apiVersion":"0.1.0","apis":[{"path":"/{id}"}]}']]
 -->
 
 ## CONTRIBUTORS:
