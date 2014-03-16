@@ -1,5 +1,23 @@
 # CHANGES
 
+## Jellyfish 1.0.0 -- 2014-03-17
+
+### Incompatible changes
+
+* Renamed `forward` to `cascade` to better aligned with Rack.
+
+### Enhancements for Jellyfish core
+
+* Introduced `log` and `log_error` for for controllers.
+* Introduced `not_found` to trigger 404 response.
+* Now we separate the idea of 404 and cascade. Use `not_found` for 404
+  responses, and `cascade` for forwarding requests.
+
+### Other enhancements
+
+* Now we have Jellyfish::Swagger to generate Swagger documentation.
+  Read README.md for more detail or checkout config.ru for a full example.
+
 ## Jellyfish 0.9.2 -- 2013-09-26
 
 * Do not rescue Exception since we don't really want to rescue something
