@@ -2,7 +2,7 @@
 require 'jellyfish/test'
 require 'muack'
 
-include Muack::API
+Bacon::Context.include Muack::API
 
 describe Jellyfish do
   after do
