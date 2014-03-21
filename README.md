@@ -24,6 +24,9 @@ For Rack applications or Rack middlewares. Around 250 lines of code.
 * Don't make things complicated only for _some_ convenience, but for
   _great_ convenience, or simply stay simple for simplicity.
 * More features are added as extensions.
+* Consider use [rack-protection][] if you're not only building an API server.
+
+[rack-protection]: https://github.com/rkh/rack-protection
 
 ## FEATURES:
 
