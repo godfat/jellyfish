@@ -129,7 +129,9 @@ module Jellyfish
   module DSL
     def routes  ; @routes   ||= {}; end
     def handlers; @handlers ||= {}; end
-    def handle exception, &block; handlers[exception] = block; end
+    def handle *exceptions, &block
+      exceptions.each{ |exp| handlers[exp] = block }
+    end
     def handle_exceptions value=GetValue
       if value == GetValue
         @handle_exceptions

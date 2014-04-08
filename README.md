@@ -265,6 +265,32 @@ GET /
  ["You found nothing."]]
 -->
 
+### Custom error handler for multiple errors
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  handle Jellyfish::NotFound, NameError do |e|
+    status 404
+    "You found nothing."
+  end
+  get '/yell' do
+    yell
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /
+[404,
+ {'Content-Length' => '18', 'Content-Type' => 'text/plain'},
+ ["You found nothing."]]
+-->
+
 ### Access Rack::Request and params
 
 ``` ruby
