@@ -189,8 +189,13 @@ module Jellyfish
       cascade(ctrl, env)
     when Response
       handle(ctrl, res, env['rack.errors'])
-    else     # make sure we return rack triple
-      res || ctrl.block_call(nil, lambda{|_|_})
+    when Array
+      res
+    when NilClass # make sure we return rack triple
+      ctrl.block_call(nil, lambda{|_|_})
+    else
+      raise TypeError.new("Expect the response to be a Jellyfish::Response" \
+        " or Rack triple (Array), but got: #{res.inspect}")
     end
   rescue => e
     handle(ctrl, e, env['rack.errors'])
