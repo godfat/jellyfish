@@ -2,7 +2,7 @@
 require 'jellyfish/test'
 
 describe Jellyfish do
-  behaves_like :jellyfish
+  paste :jellyfish
 
   app = Class.new{
     include Jellyfish
@@ -11,12 +11,12 @@ describe Jellyfish do
     get
   }.new
 
-  should 'match wildcard' do
+  would 'match wildcard' do
     get('/a', app).should.eq [200, {}, ['']]
     get('/b', app).should.eq [200, {}, ['']]
   end
 
-  should 'accept to_path body' do
+  would 'accept to_path body' do
     a = Class.new{
       include Jellyfish
       get{ File.open(__FILE__) }
@@ -24,11 +24,11 @@ describe Jellyfish do
     get('/', a).last.to_path.should.eq __FILE__
   end
 
-  should 'raise TypeError if we try to respond non-Response or non-Rack' do
+  would 'raise TypeError if we try to respond non-Response or non-Rack' do
     begin
       get('/boom', app)
     rescue TypeError => e
-      e.message.should.include '"string"'
+      e.message.should.include? '"string"'
     end
   end
 end

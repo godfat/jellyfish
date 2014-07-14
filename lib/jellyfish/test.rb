@@ -1,13 +1,14 @@
 
-require 'bacon'
-require 'rack'
+require 'pork/auto'
+require 'muack'
 require 'jellyfish'
+require 'rack'
 
-Bacon.summary_on_exit
+Pork::Executor.__send__(:include, Muack::API)
 
-shared :jellyfish do
+copy :jellyfish do
   %w[options get head post put delete patch].each do |method|
-    instance_eval <<-RUBY
+    module_eval <<-RUBY
       def #{method} path='/', app=app, env={}
         File.open(File::NULL) do |input|
           app.call({'PATH_INFO'      => path              ,
@@ -20,11 +21,5 @@ shared :jellyfish do
         end
       end
     RUBY
-  end
-end
-
-module Kernel
-  def eq? rhs
-    self == rhs
   end
 end

@@ -2,9 +2,9 @@
 require 'jellyfish/test'
 
 describe 'Inheritance' do
-  behaves_like :jellyfish
+  paste :jellyfish
 
-  should 'inherit routes' do
+  would 'inherit routes' do
     sup = Class.new{
       include Jellyfish
       get('/0'){ 'a' }
@@ -27,7 +27,7 @@ describe 'Inheritance' do
     app.class.routes['get'].size.should.eq 2
   end
 
-  should 'inherit handlers' do
+  would 'inherit handlers' do
     sup = Class.new{
       include Jellyfish
       handle(TypeError){ 'a' }
@@ -47,7 +47,7 @@ describe 'Inheritance' do
     app.class.handlers.size.should.eq 2
   end
 
-  should 'inherit controller' do
+  would 'inherit controller' do
     sup = Class.new{
       include Jellyfish
       controller_include Module.new{ def f; 'a'; end }
@@ -66,7 +66,7 @@ describe 'Inheritance' do
     app.class.controller_include.size.should.eq 1
   end
 
-  should 'inherit handle_exceptions' do
+  would 'inherit handle_exceptions' do
     sup = Class.new{
       include Jellyfish
       handle_exceptions false

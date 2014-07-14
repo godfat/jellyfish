@@ -3,9 +3,9 @@ require 'jellyfish/test'
 
 # stolen from sinatra
 describe 'Sinatra base_test.rb' do
-  behaves_like :jellyfish
+  paste :jellyfish
 
-  should 'process requests with #call' do
+  would 'process requests with #call' do
     app = Class.new{
       include Jellyfish
       get '/' do
@@ -18,7 +18,7 @@ describe 'Sinatra base_test.rb' do
     body  .should.eq ['Hello World']
   end
 
-  should 'not maintain state between requests' do
+  would 'not maintain state between requests' do
     app = Class.new{
       include Jellyfish
       get '/state' do
@@ -63,35 +63,35 @@ describe 'Sinatra base_test.rb' do
       end
     }.new(inner_app)
 
-    should 'create a middleware that responds to #call with .new' do
+    would 'create a middleware that responds to #call with .new' do
       app.respond_to?(:call).should.eq true
     end
 
-    should 'expose the downstream app' do
+    would 'expose the downstream app' do
       app.app.object_id.should.eq inner_app.object_id
     end
 
-    should 'intercept requests' do
+    would 'intercept requests' do
       status, _, body = get('/', app)
       status.should.eq 200
       body  .should.eq ['Hello from middleware']
     end
 
-    should 'forward requests downstream when no matching route found' do
+    would 'forward requests downstream when no matching route found' do
       status, headers, body = get('/missing', app)
       status                 .should.eq 210
       headers['X-Downstream'].should.eq 'true'
       body                   .should.eq ['Hello from downstream']
     end
 
-    should 'call the downstream app directly and return result' do
+    would 'call the downstream app directly and return result' do
       status, headers, body = get('/low-level-forward', app)
       status                 .should.eq 210
       headers['X-Downstream'].should.eq 'true'
       body                   .should.eq ['Hello from downstream']
     end
 
-    should 'forward the request and integrate the response' do
+    would 'forward the request and integrate the response' do
       status, headers, body =
         get('/explicit-forward', Rack::ContentLength.new(app))
 

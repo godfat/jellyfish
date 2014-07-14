@@ -2,11 +2,11 @@
 require 'jellyfish/test'
 
 describe 'Sinatra mapped_error_test.rb' do
-  behaves_like :jellyfish
+  paste :jellyfish
 
   exp = Class.new(RuntimeError)
 
-  should 'invoke handlers registered with handle when raised' do
+  would 'invoke handlers registered with handle when raised' do
     app = Class.new{
       include Jellyfish
       handle(exp){ 'Foo!' }
@@ -20,7 +20,7 @@ describe 'Sinatra mapped_error_test.rb' do
     body  .should.eq ['Foo!']
   end
 
-  should 'pass the exception object to the error handler' do
+  would 'pass the exception object to the error handler' do
     app = Class.new{
       include Jellyfish
       handle(exp){ |e| e.should.kind_of?(exp) }
@@ -29,7 +29,7 @@ describe 'Sinatra mapped_error_test.rb' do
     get('/', app)
   end
 
-  should 'use the StandardError handler if no matching handler found' do
+  would 'use the StandardError handler if no matching handler found' do
     app = Class.new{
       include Jellyfish
       handle(StandardError){ 'StandardError!' }
@@ -41,7 +41,7 @@ describe 'Sinatra mapped_error_test.rb' do
     body  .should.eq ['StandardError!']
   end
 
-  should 'favour subclass handler over superclass handler if available' do
+  would 'favour subclass handler over superclass handler if available' do
     app = Class.new{
       include Jellyfish
       handle(StandardError){ 'StandardError!' }
@@ -58,7 +58,7 @@ describe 'Sinatra mapped_error_test.rb' do
     handlers[exp].should.eq handlers[RuntimeError]
   end
 
-  should 'pass the exception to the handler' do
+  would 'pass the exception to the handler' do
     app = Class.new{
       include Jellyfish
       handle(exp){ |e|
@@ -72,7 +72,7 @@ describe 'Sinatra mapped_error_test.rb' do
     body.should.eq ['looks good']
   end
 
-  should 'raise errors from the app when handle_exceptions is false' do
+  would 'raise errors from the app when handle_exceptions is false' do
     app = Class.new{
       include Jellyfish
       handle_exceptions false
@@ -82,7 +82,7 @@ describe 'Sinatra mapped_error_test.rb' do
     lambda{ get('/', app) }.should.raise(exp)
   end
 
-  should 'call error handlers even when handle_exceptions is false' do
+  would 'call error handlers even when handle_exceptions is false' do
     app = Class.new{
       include Jellyfish
       handle_exceptions false
@@ -94,7 +94,7 @@ describe 'Sinatra mapped_error_test.rb' do
     body.should.eq ["she's there."]
   end
 
-  should 'catch Jellyfish::NotFound' do
+  would 'catch Jellyfish::NotFound' do
     app = Class.new{
       include Jellyfish
       get('/'){ not_found }
@@ -104,7 +104,7 @@ describe 'Sinatra mapped_error_test.rb' do
     status.should.eq 404
   end
 
-  should 'handle subclasses of Jellyfish::NotFound' do
+  would 'handle subclasses of Jellyfish::NotFound' do
     e   = Class.new(Jellyfish::NotFound)
     app = Class.new{
       include Jellyfish
@@ -115,7 +115,7 @@ describe 'Sinatra mapped_error_test.rb' do
     status.should.eq 404
   end
 
-  should 'no longer cascade with Jellyfish::NotFound' do
+  would 'no longer cascade with Jellyfish::NotFound' do
     app = Class.new{
       include Jellyfish
       get('/'){ not_found }
@@ -128,7 +128,7 @@ describe 'Sinatra mapped_error_test.rb' do
     status.should.eq 404
   end
 
-  should 'cascade with Jellyfish::Cascade' do
+  would 'cascade with Jellyfish::Cascade' do
     app = Class.new{
       include Jellyfish
       get('/'){ cascade }
@@ -142,7 +142,7 @@ describe 'Sinatra mapped_error_test.rb' do
     body  .should.eq ['reach']
   end
 
-  should 'inherit error mappings from base class' do
+  would 'inherit error mappings from base class' do
     sup = Class.new{
       include Jellyfish
       handle(exp){ 'sup' }
@@ -155,7 +155,7 @@ describe 'Sinatra mapped_error_test.rb' do
     body.should.eq ['sup']
   end
 
-  should 'override error mappings in base class' do
+  would 'override error mappings in base class' do
     sup = Class.new{
       include Jellyfish
       handle(exp){ 'sup' }
@@ -164,7 +164,6 @@ describe 'Sinatra mapped_error_test.rb' do
       handle(exp){ 'sub' }
       get('/'){ raise exp }
     }.new
-
 
     _, _, body = get('/', app)
     body.should.eq ['sub']

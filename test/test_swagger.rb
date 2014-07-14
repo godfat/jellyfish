@@ -2,7 +2,7 @@
 require 'jellyfish/test'
 
 describe Jellyfish do
-  behaves_like :jellyfish
+  paste :jellyfish
 
   app = Rack::Builder.app do
     eval File.read("#{File.dirname(__FILE__)}/../config.ru")
@@ -12,7 +12,7 @@ describe Jellyfish do
     hash.inject({}){ |r, (k, v)| r[k.to_s] = v; r }
   end
 
-  should '/swagger' do
+  would '/swagger' do
     status, headers, body = get('/swagger', app)
     status                 .should.eq 200
     headers['Content-Type'].should.eq 'application/json; charset=utf-8'
@@ -24,7 +24,7 @@ describe Jellyfish do
       [{'path' => '/users'}, {'path' => '/posts'}]
   end
 
-  should '/swagger/users' do
+  would '/swagger/users' do
     status, headers, body = get('/swagger/users', app)
     status                 .should.eq 200
     res = Jellyfish::Json.decode(body.to_a.join)
@@ -87,12 +87,12 @@ describe Jellyfish do
 
   swagger = Jellyfish::Swagger.new(Class.new{include Jellyfish})
 
-  should 'swagger_path' do
+  would 'swagger_path' do
     swagger.send(:swagger_path, '/')          .should.eq '/'
     swagger.send(:swagger_path, '/users/{id}').should.eq '/users'
   end
 
-  should 'nickname' do
+  would 'nickname' do
     swagger.send(:nickname, '/')                    .should.eq '/'
     swagger.send(:nickname, '/users/{id}')          .should.eq '/users/{id}'
     swagger.send(:nickname, %r{\A/users/(?<id>\d+)}).should.eq '/users/{id}'
@@ -100,14 +100,14 @@ describe Jellyfish do
     swagger.send(:nickname, %r{/(?<a>\d)/(?<b>\w)$}).should.eq '/{a}/{b}'
   end
 
-  should 'notes' do
+  would 'notes' do
     swagger.send(:notes, :summary => 'summary', :notes => 'notes').
       should.eq 'summary<br>notes'
     swagger.send(:notes, :summary => 'summary').
       should.eq 'summary'
   end
 
-  should 'path_parameters' do
+  would 'path_parameters' do
     swagger.send(:path_parameters, %r{/(?<a>\d)/(?<b>\w)/(?<c>\d)$},
                  :parameters => {:c => {:type => 'hash'}}).
       should.eq([{:name => 'a', :type => 'integer',
@@ -118,7 +118,7 @@ describe Jellyfish do
                   :required => true, :paramType => 'path'}])
   end
 
-  should 'query_parameters' do
+  would 'query_parameters' do
     swagger.send(:query_parameters,
                  :parameters => {:c => {:type => 'hash'}}).
       should.eq([:name => 'c', :type => 'hash',

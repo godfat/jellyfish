@@ -3,7 +3,7 @@ require 'jellyfish/test'
 
 # stolen from sinatra
 describe 'Sinatra filter_test.rb' do
-  behaves_like :jellyfish
+  paste :jellyfish
 
   def new_app base=Object, &block
     Class.new(base){
@@ -13,7 +13,7 @@ describe 'Sinatra filter_test.rb' do
     }.new
   end
 
-  should 'executes filters in the order defined' do
+  would 'executes filters in the order defined' do
     count = 0
     app = new_app{
       get     { count.should.eq 0; count = 1 }
@@ -27,7 +27,7 @@ describe 'Sinatra filter_test.rb' do
     body  .should.eq ['Hello World']
   end
 
-  should 'modify env' do
+  would 'modify env' do
     app = new_app{
       get{ env['BOO'] = 'MOO' }
       get('/foo'){ env['BOO'] }
@@ -38,7 +38,7 @@ describe 'Sinatra filter_test.rb' do
     body  .should.eq ['MOO']
   end
 
-  should 'modify instance variables available to routes' do
+  would 'modify instance variables available to routes' do
     app = new_app{
       get{ @foo = 'bar' }
       get('/foo') { @foo }
@@ -49,7 +49,7 @@ describe 'Sinatra filter_test.rb' do
     body  .should.eq ['bar']
   end
 
-  should 'allows redirects' do
+  would 'allows redirects' do
     app = new_app{
       get{ found '/bar' }
       get('/foo') do
@@ -64,7 +64,7 @@ describe 'Sinatra filter_test.rb' do
     body.join          .should =~ %r{<h1>Jellyfish found: /bar</h1>}
   end
 
-  should 'not modify the response with its return value' do
+  would 'not modify the response with its return value' do
     app = new_app{
       get{ 'Hello World!' }
       get '/foo' do
@@ -78,7 +78,7 @@ describe 'Sinatra filter_test.rb' do
     body  .should.eq ['cool']
   end
 
-  should 'modify the response with halt' do
+  would 'modify the response with halt' do
     app = new_app{
       get('/foo'){ halt [302, {}, ['Hi']] }
       get('/foo'){ 'should not happen' }
@@ -90,7 +90,7 @@ describe 'Sinatra filter_test.rb' do
     get('/bar', app).should.eq [402, {}, ['Ho']]
   end
 
-  should 'give you access to params' do
+  would 'give you access to params' do
     app = new_app{
       get{ @foo = Rack::Request.new(env).params['foo'] }
       get('/foo'){ @foo.reverse }
@@ -101,7 +101,7 @@ describe 'Sinatra filter_test.rb' do
     body  .should.eq ['looc']
   end
 
-  should 'run filters defined in superclasses' do
+  would 'run filters defined in superclasses' do
     sup = new_app{ get{ @foo = 'hello from superclass' } }.class
     app = new_app(sup){ get('/foo'){ @foo } }
 
@@ -112,7 +112,7 @@ describe 'Sinatra filter_test.rb' do
     app.class.routes['get'].size.should.eq 2
   end
 
-  should 'take an optional route pattern' do
+  would 'take an optional route pattern' do
     ran_filter = false
     app = new_app{
       get(%r{^/b}){ ran_filter = true }
@@ -125,7 +125,7 @@ describe 'Sinatra filter_test.rb' do
     ran_filter.should.eq true
   end
 
-  should 'generate block arguments from route pattern' do
+  would 'generate block arguments from route pattern' do
     subpath = nil
     app = new_app{
       get(%r{^/foo/(\w+)}){ |m| subpath = m[1] }
@@ -134,7 +134,7 @@ describe 'Sinatra filter_test.rb' do
     subpath.should.eq 'bar'
   end
 
-  should 'execute before and after filters in correct order' do
+  would 'execute before and after filters in correct order' do
     invoked = 0
     app = new_app{
       get     { invoked  = 2 }
@@ -148,7 +148,7 @@ describe 'Sinatra filter_test.rb' do
     invoked.should.eq 8
   end
 
-  should 'execute filters in the order defined' do
+  would 'execute filters in the order defined' do
     count = 0
     app = new_app{
       get('/'){ body 'Hello World' }
@@ -168,7 +168,7 @@ describe 'Sinatra filter_test.rb' do
     body  .should.eq ['Hello World']
   end
 
-  should 'allow redirects' do
+  would 'allow redirects' do
     app = new_app{
       get('/foo'){ 'ORLY' }
       get        { found '/bar' }
@@ -180,7 +180,7 @@ describe 'Sinatra filter_test.rb' do
     body.join          .should =~ %r{<h1>Jellyfish found: /bar</h1>}
   end
 
-  should 'not modify the response with its return value' do
+  would 'not modify the response with its return value' do
     app = new_app{
       get('/foo'){ body 'cool' }
       get        { 'Hello World!' }
@@ -191,7 +191,7 @@ describe 'Sinatra filter_test.rb' do
     body  .should.eq ['cool']
   end
 
-  should 'modify the response with halt' do
+  would 'modify the response with halt' do
     app = new_app{
       get('/foo'){ 'should not be returned' }
       get{ halt [302, {}, ['Hi']] }
@@ -202,7 +202,7 @@ describe 'Sinatra filter_test.rb' do
     body  .should.eq ['Hi']
   end
 
-  should 'take an optional route pattern' do
+  would 'take an optional route pattern' do
     ran_filter = false
     app = new_app{
       get('/foo') {}

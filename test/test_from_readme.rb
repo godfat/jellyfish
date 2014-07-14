@@ -15,12 +15,9 @@ describe 'from README.md' do
     /### ([^\n]+).+?``` ruby\n(.+?)\n```\n\n<!---(.+?)-->/m)
 
   codes.each.with_index do |(title, code, test), index|
-    if title =~ /NewRelic/i
-      warn "Skip NewRelic Test" unless Bacon.kind_of?(Bacon::TestUnitOutput)
-      next
-    end
+    next if title =~ /NewRelic/i
 
-    should "pass from README.md #%02d #{title}" % index do
+    would "pass from README.md #%02d #{title}" % index do
       method_path, expect = test.strip.split("\n", 2)
       method, path        = method_path.split(' ')
       uri                 = URI.parse(path)

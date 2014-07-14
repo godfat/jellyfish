@@ -3,9 +3,9 @@ require 'jellyfish/test'
 
 # stolen from sinatra
 describe 'Sinatra streaming_test.rb' do
-  behaves_like :jellyfish
+  paste :jellyfish
 
-  should 'return the concatinated body' do
+  would 'return the concatinated body' do
     app = Class.new{
       include Jellyfish
       get '/' do
@@ -20,7 +20,7 @@ describe 'Sinatra streaming_test.rb' do
     body.to_a.join.should.eq 'Hello World!'
   end
 
-  should 'postpone body generation' do
+  would 'postpone body generation' do
     stream = Jellyfish::ChunkedBody.new{ |out|
       10.times{ |i| out[i] }
     }
@@ -30,7 +30,7 @@ describe 'Sinatra streaming_test.rb' do
     end
   end
 
-  should 'give access to route specific params' do
+  would 'give access to route specific params' do
     app = Class.new{
       include Jellyfish
       get(%r{/(?<name>\w+)}){ |m|

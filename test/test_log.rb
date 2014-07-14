@@ -1,11 +1,8 @@
 
 require 'jellyfish/test'
-require 'muack'
-
-include Muack::API
 
 describe Jellyfish do
-  behaves_like :jellyfish
+  paste :jellyfish
 
   after do
     Muack.verify
@@ -15,7 +12,8 @@ describe Jellyfish do
     include Jellyfish
     get('/log')      { log('hi') }
     get('/log_error'){
-      log_error(stub(RuntimeError.new).backtrace{ ['backtrace'] }.object)
+      log_error(
+        Muack::API.stub(RuntimeError.new).backtrace{ ['backtrace'] }.object)
     }
     def self.name
       'Name'
@@ -28,13 +26,13 @@ describe Jellyfish do
     log
   end
 
-  should "log to env['rack.errors']" do
+  would "log to env['rack.errors']" do
     log = mock_log
     get('/log', app, 'rack.errors' => log)
     log.should.eq ['[Name] hi']
   end
 
-  should "log_error to env['rack.errors']" do
+  would "log_error to env['rack.errors']" do
     log = mock_log
     get('/log_error', app, 'rack.errors' => log)
     log.should.eq ['[Name] #<RuntimeError: RuntimeError> ["backtrace"]']

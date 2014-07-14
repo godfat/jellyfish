@@ -1,8 +1,5 @@
 
 require 'jellyfish/test'
-require 'muack'
-
-Bacon::Context.__send__(:include, Muack::API)
 
 describe Jellyfish do
   after do
@@ -16,7 +13,7 @@ describe Jellyfish do
 
   exp = RuntimeError.new
 
-  should "no RuntimeError: can't add a new key into hash during iteration" do
+  would "no RuntimeError: can't add a new key into hash during iteration" do
     # make static ancestors so that we could stub it
     ancestors = RuntimeError.ancestors
     stub(RuntimeError).ancestors{ancestors}

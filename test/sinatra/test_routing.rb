@@ -19,10 +19,10 @@ end
 
 # stolen from sinatra
 describe 'Sinatra routing_test.rb' do
-  behaves_like :jellyfish
+  paste :jellyfish
 
   %w[get put post delete options patch head].each do |verb|
-    should "define #{verb.upcase} request handlers with #{verb}" do
+    would "define #{verb.upcase} request handlers with #{verb}" do
       app = Class.new{
         include Jellyfish
         send verb, '/hello' do
@@ -36,7 +36,7 @@ describe 'Sinatra routing_test.rb' do
     end
   end
 
-  should '404s when no route satisfies the request' do
+  would '404s when no route satisfies the request' do
     app = Class.new{
       include Jellyfish
       get('/foo'){}
@@ -45,7 +45,7 @@ describe 'Sinatra routing_test.rb' do
     status.should.eq 404
   end
 
-  should 'allows using unicode' do
+  would 'allows using unicode' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedPath
@@ -55,7 +55,7 @@ describe 'Sinatra routing_test.rb' do
     status.should.eq 200
   end
 
-  should 'handle encoded slashes correctly' do
+  would 'handle encoded slashes correctly' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedPath
@@ -66,7 +66,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['foo/bar']
   end
 
-  should 'override the content-type in error handlers' do
+  would 'override the content-type in error handlers' do
     app = Class.new{
       include Jellyfish
       get{
@@ -91,7 +91,7 @@ describe 'Sinatra routing_test.rb' do
     body                   .should.eq ['<h1>Not Found</h1>']
   end
 
-  should 'match empty PATH_INFO to "/" if no route is defined for ""' do
+  would 'match empty PATH_INFO to "/" if no route is defined for ""' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedPath
@@ -103,7 +103,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['worked']
   end
 
-  should 'exposes params with indifferent hash' do
+  would 'exposes params with indifferent hash' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedParams
@@ -119,7 +119,7 @@ describe 'Sinatra routing_test.rb' do
     body.should.eq ['well, alright']
   end
 
-  should 'merges named params and query string params in params' do
+  would 'merges named params and query string params in params' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedParams
@@ -134,7 +134,7 @@ describe 'Sinatra routing_test.rb' do
     status.should.eq 200
   end
 
-  should 'support named captures like %r{/hello/(?<person>[^/?#]+)}' do
+  would 'support named captures like %r{/hello/(?<person>[^/?#]+)}' do
     app = Class.new{
       include Jellyfish
       get Regexp.new('/hello/(?<person>[^/?#]+)') do |m|
@@ -146,7 +146,7 @@ describe 'Sinatra routing_test.rb' do
     body.should.eq ['Hello Frank']
   end
 
-  should 'support optional named captures' do
+  would 'support optional named captures' do
     app = Class.new{
       include Jellyfish
       get Regexp.new('/page(?<format>.[^/?#]+)?') do |m|
@@ -167,7 +167,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['format=']
   end
 
-  should 'not concatinate params with the same name' do
+  would 'not concatinate params with the same name' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedParams
@@ -179,7 +179,7 @@ describe 'Sinatra routing_test.rb' do
     body.should.eq ['a']
   end
 
-  should 'support basic nested params' do
+  would 'support basic nested params' do
     app = Class.new{
       include Jellyfish
       get('/hi'){ request.params['person']['name'] }
@@ -191,7 +191,7 @@ describe 'Sinatra routing_test.rb' do
     body.should.eq ['John Doe']
   end
 
-  should "expose nested params with indifferent hash" do
+  would "expose nested params with indifferent hash" do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedParams
@@ -207,7 +207,7 @@ describe 'Sinatra routing_test.rb' do
     body.should.eq ['well, alright']
   end
 
-  should 'preserve non-nested params' do
+  would 'preserve non-nested params' do
     app = Class.new{
       include Jellyfish
       get '/foo' do
@@ -224,7 +224,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['looks good']
   end
 
-  should 'match paths that include spaces encoded with %20' do
+  would 'match paths that include spaces encoded with %20' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedPath
@@ -236,7 +236,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['looks good']
   end
 
-  should 'match paths that include spaces encoded with +' do
+  would 'match paths that include spaces encoded with +' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedPath
@@ -248,7 +248,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['looks good']
   end
 
-  should 'make regular expression captures available' do
+  would 'make regular expression captures available' do
     app = Class.new{
       include Jellyfish
       get(/^\/fo(.*)\/ba(.*)/) do |m|
@@ -262,7 +262,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['right on']
   end
 
-  it 'supports regular expression look-alike routes' do
+  would 'support regular expression look-alike routes' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::NormalizedParams
@@ -287,12 +287,12 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['right on']
   end
 
-  should 'raise a TypeError when pattern is not a String or Regexp' do
+  would 'raise a TypeError when pattern is not a String or Regexp' do
     lambda{ Class.new{ include Jellyfish; get(42){} } }.
       should.raise(TypeError)
   end
 
-  should 'return response immediately on next or halt' do
+  would 'return response immediately on next or halt' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::MultiActions
@@ -316,7 +316,7 @@ describe 'Sinatra routing_test.rb' do
     end
   end
 
-  should 'halt with a response tuple' do
+  would 'halt with a response tuple' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::MultiActions
@@ -332,7 +332,7 @@ describe 'Sinatra routing_test.rb' do
     body                   .should.eq ['Hello World']
   end
 
-  should 'transition to the next matching route on next' do
+  would 'transition to the next matching route on next' do
     app = Class.new{
       include Jellyfish
       controller_include Jellyfish::MultiActions, Jellyfish::NormalizedParams
@@ -352,7 +352,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['Hello World']
   end
 
-  should 'match routes defined in superclasses' do
+  would 'match routes defined in superclasses' do
     sup = Class.new{
       include Jellyfish
       get('/foo'){ 'foo' }
@@ -368,7 +368,7 @@ describe 'Sinatra routing_test.rb' do
     end
   end
 
-  should 'match routes itself first then downward app' do
+  would 'match routes itself first then downward app' do
     sup = Class.new{
       include Jellyfish
       get('/foo'){ 'foo sup' }
@@ -388,7 +388,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['bar sup']
   end
 
-  should 'allow using call to fire another request internally' do
+  would 'allow using call to fire another request internally' do
     app = Class.new{
       include Jellyfish
       get '/foo' do
@@ -408,7 +408,7 @@ describe 'Sinatra routing_test.rb' do
     body  .should.eq ['BAR']
   end
 
-  should 'play well with other routing middleware' do
+  would 'play well with other routing middleware' do
     middleware = Class.new{include Jellyfish}
     inner_app  = Class.new{include Jellyfish; get('/foo'){ 'hello' } }
     app = Rack::Builder.app do
