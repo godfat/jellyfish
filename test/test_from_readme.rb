@@ -1,12 +1,14 @@
 
 require 'jellyfish/test'
 require 'uri'
+require 'stringio'
 
 describe 'from README.md' do
   after do
     [:Tank, :Heater, :Protector].each do |const|
       Object.send(:remove_const, const) if Object.const_defined?(const)
     end
+    Muack.verify
   end
 
   readme = File.read(
@@ -23,11 +25,18 @@ describe 'from README.md' do
       uri                 = URI.parse(path)
       pinfo, query        = uri.path, uri.query
 
+      sock = nil
       status, headers, body = File.open(File::NULL) do |input|
         Rack::Builder.app{ eval(code) }.call(
           'REQUEST_METHOD' => method, 'PATH_INFO'  => pinfo,
-          'QUERY_STRING'   => query , 'rack.input' => input,
-          'SCRIPT_NAME'    => '')
+          'QUERY_STRING'   => query , 'SCRIPT_NAME'=> ''   ,
+          'rack.input'     => input ,
+          'rack.hijack'    => lambda{
+            sock = StringIO.new
+            # or TypeError: no implicit conversion of StringIO into IO
+            mock(IO).select([sock]){ [[sock], [], []] }
+            sock
+          })
       end
 
       body.extend(Enumerable)

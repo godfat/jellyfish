@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Lin Jen-Shin (godfat)"]
-  s.date = "2014-07-14"
+  s.date = "2014-11-04"
   s.description = "Pico web framework for building API-centric web applications.\nFor Rack applications or Rack middlewares. Around 250 lines of code."
   s.email = ["godfat (XD) godfat.org"]
   s.files = [
@@ -38,6 +38,7 @@ Gem::Specification.new do |s|
   "lib/jellyfish/swagger.rb",
   "lib/jellyfish/test.rb",
   "lib/jellyfish/version.rb",
+  "lib/jellyfish/websocket.rb",
   "public/css/screen.css",
   "public/index.html",
   "public/js/shred.bundle.js",
@@ -56,10 +57,11 @@ Gem::Specification.new do |s|
   "test/test_log.rb",
   "test/test_misc.rb",
   "test/test_swagger.rb",
-  "test/test_threads.rb"]
+  "test/test_threads.rb",
+  "test/test_websocket.rb"]
   s.homepage = "https://github.com/godfat/jellyfish"
   s.licenses = ["Apache License 2.0"]
-  s.rubygems_version = "2.3.0"
+  s.rubygems_version = "2.4.2"
   s.summary = "Pico web framework for building API-centric web applications."
   s.test_files = [
   "test/sinatra/test_base.rb",
@@ -72,5 +74,6 @@ Gem::Specification.new do |s|
   "test/test_log.rb",
   "test/test_misc.rb",
   "test/test_swagger.rb",
-  "test/test_threads.rb"]
+  "test/test_threads.rb",
+  "test/test_websocket.rb"]
 end

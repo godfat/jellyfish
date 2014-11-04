@@ -25,8 +25,11 @@ For Rack applications or Rack middlewares. Around 250 lines of code.
   _great_ convenience, or simply stay simple for simplicity.
 * More features are added as extensions.
 * Consider use [rack-protection][] if you're not only building an API server.
+* Consider use [websocket_parser][] if you're trying to use WebSocket.
+  Please check example below.
 
 [rack-protection]: https://github.com/rkh/rack-protection
+[websocket_parser]: https://github.com/afcapel/websocket_parser
 
 ## FEATURES:
 
@@ -907,6 +910,50 @@ GET /chunked
  {'Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'},
  ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
   "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n\r\n"]]
+-->
+
+### Using WebSocket
+
+Note that this only works for Rack servers which support [hijack][].
+You're better off with a threaded server such as [Rainbows!][] with
+thread based concurrency model, or [Puma][].
+
+Event-driven based server is a whole different story though. Since
+EventMachine is basically dead, we could see if there would be a
+[Celluloid-IO][] based web server production ready in the future,
+so that we could take the advantage of event based approach.
+
+[hijack]: http://www.rubydoc.info/github/rack/rack/file/SPEC#Hijacking
+[Rainbows!]: http://rainbows.bogomips.org/
+[Puma]: http://puma.io/
+[Celluloid-IO]: https://github.com/celluloid/celluloid-io
+
+``` ruby
+class Tank
+  include Jellyfish
+  controller_include Jellyfish::WebSocket
+  get '/echo' do
+    switch_protocol do |msg|
+      ws_write(msg)
+    end
+    ws_write('Hi!')
+    ws_start
+  end
+end
+run Tank.new
+```
+
+<!---
+GET /echo
+sock.string.should.eq <<-HTTP.chomp
+HTTP/1.1 101 Switching Protocols\r
+Upgrade: websocket\r
+Connection: Upgrade\r
+Sec-WebSocket-Accept: Kfh9QIsMVZcl6xEPYxPHzW8SZ8w=\r
+\r
+\x81\u0003Hi!
+HTTP
+[200, {}, ['']]
 -->
 
 ### Use Swagger to generate API documentation

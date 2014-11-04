@@ -10,6 +10,7 @@ module Jellyfish
   autoload :NormalizedPath  , 'jellyfish/normalized_path'
 
   autoload :ChunkedBody, 'jellyfish/chunked_body'
+  autoload :WebSocket  , 'jellyfish/websocket'
 
   Cascade  = Object.new
   GetValue = Object.new
