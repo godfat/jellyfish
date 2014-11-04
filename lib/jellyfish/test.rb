@@ -7,8 +7,8 @@ require 'rack'
 Pork::Executor.__send__(:include, Muack::API)
 
 copy :jellyfish do
-  %w[options get head post put delete patch].each do |method|
-    module_eval <<-RUBY
+  module_eval(%w[options get head post put delete patch].map{ |method|
+    <<-RUBY
       def #{method} path='/', app=app, env={}
         File.open(File::NULL) do |input|
           app.call({'PATH_INFO'      => path              ,
@@ -21,5 +21,5 @@ copy :jellyfish do
         end
       end
     RUBY
-  end
+  }.join("\n"))
 end
