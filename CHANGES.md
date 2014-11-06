@@ -1,5 +1,15 @@
 # CHANGES
 
+## Jellyfish 1.0.1 -- 2014-11-07
+
+### Enhancements for Jellyfish core
+
+* Now `Jellyfish.handle` could take multiple exceptions as the arguments.
+
+### Other enhancements
+
+* Introduced `Jellyfish::WebSocket` for basic websocket support.
+
 ## Jellyfish 1.0.0 -- 2014-03-17
 
 ### Incompatible changes
