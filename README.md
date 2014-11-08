@@ -1,4 +1,4 @@
-# Jellyfish[![Build Status](https://secure.travis-ci.org/godfat/jellyfish.png?branch=master)](http://travis-ci.org/godfat/jellyfish) [![Coverage Status](https://coveralls.io/repos/godfat/jellyfish/badge.png)](https://coveralls.io/r/godfat/jellyfish)
+# Jellyfish [![Build Status](https://secure.travis-ci.org/godfat/jellyfish.png?branch=master)](http://travis-ci.org/godfat/jellyfish) [![Coverage Status](https://coveralls.io/repos/godfat/jellyfish/badge.png)](https://coveralls.io/r/godfat/jellyfish)
 
 by Lin Jen-Shin ([godfat](http://godfat.org))
 
