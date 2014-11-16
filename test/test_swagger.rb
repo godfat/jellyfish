@@ -25,7 +25,7 @@ describe Jellyfish do
   end
 
   would '/swagger/users' do
-    status, headers, body = get('/swagger/users', app)
+    status, _, body = get('/swagger/users', app)
     status                 .should.eq 200
     res = Jellyfish::Json.decode(body.to_a.join)
     res['basePath']    .should.eq 'https://localhost:8080'

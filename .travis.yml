@@ -6,5 +6,5 @@ rvm:
   - rbx-2
   - jruby
 
+install: 'bundle install --retry=3'
 script: 'ruby -r bundler/setup -S rake test'
-sudo: false
