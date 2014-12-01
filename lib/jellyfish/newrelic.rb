@@ -23,9 +23,3 @@ module Jellyfish
     end
   end
 end
-
-module NewRelic::MetricParser::WebTransaction::Jellyfish
-  include NewRelic::MetricParser::WebTransaction::Pattern
-  def is_web_transaction?;        true; end
-  def category           ; 'Jellyfish'; end
-end
