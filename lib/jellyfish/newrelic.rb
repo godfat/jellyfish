@@ -14,11 +14,10 @@ module Jellyfish
                argument
              end.to_s[1..-1]
       name = "#{env['REQUEST_METHOD']} #{path}"
-        # magic category: NewRelic::MetricParser::WebTransaction::Jellyfish
-      perform_action_with_newrelic_trace(:category => 'Controller/Jellyfish',
-                                         :path     => path                  ,
-                                         :name     => name                  ,
-                                         :request  => request               ,
+
+      perform_action_with_newrelic_trace(:category => :rack  ,
+                                         :name     => name   ,
+                                         :request  => request,
                                          :params   => request.params){super}
     end
   end
