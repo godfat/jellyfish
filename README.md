@@ -986,6 +986,7 @@ GET /swagger
 
 ## CONTRIBUTORS:
 
+* Jason R. Clark (@jasonrclark)
 * Lin Jen-Shin (@godfat)
 
 ## LICENSE:
