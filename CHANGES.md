@@ -1,5 +1,9 @@
 # CHANGES
 
+## Jellyfish 1.0.2 -- 2014-12-09
+
+* `Jellyfish::NewRelic` is fixed. Thanks Jason R. Clark (@jasonrclark)
+
 ## Jellyfish 1.0.1 -- 2014-11-07
 
 ### Enhancements for Jellyfish core

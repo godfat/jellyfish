@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: jellyfish 1.0.1 ruby lib
+# stub: jellyfish 1.0.2 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "jellyfish"
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib"]
   s.authors = ["Lin Jen-Shin (godfat)"]
-  s.date = "2014-11-07"
+  s.date = "2014-12-09"
   s.description = "Pico web framework for building API-centric web applications.\nFor Rack applications or Rack middlewares. Around 250 lines of code."
   s.email = ["godfat (XD) godfat.org"]
   s.files = [
@@ -61,7 +61,7 @@ Gem::Specification.new do |s|
   "test/test_websocket.rb"]
   s.homepage = "https://github.com/godfat/jellyfish"
   s.licenses = ["Apache License 2.0"]
-  s.rubygems_version = "2.4.2"
+  s.rubygems_version = "2.4.5"
   s.summary = "Pico web framework for building API-centric web applications."
   s.test_files = [
   "test/sinatra/test_base.rb",
