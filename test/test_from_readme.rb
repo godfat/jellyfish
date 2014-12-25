@@ -28,6 +28,7 @@ describe 'from README.md' do
       sock = nil
       status, headers, body = File.open(File::NULL) do |input|
         Rack::Builder.app{ eval(code) }.call(
+          'HTTP_VERSION'   => 'HTTP/1.1',
           'REQUEST_METHOD' => method, 'PATH_INFO'  => pinfo,
           'QUERY_STRING'   => query , 'SCRIPT_NAME'=> ''   ,
           'rack.input'     => input ,

@@ -98,7 +98,7 @@ describe 'Sinatra base_test.rb' do
       status                   .should.eq 210
       headers['X-Downstream']  .should.eq 'true'
       headers['Content-Length'].should.eq '28'
-      body                     .should.eq ['Hello after explicit forward']
+      body.to_a                .should.eq ['Hello after explicit forward']
     end
   end
 end
