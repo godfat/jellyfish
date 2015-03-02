@@ -40,6 +40,12 @@ describe 'from README.md' do
           })
       end
 
+      if hijack = headers.delete('rack.hijack')
+        sock = StringIO.new
+        hijack.call(sock)
+        body = sock.string.each_line("\n\n")
+      end
+
       body.extend(Enumerable)
       [status, headers, body.to_a].should.eq eval(expect, binding, __FILE__)
     end

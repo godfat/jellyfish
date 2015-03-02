@@ -912,6 +912,56 @@ GET /chunked
   "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n\r\n"]]
 -->
 
+### Server Sent Event (SSE)
+
+``` ruby
+class Tank
+  include Jellyfish
+  class Body
+    def each
+      (0..4).each{ |i| yield "data: #{i}\n\n" }
+    end
+  end
+  get '/sse' do
+    headers_merge('Content-Type' => 'text/event-stream')
+    Body.new
+  end
+end
+run Tank.new
+```
+
+<!---
+GET /sse
+[200,
+ {'Content-Type' => 'text/event-stream'},
+ ["data: 0\n\n", "data: 1\n\n", "data: 2\n\n", "data: 3\n\n", "data: 4\n\n"]]
+-->
+
+### Server Sent Event (SSE) with Rack Hijacking
+
+``` ruby
+class Tank
+  include Jellyfish
+  get '/sse' do
+    headers_merge(
+      'Content-Type' => 'text/event-stream',
+      'rack.hijack'  => lambda do |sock|
+        (0..4).each do |i|
+          sock.write("data: #{i}\n\n")
+        end
+      end)
+  end
+end
+run Tank.new
+```
+
+<!---
+GET /sse
+[200,
+ {'Content-Type' => 'text/event-stream'},
+ ["data: 0\n\n", "data: 1\n\n", "data: 2\n\n", "data: 3\n\n", "data: 4\n\n"]]
+-->
+
 ### Using WebSocket
 
 Note that this only works for Rack servers which support [hijack][].
