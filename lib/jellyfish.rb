@@ -37,7 +37,7 @@ module Jellyfish
 
   # -----------------------------------------------------------------
 
-  class Controller
+  module Imp
     attr_reader :routes, :jellyfish, :env
     def initialize routes, jellyfish
       @routes, @jellyfish = routes, jellyfish
@@ -123,6 +123,10 @@ module Jellyfish
     def rack_body v
       if v.respond_to?(:each) || v.respond_to?(:to_path) then v else [v] end
     end
+  end
+
+  class Controller
+    include Imp
   end
 
   # -----------------------------------------------------------------
