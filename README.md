@@ -949,6 +949,7 @@ class Tank
         (0..4).each do |i|
           sock.write("data: #{i}\n\n")
         end
+        sock.close
       end)
   end
 end
