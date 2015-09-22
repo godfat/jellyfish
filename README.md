@@ -439,6 +439,148 @@ GET /123
  ["Jelly jumps.\n"]]
 -->
 
+### Extension: Jellyfish::Builder, a faster Rack::Builder and Rack::URLMap
+
+Default `Rack::Builder` and `Rack::URLMap` is routing via linear search,
+which could be very slow with a large number of routes. We could use
+`Jellyfish::Builder` in this case because it would compile the routes
+into a regular expression, it would be matching much faster than
+linear search.
+
+Note that `Jellyfish::Builder` is not a complete compatible implementation.
+The followings are intentional:
+
+* There's no `Jellyfish::Builder.call` because it doesn't make sense in my
+  opinion. Always use `Jellyfish::Builder.app` instead.
+
+* There's no `Jellyfish::Builder.parse_file` and
+  `Jellyfish::Builder.new_from_string` because Rack servers are not
+  going to use `Jellyfish::Builder` to parse `config.ru` at this point.
+  We could provide this if there's a need.
+
+* `Jellyfish::URLMap` does not modify `env`, and it would call the app with
+  another instance of Hash. Mutating data is a bad idea.
+
+* `Jellyfish::URLMap` does not try to match on host because I am not sure
+  if there's anyone would need this feature?
+
+* All other tests passed the same test suites for `Rack::Builder`.
+
+``` ruby
+require 'jellyfish'
+
+run Jellyfish::Builder.app{
+  map '/a'   do; run lambda{ |_| [200, {}, ["a\n"]  ] }; end
+  map '/b'   do; run lambda{ |_| [200, {}, ["b\n"]  ] }; end
+  map '/c'   do; run lambda{ |_| [200, {}, ["c\n"]  ] }; end
+  map '/d'   do; run lambda{ |_| [200, {}, ["d\n"]  ] }; end
+  map '/e' do
+    map '/f' do; run lambda{ |_| [200, {}, ["e/f\n"]] }; end
+    map '/g' do; run lambda{ |_| [200, {}, ["e/g\n"]] }; end
+    map '/h' do; run lambda{ |_| [200, {}, ["e/h\n"]] }; end
+    map '/i' do; run lambda{ |_| [200, {}, ["e/i\n"]] }; end
+    map '/'  do; run lambda{ |_| [200, {}, ["e\n"]]   }; end
+  end
+  map '/j'   do; run lambda{ |_| [200, {}, ["j\n"]  ] }; end
+  map '/k'   do; run lambda{ |_| [200, {}, ["k\n"]  ] }; end
+  map '/l'   do; run lambda{ |_| [200, {}, ["l\n"]  ] }; end
+  map '/m' do
+    map '/g' do; run lambda{ |_| [200, {}, ["m/g\n"]] }; end
+    run lambda{ |_| [200, {}, ["m\n"]  ] }
+  end
+
+  use Rack::ContentLength
+  run lambda{ |_| [200, {}, ["/\n"]] }
+}
+```
+
+<!---
+GET /a
+[200, {}, ["a\n"]]
+
+GET /a/x
+[200, {}, ["a\n"]]
+
+GET /b
+[200, {}, ["b\n"]]
+
+GET /c
+[200, {}, ["c\n"]]
+
+GET /d
+[200, {}, ["d\n"]]
+
+GET /e/f
+[200, {}, ["e/f\n"]]
+
+GET /e/g
+[200, {}, ["e/g\n"]]
+
+GET /e/h
+[200, {}, ["e/h\n"]]
+
+GET /e/i
+[200, {}, ["e/i\n"]]
+
+GET /e/
+[200, {}, ["e\n"]]
+
+GET /e
+[200, {}, ["e\n"]]
+
+GET /e/x
+[200, {}, ["e\n"]]
+
+GET /j
+[200, {}, ["j\n"]]
+
+GET /k
+[200, {}, ["k\n"]]
+
+GET /l
+[200, {}, ["l\n"]]
+
+GET /m/g
+[200, {}, ["m/g\n"]]
+
+GET /m
+[200, {}, ["m\n"]]
+
+GET /m/
+[200, {}, ["m\n"]]
+
+GET /m/x
+[200, {}, ["m\n"]]
+
+GET /
+[200, {'Content-Length' => '2'}, ["/\n"]]
+
+GET /x
+[200, {'Content-Length' => '2'}, ["/\n"]]
+
+GET /ab
+[200, {'Content-Length' => '2'}, ["/\n"]]
+-->
+
+You could try a stupid benchmark yourself:
+
+    ruby -Ilib bench/bench_builder.rb
+
+For a 1000 routes app, here's my result:
+
+```
+Calculating -------------------------------------
+   Jellyfish::URLMap     5.726k i/100ms
+        Rack::URLMap   167.000  i/100ms
+-------------------------------------------------
+   Jellyfish::URLMap     62.397k (± 1.2%) i/s -    314.930k
+        Rack::URLMap      1.702k (± 1.5%) i/s -      8.517k
+
+Comparison:
+   Jellyfish::URLMap:    62397.3 i/s
+        Rack::URLMap:     1702.0 i/s - 36.66x slower
+```
+
 ### Extension: MultiActions (Filters)
 
 ``` ruby

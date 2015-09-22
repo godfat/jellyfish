@@ -9,6 +9,7 @@ module Jellyfish
   autoload :NormalizedParams, 'jellyfish/normalized_params'
   autoload :NormalizedPath  , 'jellyfish/normalized_path'
 
+  autoload :Builder    , 'jellyfish/builder'
   autoload :ChunkedBody, 'jellyfish/chunked_body'
   autoload :WebSocket  , 'jellyfish/websocket'
 
