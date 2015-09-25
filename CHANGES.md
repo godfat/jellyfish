@@ -1,5 +1,19 @@
 # CHANGES
 
+## Jellyfish 1.1.0 -- 2015-09-25
+
+### Incompatible changes
+
+* `Jellyfish::Sinatra`, `Jellyfish::MultiActions`, and `Jellyfish::Swagger`
+  were extracted to
+  [jellyfish-contrib](https://github.com/godfat/jellyfish-contrib)
+
+### Other enhancements
+
+* Added `Jellyfish::Builder` and `Jellyfish::URLMap` which is 36 times faster
+  than `Rack::Builder` and `Rack::URLMap` given an application with
+  1000 routes.
+
 ## Jellyfish 1.0.2 -- 2014-12-09
 
 * `Jellyfish::NewRelic` is fixed. Thanks Jason R. Clark (@jasonrclark)
