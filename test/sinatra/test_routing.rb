@@ -292,66 +292,6 @@ describe 'Sinatra routing_test.rb' do
       should.raise(TypeError)
   end
 
-  would 'return response immediately on next or halt' do
-    app = Class.new{
-      include Jellyfish
-      controller_include Jellyfish::MultiActions
-
-      get '/next' do
-        body 'Hello World'
-        next
-      end
-
-      get '/halt' do
-        body 'Hello World'
-        halt
-        'Boo-hoo World'
-      end
-    }.new
-
-    %w[/next /halt].each do |path|
-      status, _, body = get(path, app)
-      status.should.eq 200
-      body  .should.eq ['Hello World']
-    end
-  end
-
-  would 'halt with a response tuple' do
-    app = Class.new{
-      include Jellyfish
-      controller_include Jellyfish::MultiActions
-
-      get '/' do
-        halt [295, {'Content-Type' => 'text/plain'}, ['Hello World']]
-      end
-    }.new
-
-    status, headers, body = get('/', app)
-    status                 .should.eq 295
-    headers['Content-Type'].should.eq 'text/plain'
-    body                   .should.eq ['Hello World']
-  end
-
-  would 'transition to the next matching route on next' do
-    app = Class.new{
-      include Jellyfish
-      controller_include Jellyfish::MultiActions, Jellyfish::NormalizedParams
-      get %r{^/(?<foo>\w+)} do
-        params['foo'].should.eq 'bar'
-        next
-      end
-
-      get do
-        params.should.not.include?('foo')
-        'Hello World'
-      end
-    }.new
-
-    status, _, body = get('/bar', app)
-    status.should.eq 200
-    body  .should.eq ['Hello World']
-  end
-
   would 'match routes defined in superclasses' do
     sup = Class.new{
       include Jellyfish

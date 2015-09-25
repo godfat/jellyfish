@@ -17,20 +17,6 @@ class Jelly
     end
   }
 
-  def self.info
-    {:title       => 'Jellyfish Swagger UI',
-     :description =>
-       'This is a simple example for using Jellyfish and' \
-       ' Swagger UI altogether. You could also try the'   \
-       ' <a href="http://swagger.wordnik.com/">official Swagger UI app</a>,' \
-       ' and fill it with the swagger URL.'
-     }
-  end
-
-  def self.swagger_apiVersion
-    '1.0.0'
-  end
-
   handle Jellyfish::NotFound do |e|
     status 404
     body   %Q|{"error":{"name":"NotFound"}}\n|
@@ -46,30 +32,15 @@ class Jelly
     body render('error' => {'name' => name, 'message' => message})
   end
 
-  get '/users',
-    :summary => 'List users',
-    :notes   => 'Note that we do not really have users.' do
+  get '/users' do
     render [:name => 'jellyfish']
   end
 
-  post '/users',
-    :summary => 'Create a user',
-    :notes   => 'Here we demonstrate how to write the swagger doc.',
-    :parameters => {:name => {:type => :string, :required => true,
-                              :description => 'The name of the user'},
-                    :sane => {:type => :boolean,
-                              :description => 'If the user is sane'},
-                    :type => {:type => :string,
-                              :description => 'What kind of user',
-                              :enum => %w[good neutral evil]}},
-    :responseMessages => [{:code => 400, :message => 'Invalid name'}] do
+  post '/users' do
     render :message => "jellyfish #{request.params['name']} created."
   end
 
-  put %r{\A/users/(?<id>\d+)},
-    :summary => 'Update a user',
-    :parameters => {:id => {:type => :integer,
-                            :description => 'The id of the user'}} do |match|
+  put %r{\A/users/(?<id>\d+)} do |match|
     render :message => "jellyfish ##{match[:id]} updated."
   end
 
@@ -77,8 +48,7 @@ class Jelly
     render :message => "jellyfish ##{match[:id]} deleted."
   end
 
-  get %r{\A/posts/(?<year>\d+)-(?<month>\d+)/(?<name>\w+)},
-    :summary => 'Get a post' do |match|
+  get %r{\A/posts/(?<year>\d+)-(?<month>\d+)/(?<name>\w+)} do |match|
     render Hash[match.names.zip(match.captures)]
   end
 
@@ -87,15 +57,11 @@ class Jelly
   end
 end
 
-App = Rack::Builder.app do
+App = Jellyfish::Builder.app do
   use Rack::CommonLogger
   use Rack::Chunked
   use Rack::ContentLength
   use Rack::Deflater
-
-  map '/swagger' do
-    run Jellyfish::Swagger.new('', Jelly)
-  end
 
   run Rack::Cascade.new([Rack::File.new('public/index.html'),
                          Rack::File.new('public'),

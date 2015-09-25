@@ -13,7 +13,11 @@ by Lin Jen-Shin ([godfat](http://godfat.org))
 ## DESCRIPTION:
 
 Pico web framework for building API-centric web applications.
-For Rack applications or Rack middlewares. Around 250 lines of code.
+For Rack applications or Rack middleware. Around 250 lines of code.
+
+Check [jellyfish-contrib][] for extra extensions.
+
+[jellyfish-contrib]: https://github.com/godfat/jellyfish-contrib
 
 ## DESIGN:
 
@@ -43,7 +47,7 @@ For Rack applications or Rack middlewares. Around 250 lines of code.
 * String routes, e.g. `get '/'`
 * Custom routes, e.g. `get Matcher.new`
 * Build for either Rack applications or Rack middleware
-* Include extensions for more features (There's a Sinatra extension)
+* Include extensions for more features (checkout [jellyfish-contrib][])
 
 ## WHY?
 
@@ -59,9 +63,7 @@ Because Sinatra is too complex and inconsistent for me.
 
 ## SYNOPSIS:
 
-You could also take a look at [config.ru](config.ru) as an example, which
-also uses [Swagger](https://helloreverb.com/developers/swagger) to generate
-API documentation.
+You could also take a look at [config.ru](config.ru) as an example.
 
 ### Hello Jellyfish, your lovely config.ru
 
@@ -581,33 +583,6 @@ Comparison:
         Rack::URLMap:     1702.0 i/s - 36.66x slower
 ```
 
-### Extension: MultiActions (Filters)
-
-``` ruby
-require 'jellyfish'
-class Tank
-  include Jellyfish
-  controller_include Jellyfish::MultiActions
-
-  get do # wildcard before filter
-    @state = 'jumps'
-  end
-  get do
-    "Jelly #{@state}.\n"
-  end
-end
-use Rack::ContentLength
-use Rack::ContentType, 'text/plain'
-run Tank.new
-```
-
-<!---
-GET /123
-[200,
- {'Content-Length' => '13', 'Content-Type' => 'text/plain'},
- ["Jelly jumps.\n"]]
--->
-
 ### Extension: NormalizedParams (with force_encoding)
 
 ``` ruby
@@ -656,39 +631,6 @@ GET /%E5%9B%A7
  ["/%E5%9B%A7=/\u{56e7}\n"]]
 -->
 
-### Extension: Sinatra flavoured controller
-
-It's an extension collection contains:
-
-* MultiActions
-* NormalizedParams
-* NormalizedPath
-
-``` ruby
-require 'jellyfish'
-class Tank
-  include Jellyfish
-  controller_include Jellyfish::Sinatra
-
-  get do # wildcard before filter
-    @state = 'jumps'
-  end
-  get %r{^/(?<id>\d+)$} do
-    "Jelly ##{params[:id]} #{@state}.\n"
-  end
-end
-use Rack::ContentLength
-use Rack::ContentType, 'text/plain'
-run Tank.new
-```
-
-<!---
-GET /123
-[200,
- {'Content-Length' => '18', 'Content-Type' => 'text/plain'},
- ["Jelly #123 jumps.\n"]]
--->
-
 ### Extension: NewRelic
 
 ``` ruby
@@ -719,7 +661,6 @@ GET /
 
 ### Extension: Using multiple extensions with custom controller
 
-This is effectively the same as using Jellyfish::Sinatra extension.
 Note that the controller should be assigned lastly in order to include
 modules remembered in controller_include.
 
@@ -728,16 +669,13 @@ require 'jellyfish'
 class Tank
   include Jellyfish
   class MyController < Jellyfish::Controller
-    include Jellyfish::MultiActions
+    include Jellyfish::WebSocket
   end
   controller_include NormalizedParams, NormalizedPath
   controller MyController
 
-  get do # wildcard before filter
-    @state = 'jumps'
-  end
   get %r{^/(?<id>\d+)$} do
-    "Jelly ##{params[:id]} #{@state}.\n"
+    "Jelly ##{params[:id]} jumps.\n"
   end
 end
 use Rack::ContentLength
@@ -901,35 +839,6 @@ GET /status
 [200,
  {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
  ["30\u{2103}\n"]]
--->
-
-### Halt in before action
-
-``` ruby
-require 'jellyfish'
-class Tank
-  include Jellyfish
-  controller_include Jellyfish::MultiActions
-
-  get do # wildcard before filter
-    body "Done!\n"
-    halt
-  end
-  get '/' do
-    "Never reach.\n"
-  end
-end
-
-use Rack::ContentLength
-use Rack::ContentType, 'text/plain'
-run Tank.new
-```
-
-<!---
-GET /status
-[200,
- {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
- ["Done!\n"]]
 -->
 
 ### One huge tank
@@ -1147,34 +1056,6 @@ Sec-WebSocket-Accept: Kfh9QIsMVZcl6xEPYxPHzW8SZ8w=\r
 \x81\u0003Hi!
 HTTP
 [200, {}, ['']]
--->
-
-### Use Swagger to generate API documentation
-
-For a complete example, checkout [config.ru](config.ru).
-
-``` ruby
-require 'jellyfish'
-class Tank
-  include Jellyfish
-  get %r{^/(?<id>\d+)$}, :notes => 'This is an API note' do |match|
-    "Jelly ##{match[:id]}\n"
-  end
-end
-use Rack::ContentLength
-use Rack::ContentType, 'text/plain'
-map '/swagger' do
-  run Jellyfish::Swagger.new('', Tank)
-end
-run Tank.new
-```
-
-<!---
-GET /swagger
-[200,
- {'Content-Type'   => 'application/json; charset=utf-8',
-  'Content-Length' => '81'},
- ['{"swaggerVersion":"1.2","info":{},"apiVersion":"0.1.0","apis":[{"path":"/{id}"}]}']]
 -->
 
 ## CONTRIBUTORS:
