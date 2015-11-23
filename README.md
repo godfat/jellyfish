@@ -236,7 +236,7 @@ run Tank.new
 GET /yell
 body = case RUBY_ENGINE
        when 'jruby'
-         "No one hears you: (eval):9:in `Tank'\n"
+         "No one hears you: (eval):9:in `(root)'\n"
        when 'rbx'
          "No one hears you: kernel/delta/kernel.rb:78:in `yell (method_missing)'\n"
        else
