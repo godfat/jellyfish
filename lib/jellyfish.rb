@@ -7,6 +7,7 @@ module Jellyfish
   autoload :NormalizedPath  , 'jellyfish/normalized_path'
 
   autoload :Builder    , 'jellyfish/builder'
+  autoload :Rewrite    , 'jellyfish/rewrite'
   autoload :ChunkedBody, 'jellyfish/chunked_body'
   autoload :WebSocket  , 'jellyfish/websocket'
 

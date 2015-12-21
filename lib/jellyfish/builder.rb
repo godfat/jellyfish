@@ -3,8 +3,8 @@ require 'jellyfish/urlmap'
 
 module Jellyfish
   class Builder
-    def self.app app=nil, &block
-      new(app, &block).to_app
+    def self.app app=nil, to=nil, &block
+      new(app, &block).to_app(to)
     end
 
     def initialize app=nil, &block
@@ -28,23 +28,30 @@ module Jellyfish
       @warmup = lam || block
     end
 
-    def map path, &block
-      (@map ||= {})[path] = block
+    def map path, to: nil, &block
+      (@map ||= {})[path] = [block, to]
     end
 
-    def to_app
+    def rewrite rules, &block
+      rules.each do |path, to|
+        map(path, :to => to, &block)
+      end
+    end
+
+    def to_app to=nil
       run = if @map then generate_map(@map, @run) else @run end
       fail 'missing run or map statement' unless run
       app = @use.inject(run){ |a, m| m.call(a) }
-      @warmup.call(app) if @warmup
-      app
+      rewrite = if to then Rewrite.new(app, to) else app end
+      @warmup.call(rewrite) if @warmup
+      rewrite
     end
 
     private
     def generate_map current_map, app
       mapped = if app then {'' => app} else {} end
-      current_map.each do |path, block|
-        mapped[path.chomp('/')] = self.class.app(app, &block)
+      current_map.each do |path, (block, to)|
+        mapped[path.chomp('/')] = self.class.app(app, to, &block)
       end
       URLMap.new(mapped)
     end
