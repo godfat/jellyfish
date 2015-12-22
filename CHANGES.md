@@ -1,5 +1,12 @@
 # CHANGES
 
+## Jellyfish 1.1.1 -- 2015-12-22
+
+### Enhancements
+
+* Added `Jellyfish::Rewrite` as an extension to `Jellyfish::Builder`.
+  Please check README.md for more detail.
+
 ## Jellyfish 1.1.0 -- 2015-09-25
 
 ### Incompatible changes
