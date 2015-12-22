@@ -583,6 +583,117 @@ Comparison:
         Rack::URLMap:     1702.0 i/s - 36.66x slower
 ```
 
+#### Extension: Jellyfish::Rewrite
+
+`Jellyfish::Builder` is mostly compatible with `Rack::Builder`, and
+`Jellyfish::Rewrite` is an extension to `Rack::Builder` which allows
+you to rewrite `env['PATH_INFO']` in an easy way. In an ideal world,
+we don't really need this. But in real world, we might want to have some
+backward compatible API which continues to work even if the API endpoint
+has already been changed.
+
+Suppose the old API was: `/users/me`, and we want to change to `/profiles/me`,
+while leaving the `/users/list` as before. We may have this:
+
+``` ruby
+require 'jellyfish'
+
+users_api    = lambda{ |env| [200, {}, ["users\n"]] }
+profiles_api = lambda{ |env| [200, {}, ["profiles\n"]] }
+
+run Jellyfish::Builder.app{
+  rewrite '/users/me' => '/profiles/me' do
+    run profiles_api
+  end
+  map '/profiles' do
+    run profiles_api
+  end
+  map '/users' do
+    run users_api
+  end
+}
+```
+
+<!---
+GET /users/me
+[200, {}, ["profiles\n"]]
+
+GET /users/list
+[200, {}, ["users\n"]]
+
+GET /profiles/me
+[200, {}, ["profiles\n"]]
+
+GET /profiles/list
+[200, {}, ["profiles\n"]]
+-->
+
+This way, we would rewrite `/users/me` to `/profiles/me` and serve it with
+our profiles API app, while leaving all other paths begin with `/users`
+continue to work with the old users API app.
+
+##### Extension: Jellyfish::Rewrite (`map path, to:`)
+
+Note that you could also use `map path, :to` if you prefer this API more:
+
+``` ruby
+require 'jellyfish'
+
+users_api    = lambda{ |env| [200, {}, ["users\n"]] }
+profiles_api = lambda{ |env| [200, {}, ["profiles\n"]] }
+
+run Jellyfish::Builder.app{
+  map '/users/me', to: '/profiles/me' do
+    run profiles_api
+  end
+  map '/profiles' do
+    run profiles_api
+  end
+  map '/users' do
+    run users_api
+  end
+}
+```
+
+<!---
+GET /users/me
+[200, {}, ["profiles\n"]]
+
+GET /users/list
+[200, {}, ["users\n"]]
+
+GET /profiles/me
+[200, {}, ["profiles\n"]]
+
+GET /profiles/list
+[200, {}, ["profiles\n"]]
+-->
+
+##### Extension: Jellyfish::Rewrite (`rewrite rules`)
+
+Note that `rewrite` takes a hash which could contain more than one rule:
+
+``` ruby
+require 'jellyfish'
+
+profiles_api = lambda{ |env| [200, {}, ["profiles\n"]] }
+
+run Jellyfish::Builder.app{
+  rewrite '/users/me' => '/profiles/me',
+          '/users/fa' => '/profiles/fa' do
+    run profiles_api
+  end
+}
+```
+
+<!---
+GET /users/me
+[200, {}, ["profiles\n"]]
+
+GET /users/fa
+[200, {}, ["profiles\n"]]
+-->
+
 ### Extension: NormalizedParams (with force_encoding)
 
 ``` ruby
