@@ -598,11 +598,11 @@ while leaving the `/users/list` as before. We may have this:
 ``` ruby
 require 'jellyfish'
 
-users_api    = lambda{ |env| [200, {}, ["users\n"]] }
-profiles_api = lambda{ |env| [200, {}, ["profiles\n"]] }
+users_api    = lambda{ |env| [200, {}, ["/users#{env['PATH_INFO']}\n"]] }
+profiles_api = lambda{ |env| [200, {}, ["/profiles#{env['PATH_INFO']}\n"]] }
 
 run Jellyfish::Builder.app{
-  rewrite '/users/me' => '/profiles/me' do
+  rewrite '/users/me' => '/me' do
     run profiles_api
   end
   map '/profiles' do
@@ -616,16 +616,16 @@ run Jellyfish::Builder.app{
 
 <!---
 GET /users/me
-[200, {}, ["profiles\n"]]
+[200, {}, ["/profiles/me\n"]]
 
 GET /users/list
-[200, {}, ["users\n"]]
+[200, {}, ["/users/list\n"]]
 
 GET /profiles/me
-[200, {}, ["profiles\n"]]
+[200, {}, ["/profiles/me\n"]]
 
 GET /profiles/list
-[200, {}, ["profiles\n"]]
+[200, {}, ["/profiles/list\n"]]
 -->
 
 This way, we would rewrite `/users/me` to `/profiles/me` and serve it with
@@ -639,11 +639,11 @@ Note that you could also use `map path, :to` if you prefer this API more:
 ``` ruby
 require 'jellyfish'
 
-users_api    = lambda{ |env| [200, {}, ["users\n"]] }
-profiles_api = lambda{ |env| [200, {}, ["profiles\n"]] }
+users_api    = lambda{ |env| [200, {}, ["/users#{env['PATH_INFO']}\n"]] }
+profiles_api = lambda{ |env| [200, {}, ["/profiles#{env['PATH_INFO']}\n"]] }
 
 run Jellyfish::Builder.app{
-  map '/users/me', to: '/profiles/me' do
+  map '/users/me', to: '/me' do
     run profiles_api
   end
   map '/profiles' do
@@ -657,16 +657,16 @@ run Jellyfish::Builder.app{
 
 <!---
 GET /users/me
-[200, {}, ["profiles\n"]]
+[200, {}, ["/profiles/me\n"]]
 
 GET /users/list
-[200, {}, ["users\n"]]
+[200, {}, ["/users/list\n"]]
 
 GET /profiles/me
-[200, {}, ["profiles\n"]]
+[200, {}, ["/profiles/me\n"]]
 
 GET /profiles/list
-[200, {}, ["profiles\n"]]
+[200, {}, ["/profiles/list\n"]]
 -->
 
 ##### Extension: Jellyfish::Rewrite (`rewrite rules`)
@@ -676,11 +676,11 @@ Note that `rewrite` takes a hash which could contain more than one rule:
 ``` ruby
 require 'jellyfish'
 
-profiles_api = lambda{ |env| [200, {}, ["profiles\n"]] }
+profiles_api = lambda{ |env| [200, {}, ["/profiles#{env['PATH_INFO']}\n"]] }
 
 run Jellyfish::Builder.app{
-  rewrite '/users/me' => '/profiles/me',
-          '/users/fa' => '/profiles/fa' do
+  rewrite '/users/me' => '/me',
+          '/users/fa' => '/fa' do
     run profiles_api
   end
 }
@@ -688,10 +688,10 @@ run Jellyfish::Builder.app{
 
 <!---
 GET /users/me
-[200, {}, ["profiles\n"]]
+[200, {}, ["/profiles/me\n"]]
 
 GET /users/fa
-[200, {}, ["profiles\n"]]
+[200, {}, ["/profiles/fa\n"]]
 -->
 
 ### Extension: NormalizedParams (with force_encoding)
