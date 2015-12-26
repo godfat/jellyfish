@@ -10,6 +10,6 @@ rvm:
 before_install:
   - rvm get head
   - rvm reload
-  - rvm use --install $TRAVIS_RUBY_VERSION --binary --latest
+  - rvm use --install $TRAVIS_RUBY_VERSION --latest
 install: 'bundle install --retry=3'
 script: 'ruby -vr bundler/setup -S rake test'
