@@ -10,5 +10,5 @@ Gemgem.init(dir) do |s|
   require 'jellyfish/version'
   s.name    = 'jellyfish'
   s.version = Jellyfish::VERSION
-  %w[].each{ |g| s.add_runtime_dependency(g) }
+  s.files.delete('jellyfish.png')
 end
