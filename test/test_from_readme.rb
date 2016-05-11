@@ -4,6 +4,8 @@ require 'uri'
 require 'stringio'
 
 describe 'from README.md' do
+  paste :stringio
+
   after do
     [:Tank, :Heater, :Protector].each do |const|
       Object.send(:remove_const, const) if Object.const_defined?(const)
@@ -36,7 +38,7 @@ describe 'from README.md' do
             'QUERY_STRING'   => query , 'SCRIPT_NAME'=> ''   ,
             'rack.input'     => input ,
             'rack.hijack'    => lambda{
-              sock = StringIO.new
+              sock = new_stringio
               # or TypeError: no implicit conversion of StringIO into IO
               mock(IO).select([sock]){ [[sock], [], []] }
               sock
@@ -44,8 +46,7 @@ describe 'from README.md' do
         end
 
         if hijack = headers.delete('rack.hijack')
-          sock = StringIO.new
-          sock.set_encoding('ASCII-8BIT')
+          sock = new_stringio
           hijack.call(sock)
           body = sock.string.each_line("\n\n")
         end

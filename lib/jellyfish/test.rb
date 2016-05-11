@@ -23,3 +23,11 @@ copy :jellyfish do
     RUBY
   }.join("\n"))
 end
+
+copy :stringio do
+  def new_stringio
+    sock = StringIO.new
+    sock.set_encoding('ASCII-8BIT')
+    sock
+  end
+end

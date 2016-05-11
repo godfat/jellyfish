@@ -2,7 +2,9 @@
 require 'jellyfish/test'
 require 'stringio'
 
-describe Jellyfish do
+describe Jellyfish::WebSocket do
+  paste :stringio
+
   after do
     Muack.verify
   end
