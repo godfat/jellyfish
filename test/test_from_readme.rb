@@ -45,6 +45,7 @@ describe 'from README.md' do
 
         if hijack = headers.delete('rack.hijack')
           sock = StringIO.new
+          sock.set_encoding('ASCII-8BIT')
           hijack.call(sock)
           body = sock.string.each_line("\n\n")
         end

@@ -21,6 +21,7 @@ describe Jellyfish do
 
   def create_env
     sock = StringIO.new
+    sock.set_encoding('ASCII-8BIT')
     mock(IO).select([sock]) do # or EOFError, not sure why?
       sock << WebSocket::Message.new('pong').to_data * 2
       [[sock], [], []]
