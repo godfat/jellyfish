@@ -1158,13 +1158,13 @@ run Tank.new
 
 <!---
 GET /echo
-sock.string.should.eq <<-HTTP.chomp
+sock.string.should.eq <<-HTTP.chomp.force_encoding('ASCII-8BIT')
 HTTP/1.1 101 Switching Protocols\r
 Upgrade: websocket\r
 Connection: Upgrade\r
 Sec-WebSocket-Accept: Kfh9QIsMVZcl6xEPYxPHzW8SZ8w=\r
 \r
-\x81\u0003Hi!
+\x81\x03Hi!
 HTTP
 [200, {}, ['']]
 -->

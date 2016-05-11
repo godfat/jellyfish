@@ -32,13 +32,13 @@ describe Jellyfish do
   would 'ping pong' do
     env, sock = create_env
     app.call(env)
-    sock.string.should.eq <<-HTTP.chomp
+    sock.string.should.eq <<-HTTP.chomp.force_encoding('ASCII-8BIT')
 HTTP/1.1 101 Switching Protocols\r
 Upgrade: websocket\r
 Connection: Upgrade\r
 Sec-WebSocket-Accept: Kfh9QIsMVZcl6xEPYxPHzW8SZ8w=\r
 \r
-\x81\u0004ping\x81\u0004pong\x81\u0004pong
+\x81\x04ping\x81\x04pong\x81\x04pong
     HTTP
   end
 end
