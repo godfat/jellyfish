@@ -3,7 +3,7 @@ require 'jellyfish/test'
 
 require 'rack/lint'
 require 'rack/mock'
-require 'rack/showexceptions'
+require 'rack/show_exceptions'
 require 'rack/urlmap'
 
 describe Jellyfish::Builder do
