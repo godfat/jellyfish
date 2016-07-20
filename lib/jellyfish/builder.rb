@@ -42,9 +42,9 @@ module Jellyfish
       run = if @map then generate_map(@map, @run) else @run end
       fail 'missing run or map statement' unless run
       app = @use.inject(run){ |a, m| m.call(a) }
-      rewrite = if to then Rewrite.new(app, to) else app end
-      @warmup.call(rewrite) if @warmup
-      rewrite
+      result = if to then Rewrite.new(app, to) else app end
+      @warmup.call(result) if @warmup
+      result
     end
 
     private
