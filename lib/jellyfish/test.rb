@@ -4,7 +4,7 @@ require 'muack'
 require 'jellyfish'
 require 'rack'
 
-Pork::Executor.__send__(:include, Muack::API)
+Pork::Suite.include(Muack::API)
 
 copy :jellyfish do
   module_eval(%w[options get head post put delete patch].map{ |method|
