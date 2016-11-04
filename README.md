@@ -9,6 +9,7 @@ by Lin Jen-Shin ([godfat](http://godfat.org))
 * [github](https://github.com/godfat/jellyfish)
 * [rubygems](https://rubygems.org/gems/jellyfish)
 * [rdoc](http://rdoc.info/github/godfat/jellyfish)
+* [issues](https://github.com/godfat/jellyfish/issues) (feel free to ask for support)
 
 ## DESCRIPTION:
 
