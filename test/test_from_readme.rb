@@ -13,8 +13,7 @@ describe 'from README.md' do
     Muack.verify
   end
 
-  readme = File.read(
-             "#{File.dirname(File.expand_path(__FILE__))}/../README.md")
+  readme = File.read("#{__dir__}/../README.md")
   codes  = readme.scan(
     /### ([^\n]+).+?``` ruby\n(.+?)\n```\n\n<!---(.+?)-->/m)
 
