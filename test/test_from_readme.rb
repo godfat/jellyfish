@@ -18,8 +18,6 @@ describe 'from README.md' do
     /### ([^\n]+).+?``` ruby\n(.+?)\n```\n\n<!---(.+?)-->/m)
 
   codes.each.with_index do |(title, code, test), index|
-    next if title =~ /NewRelic/i
-
     would "pass from README.md #%02d #{title}" % index do
       app = Rack::Builder.app{ eval(code) }
 

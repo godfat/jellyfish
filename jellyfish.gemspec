@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Lin Jen-Shin (godfat)".freeze]
-  s.date = "2017-03-13"
+  s.date = "2018-04-11"
   s.description = "Pico web framework for building API-centric web applications.\nFor Rack applications or Rack middleware. Around 250 lines of code.\n\nCheck [jellyfish-contrib][] for extra extensions.\n\n[jellyfish-contrib]: https://github.com/godfat/jellyfish-contrib".freeze
   s.email = ["godfat (XD) godfat.org".freeze]
   s.files = [
@@ -28,7 +28,6 @@ Gem::Specification.new do |s|
   "lib/jellyfish/builder.rb".freeze,
   "lib/jellyfish/chunked_body.rb".freeze,
   "lib/jellyfish/json.rb".freeze,
-  "lib/jellyfish/newrelic.rb".freeze,
   "lib/jellyfish/normalized_params.rb".freeze,
   "lib/jellyfish/normalized_path.rb".freeze,
   "lib/jellyfish/public/302.html".freeze,
@@ -56,7 +55,7 @@ Gem::Specification.new do |s|
   "test/test_websocket.rb".freeze]
   s.homepage = "https://github.com/godfat/jellyfish".freeze
   s.licenses = ["Apache-2.0".freeze]
-  s.rubygems_version = "2.6.10".freeze
+  s.rubygems_version = "2.7.6".freeze
   s.summary = "Pico web framework for building API-centric web applications.".freeze
   s.test_files = [
   "test/rack/test_builder.rb".freeze,

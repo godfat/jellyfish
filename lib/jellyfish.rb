@@ -1,7 +1,6 @@
 
 module Jellyfish
   autoload :VERSION , 'jellyfish/version'
-  autoload :NewRelic, 'jellyfish/newrelic'
 
   autoload :NormalizedParams, 'jellyfish/normalized_params'
   autoload :NormalizedPath  , 'jellyfish/normalized_path'

@@ -743,34 +743,6 @@ GET /%E5%9B%A7
  ["/%E5%9B%A7=/\u{56e7}\n"]]
 -->
 
-### Extension: NewRelic
-
-``` ruby
-require 'jellyfish'
-class Tank
-  include Jellyfish
-  controller_include Jellyfish::NewRelic
-
-  get '/' do
-    "OK\n"
-  end
-end
-use Rack::ContentLength
-use Rack::ContentType, 'text/plain'
-require 'cgi' # newrelic dev mode needs this and it won't require it itself
-require 'new_relic/rack/developer_mode'
-use NewRelic::Rack::DeveloperMode # GET /newrelic to read stats
-run Tank.new
-NewRelic::Agent.manual_start(:developer_mode => true)
-```
-
-<!---
-GET /
-[200,
- {'Content-Length' => '3', 'Content-Type' => 'text/plain'},
- ["OK\n"]]
--->
-
 ### Extension: Using multiple extensions with custom controller
 
 Note that the controller should be assigned lastly in order to include
