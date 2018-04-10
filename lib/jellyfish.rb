@@ -159,13 +159,16 @@ module Jellyfish
     end
 
     %w[options get head post put delete patch].each do |method|
-      module_eval <<-RUBY
-        def #{method} route=//, meta={}, &block
-          raise TypeError.new("Route \#{route} should respond to :match") \
-            unless route.respond_to?(:match)
-          (routes['#{method}'] ||= []) << [route, block || lambda{|_|}, meta]
-        end
-      RUBY
+      define_method(method) do |route=//, meta={}, &block|
+        define(method, route, meta, &block)
+      end
+    end
+
+    def define(method, route=//, meta={}, &block)
+      raise TypeError.new("Route #{route} should respond to :match") \
+        unless route.respond_to?(:match)
+
+      (routes[method.to_s] ||= []) << [route, block || lambda{|_|}, meta]
     end
 
     def inherited sub
