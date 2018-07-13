@@ -50,6 +50,8 @@ module Jellyfish
       if @no_host
         regexp_path(path)
       elsif matched = path.match(%r{\Ahttps?://([^/]+)(/.*)})
+        # We only need to know if we're matching against a host,
+        # therefore just an empty group is sufficient.
         "()#{matched[1]}/#{regexp_path(matched[2])}"
       else
         "[^/]*/#{regexp_path(path)}"
