@@ -14,7 +14,7 @@ describe Jellyfish::URLMap do
       }, [""]]
     }
     map = Rack::Lint.new(Jellyfish::URLMap.new({
-      '/bar' => app,
+      'http://foo.org/bar' => app,
       '/foo' => app,
       '/foo/bar' => app
     }))
@@ -65,6 +65,64 @@ describe Jellyfish::URLMap do
     res.should.ok?
     res["X-ScriptName"].should.eq "/bar"
     res["X-PathInfo"].should.eq '/'
+  end
+
+  would "dispatches hosts correctly" do
+    map = Rack::Lint.new(Rack::URLMap.new("http://foo.org/" => lambda { |env|
+                             [200,
+                              { "Content-Type" => "text/plain",
+                                "X-Position" => "foo.org",
+                                "X-Host" => env["HTTP_HOST"] || env["SERVER_NAME"],
+                              }, [""]]},
+                           "http://subdomain.foo.org/" => lambda { |env|
+                             [200,
+                              { "Content-Type" => "text/plain",
+                                "X-Position" => "subdomain.foo.org",
+                                "X-Host" => env["HTTP_HOST"] || env["SERVER_NAME"],
+                              }, [""]]},
+                           "http://bar.org/" => lambda { |env|
+                             [200,
+                              { "Content-Type" => "text/plain",
+                                "X-Position" => "bar.org",
+                                "X-Host" => env["HTTP_HOST"] || env["SERVER_NAME"],
+                              }, [""]]},
+                           "/" => lambda { |env|
+                             [200,
+                              { "Content-Type" => "text/plain",
+                                "X-Position" => "default.org",
+                                "X-Host" => env["HTTP_HOST"] || env["SERVER_NAME"],
+                              }, [""]]}
+                           ))
+
+    res = Rack::MockRequest.new(map).get("/")
+    res.should.ok?
+    res["X-Position"].should.eq "default.org"
+
+    res = Rack::MockRequest.new(map).get("/", "HTTP_HOST" => "bar.org")
+    res.should.ok?
+    res["X-Position"].should.eq "bar.org"
+
+    res = Rack::MockRequest.new(map).get("/", "HTTP_HOST" => "foo.org")
+    res.should.ok?
+    res["X-Position"].should.eq "foo.org"
+
+    res = Rack::MockRequest.new(map).get("/", "HTTP_HOST" => "subdomain.foo.org", "SERVER_NAME" => "foo.org")
+    res.should.ok?
+    res["X-Position"].should.eq "subdomain.foo.org"
+
+    res = Rack::MockRequest.new(map).get("http://foo.org/")
+    res.should.ok?
+    res["X-Position"].should.eq "foo.org"
+
+    res = Rack::MockRequest.new(map).get("/", "HTTP_HOST" => "example.org")
+    res.should.ok?
+    res["X-Position"].should.eq "default.org"
+
+    res = Rack::MockRequest.new(map).get("/",
+                                         "HTTP_HOST" => "example.org:9292",
+                                         "SERVER_PORT" => "9292")
+    res.should.ok?
+    res["X-Position"].should.eq "default.org"
   end
 
   would "be nestable" do
@@ -156,7 +214,7 @@ describe Jellyfish::URLMap do
   end
 
   would "not be case sensitive with hosts" do
-    map = Rack::Lint.new(Rack::URLMap.new("/" => lambda { |env|
+    map = Rack::Lint.new(Rack::URLMap.new("http://example.org/" => lambda { |env|
                              [200,
                               { "Content-Type" => "text/plain",
                                 "X-Position" => "root",
@@ -165,13 +223,13 @@ describe Jellyfish::URLMap do
                               }, [""]]}
                            ))
 
-    res = Rack::MockRequest.new(map).get("/")
+    res = Rack::MockRequest.new(map).get("http://example.org/")
     res.should.ok?
     res["X-Position"].should.eq "root"
     res["X-PathInfo"].should.eq "/"
     res["X-ScriptName"].should.eq ""
 
-    res = Rack::MockRequest.new(map).get("/")
+    res = Rack::MockRequest.new(map).get("http://EXAMPLE.ORG/")
     res.should.ok?
     res["X-Position"].should.eq "root"
     res["X-PathInfo"].should.eq "/"
