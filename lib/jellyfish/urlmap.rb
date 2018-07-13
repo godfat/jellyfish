@@ -14,15 +14,15 @@ module Jellyfish
       path_info = env['PATH_INFO']
       host      = env['HTTP_HOST'].to_s
       if m   = @routes.match("#{host}/#{path_info}")
+        cut_path = m.to_s[host.size + 1 .. -1].chomp('/')
+        script_name = cut_path.squeeze('/')
+
         search =
           if m[1]
             "http://#{m.to_s.squeeze('/').chomp('/')}"
           else
-            m.to_s[host.size + 1 .. -1].squeeze('/').chomp('/')
+            script_name
           end
-
-        cut_path = m.to_s[host.size + 1 .. -1].chomp('/')
-        script_name = cut_path.squeeze('/')
       end
 
       if app = @mapped[search]
