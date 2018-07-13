@@ -2,7 +2,10 @@
 module Jellyfish
   class URLMap
     def initialize mapped
-      string = mapped.keys.sort_by{ |k| -k.size }.
+      keys = mapped.keys
+      @no_host = !keys.any?{ |k| k.match?(%r{\Ahttps?://}) }
+
+      string = keys.sort_by{ |k| -k.size }.
         map{ |k| build_regexp(k) }.
         join('|')
 
@@ -12,20 +15,28 @@ module Jellyfish
 
     def call env
       path_info = env['PATH_INFO']
-      host      = env['HTTP_HOST'].to_s
-      if m   = @routes.match("#{host}/#{path_info}")
-        cut_path = m.to_s[host.size + 1 .. -1].chomp('/')
-        script_name = cut_path.squeeze('/')
 
-        search =
-          if m[1]
-            "http://#{m.to_s.squeeze('/').chomp('/')}"
-          else
-            script_name
-          end
+      if @no_host
+        if matched = @routes.match(path_info)
+          cut_path = matched.to_s.chomp('/')
+          script_name = path = cut_path.squeeze('/')
+        end
+      else
+        host = env['HTTP_HOST'].to_s
+        if matched = @routes.match("#{host}/#{path_info}")
+          cut_path = matched.to_s[host.size + 1..-1].chomp('/')
+          script_name = cut_path.squeeze('/')
+
+          path =
+            if matched[1]
+              "http://#{matched.to_s.chomp('/').squeeze('/')}"
+            else
+              script_name
+            end
+        end
       end
 
-      if app = @mapped[search]
+      if app = @mapped[path]
         app.call(env.merge('PATH_INFO' => path_info[cut_path.size..-1],
                            'SCRIPT_NAME' => env['SCRIPT_NAME'] + script_name))
       else
@@ -36,7 +47,9 @@ module Jellyfish
     private
 
     def build_regexp path
-      if matched = path.match(%r{\Ahttps?://([^/]+)(/.*)})
+      if @no_host
+        regexp_path(path)
+      elsif matched = path.match(%r{\Ahttps?://([^/]+)(/.*)})
         "()#{matched[1]}/#{regexp_path(matched[2])}"
       else
         "[^/]*/#{regexp_path(path)}"
