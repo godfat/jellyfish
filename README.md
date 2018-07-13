@@ -584,6 +584,33 @@ Comparison:
         Rack::URLMap:     1702.0 i/s - 36.66x slower
 ```
 
+#### Extension: Jellyfish::Listen
+
+Test
+
+``` ruby
+require 'jellyfish'
+
+long_poll = lambda{ |env| [200, {}, ["long_poll #{env['HTTP_HOST']}\n"]] }
+fast_app  = lambda{ |env| [200, {}, ["fast_app  #{env['HTTP_HOST']}\n"]] }
+
+run Jellyfish::Builder.app{
+  listen 'slow-app' do
+    run long_poll
+  end
+
+  run fast_app
+}
+```
+
+<!---
+GET / slow-app
+[200, {}, ["long_poll slow-app\n"]]
+
+GET / fast-app
+[200, {}, ["fast_app  fast-app\n"]]
+-->
+
 #### Extension: Jellyfish::Rewrite
 
 `Jellyfish::Builder` is mostly compatible with `Rack::Builder`, and

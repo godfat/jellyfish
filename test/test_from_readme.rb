@@ -23,7 +23,7 @@ describe 'from README.md' do
 
       test.split("\n\n").each do |t|
         method_path, expect = t.strip.split("\n", 2)
-        method, path        = method_path.split(' ')
+        method, path, host  = method_path.split(' ')
         uri                 = URI.parse(path)
         pinfo, query        = uri.path, uri.query
 
@@ -31,9 +31,12 @@ describe 'from README.md' do
         status, headers, body = File.open(File::NULL) do |input|
           app.call(
             'HTTP_VERSION'   => 'HTTP/1.1',
-            'REQUEST_METHOD' => method, 'PATH_INFO'  => pinfo,
-            'QUERY_STRING'   => query , 'SCRIPT_NAME'=> ''   ,
-            'rack.input'     => input ,
+            'REQUEST_METHOD' => method,
+            'HTTP_HOST'      => host,
+            'PATH_INFO'      => pinfo,
+            'SCRIPT_NAME'    => '',
+            'QUERY_STRING'   => query,
+            'rack.input'     => input,
             'rack.hijack'    => lambda{
               sock = new_stringio
               # or TypeError: no implicit conversion of StringIO into IO

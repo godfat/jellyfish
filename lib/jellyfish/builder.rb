@@ -28,8 +28,13 @@ module Jellyfish
       @warmup = lam || block
     end
 
-    def map path, to: nil, &block
-      (@map ||= {})[path] = [block, to]
+    def map path, to: nil, host: nil, &block
+      key = if host then "http://#{host}/#{path}" else path end
+      (@map ||= {})[key] = [block, to]
+    end
+
+    def listen host, &block
+      map('', host: host, &block)
     end
 
     def rewrite rules, &block

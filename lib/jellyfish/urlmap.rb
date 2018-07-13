@@ -29,7 +29,7 @@ module Jellyfish
 
           path =
             if matched[1]
-              "http://#{matched.to_s.chomp('/').squeeze('/')}"
+              "http://#{matched.to_s.squeeze('/').chomp('/')}"
             else
               script_name
             end
@@ -49,7 +49,7 @@ module Jellyfish
     def build_regexp path
       if @no_host
         regexp_path(path)
-      elsif matched = path.match(%r{\Ahttps?://([^/]+)(/.*)})
+      elsif matched = path.match(%r{\Ahttps?://([^/]+)(/?.*)})
         # We only need to know if we're matching against a host,
         # therefore just an empty group is sufficient.
         "()#{matched[1]}/#{regexp_path(matched[2])}"
