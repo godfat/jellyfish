@@ -4,7 +4,7 @@ module Jellyfish
     def initialize mapped_not_chomped
       mapped = transform_keys(mapped_not_chomped){ |k| k.sub(%r{/+\z}, '') }
       keys = mapped.keys
-      @no_host = !keys.any?{ |k| k.match?(%r{\Ahttps?://}) }
+      @no_host = !keys.any?{ |k| match?(k, %r{\Ahttps?://}) }
 
       string = keys.sort_by{ |k| -k.size }.
         map{ |k| build_regexp(k) }.
@@ -77,6 +77,14 @@ module Jellyfish
           result[yield(key)] = value
           result
         end
+      end
+    end
+
+    def match? string, regexp
+      if string.respond_to?(:match?)
+        string.match?(regexp)
+      else
+        string =~ regexp
       end
     end
   end
