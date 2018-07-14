@@ -1,5 +1,26 @@
 # CHANGES
 
+## Jellyfish 1.2.0 -- 2018-07-14
+
+### Incompatible changes
+
+* `Jellyfish::NewRelic` is extracted to
+  [jellyfish-contrib](https://github.com/godfat/jellyfish-contrib)
+
+### Bugs fixed
+
+* `Jellyfish::URLMap` would now properly handle nested maps like
+  `Rack::URLMap`.
+
+### Enhancements
+
+* `Jellyfish::URLMap` now supports listening on a specific host like
+  `Rack::URLMap`. Beside prefixing `http://`, it also supports passing
+  `host: host` argument to `map`, and a `listen` directive which takes a
+  block.
+* Instead of using `module_eval`, DSL is now defined via `define_method` to
+  make debugging easier. Performance shouldn't get hit.
+
 ## Jellyfish 1.1.1 -- 2015-12-22
 
 ### Enhancements

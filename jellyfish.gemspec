@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: jellyfish 1.1.1 ruby lib
+# stub: jellyfish 1.2.0 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "jellyfish".freeze
-  s.version = "1.1.1"
+  s.version = "1.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Lin Jen-Shin (godfat)".freeze]
-  s.date = "2018-04-11"
+  s.date = "2018-07-14"
   s.description = "Pico web framework for building API-centric web applications.\nFor Rack applications or Rack middleware. Around 250 lines of code.\n\nCheck [jellyfish-contrib][] for extra extensions.\n\n[jellyfish-contrib]: https://github.com/godfat/jellyfish-contrib".freeze
   s.email = ["godfat (XD) godfat.org".freeze]
   s.files = [
@@ -48,6 +48,7 @@ Gem::Specification.new do |s|
   "test/sinatra/test_routing.rb".freeze,
   "test/test_from_readme.rb".freeze,
   "test/test_inheritance.rb".freeze,
+  "test/test_listen.rb".freeze,
   "test/test_log.rb".freeze,
   "test/test_misc.rb".freeze,
   "test/test_rewrite.rb".freeze,
@@ -55,7 +56,7 @@ Gem::Specification.new do |s|
   "test/test_websocket.rb".freeze]
   s.homepage = "https://github.com/godfat/jellyfish".freeze
   s.licenses = ["Apache-2.0".freeze]
-  s.rubygems_version = "2.7.6".freeze
+  s.rubygems_version = "2.7.7".freeze
   s.summary = "Pico web framework for building API-centric web applications.".freeze
   s.test_files = [
   "test/rack/test_builder.rb".freeze,
@@ -66,6 +67,7 @@ Gem::Specification.new do |s|
   "test/sinatra/test_routing.rb".freeze,
   "test/test_from_readme.rb".freeze,
   "test/test_inheritance.rb".freeze,
+  "test/test_listen.rb".freeze,
   "test/test_log.rb".freeze,
   "test/test_misc.rb".freeze,
   "test/test_rewrite.rb".freeze,
