@@ -2,7 +2,7 @@
 module Jellyfish
   class URLMap
     def initialize mapped_not_chomped
-      mapped = mapped_not_chomped.transform_keys{ |k| k.sub(%r{/+\z}, '') }
+      mapped = transform_keys(mapped_not_chomped){ |k| k.sub(%r{/+\z}, '') }
       keys = mapped.keys
       @no_host = !keys.any?{ |k| k.match?(%r{\Ahttps?://}) }
 
@@ -67,6 +67,17 @@ module Jellyfish
 
     def regexp_path path
       Regexp.escape(path).gsub('/', '/+')
+    end
+
+    def transform_keys hash, &block
+      if hash.respond_to?(:transform_keys)
+        hash.transform_keys(&block)
+      else
+        hash.inject({}) do |result, (key, value)|
+          result[yield(key)] = value
+          result
+        end
+      end
     end
   end
 end
