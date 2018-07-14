@@ -3,10 +3,12 @@ require 'jellyfish/test'
 require 'jellyfish/urlmap'
 
 describe Jellyfish::Rewrite do
+  paste :jellyfish
+
   lam = lambda{ |env| [200, {}, [env['PATH_INFO']]] }
 
-  def call app, env={}
-    app.call({'SCRIPT_NAME' => ''}.merge(env)).last.first
+  def call app, path
+    get(path, app).dig(-1, 0)
   end
 
   would 'map to' do
@@ -16,7 +18,7 @@ describe Jellyfish::Rewrite do
       end
     end
 
-    expect(call(app, 'PATH_INFO' => '/from')).eq '/to'
+    expect(call(app, '/from')).eq '/to'
   end
 
   would 'rewrite and fallback' do
@@ -31,8 +33,8 @@ describe Jellyfish::Rewrite do
       end
     end
 
-    expect(call(app, 'PATH_INFO' => '/from'      )).eq ''
-    expect(call(app, 'PATH_INFO' => '/from/inner')).eq '/to/inner'
-    expect(call(app, 'PATH_INFO' => '/from/outer')).eq '/to/outer'
+    expect(call(app, '/from'      )).eq ''
+    expect(call(app, '/from/inner')).eq '/to/inner'
+    expect(call(app, '/from/outer')).eq '/to/outer'
   end
 end

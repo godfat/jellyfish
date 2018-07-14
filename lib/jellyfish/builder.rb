@@ -29,7 +29,8 @@ module Jellyfish
     end
 
     def map path, to: nil, host: nil, &block
-      key = if host then "http://#{host}/#{path}" else path end
+      chomped = path.chomp('/')
+      key = if host then "http://#{host}/#{chomped}" else chomped end
       (@map ||= {})[key] = [block, to]
     end
 
@@ -56,7 +57,7 @@ module Jellyfish
     def generate_map current_map, app
       mapped = if app then {'' => app} else {} end
       current_map.each do |path, (block, to)|
-        mapped[path.chomp('/')] = self.class.app(app, to, &block)
+        mapped[path] = self.class.app(app, to, &block)
       end
       URLMap.new(mapped)
     end

@@ -180,13 +180,13 @@ run Tank.new
 ```
 
 <!---
-GET /lookup
+GET /lookup host
 body = File.read("#{File.dirname(
   File.expand_path(__FILE__))}/../lib/jellyfish/public/302.html").
-  gsub('VAR_URL', ':///')
+  gsub('VAR_URL', 'http://host/')
 [302,
  {'Content-Length' => body.bytesize.to_s, 'Content-Type' => 'text/html',
-  'Location' => ':///'},
+  'Location' => 'http://host/'},
  [body]]
 -->
 
@@ -464,10 +464,8 @@ The followings are intentional:
 * `Jellyfish::URLMap` does not modify `env`, and it would call the app with
   another instance of Hash. Mutating data is a bad idea.
 
-* `Jellyfish::URLMap` does not try to match on host because I am not sure
-  if there's anyone would need this feature?
-
-* All other tests passed the same test suites for `Rack::Builder`.
+* All other tests passed the same test suites for `Rack::Builder` and
+  `Jellyfish::URLMap`.
 
 ``` ruby
 require 'jellyfish'
@@ -584,7 +582,7 @@ Comparison:
         Rack::URLMap:     1702.0 i/s - 36.66x slower
 ```
 
-#### Extension: Jellyfish::Listen
+#### Extension: Jellyfish::Builder#listen
 
 Test
 
@@ -596,6 +594,33 @@ fast_app  = lambda{ |env| [200, {}, ["fast_app  #{env['HTTP_HOST']}\n"]] }
 
 run Jellyfish::Builder.app{
   listen 'slow-app' do
+    run long_poll
+  end
+
+  run fast_app
+}
+```
+
+<!---
+GET / slow-app
+[200, {}, ["long_poll slow-app\n"]]
+
+GET / fast-app
+[200, {}, ["fast_app  fast-app\n"]]
+-->
+
+##### Extension: Jellyfish::Builder#listen (`map path, host:`)
+
+Test
+
+``` ruby
+require 'jellyfish'
+
+long_poll = lambda{ |env| [200, {}, ["long_poll #{env['HTTP_HOST']}\n"]] }
+fast_app  = lambda{ |env| [200, {}, ["fast_app  #{env['HTTP_HOST']}\n"]] }
+
+run Jellyfish::Builder.app{
+  map '/', host: 'slow-app' do
     run long_poll
   end
 

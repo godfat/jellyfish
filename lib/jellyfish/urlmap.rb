@@ -24,12 +24,12 @@ module Jellyfish
       else
         host = env['HTTP_HOST'].to_s
         if matched = @routes.match("#{host}/#{path_info}")
-          cut_path = matched.to_s[host.size + 1..-1].chomp('/')
+          cut_path = matched.to_s.chomp('/')[host.size + 1..-1]
           script_name = cut_path.squeeze('/')
 
           path =
-            if matched[1]
-              "http://#{matched.to_s.squeeze('/').chomp('/')}"
+            if matched[:host]
+              "#{env['rack.url_scheme']}://#{File.join(host, script_name)}"
             else
               script_name
             end
@@ -52,7 +52,7 @@ module Jellyfish
       elsif matched = path.match(%r{\Ahttps?://([^/]+)(/?.*)})
         # We only need to know if we're matching against a host,
         # therefore just an empty group is sufficient.
-        "()#{matched[1]}/#{regexp_path(matched[2])}"
+        "(?<host>)#{matched[1]}/#{regexp_path(matched[2])}"
       else
         "[^/]*/#{regexp_path(path)}"
       end

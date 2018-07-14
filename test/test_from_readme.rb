@@ -37,6 +37,7 @@ describe 'from README.md' do
             'SCRIPT_NAME'    => '',
             'QUERY_STRING'   => query,
             'rack.input'     => input,
+            'rack.url_scheme'=> 'http',
             'rack.hijack'    => lambda{
               sock = new_stringio
               # or TypeError: no implicit conversion of StringIO into IO

@@ -15,7 +15,7 @@ copy :jellyfish do
                   'REQUEST_METHOD' => '#{method}'.upcase,
                   'SCRIPT_NAME'    => ''                ,
                   'rack.input'     => input             ,
-                  'rack.url_scheme'=> 'https'           ,
+                  'rack.url_scheme'=> 'http'            ,
                   'SERVER_NAME'    => 'localhost'       ,
                   'SERVER_PORT'    => '8080'}.merge(env))
         end
