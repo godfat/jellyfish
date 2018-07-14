@@ -584,7 +584,10 @@ Comparison:
 
 #### Extension: Jellyfish::Builder#listen
 
-Test
+`listen` is a convenient way to define routing based on the host. We could
+also use `map` inside `listen` block. Here's a quick example that specifically
+listen on a particular host for long-polling and all other hosts would go to
+the default app.
 
 ``` ruby
 require 'jellyfish'
@@ -611,7 +614,8 @@ GET / fast-app
 
 ##### Extension: Jellyfish::Builder#listen (`map path, host:`)
 
-Test
+Alternatively, we could pass `host` as an argument to `map` so that the
+endpoint would only listen on a specific host.
 
 ``` ruby
 require 'jellyfish'
@@ -621,6 +625,42 @@ fast_app  = lambda{ |env| [200, {}, ["fast_app  #{env['HTTP_HOST']}\n"]] }
 
 run Jellyfish::Builder.app{
   map '/', host: 'slow-app' do
+    run long_poll
+  end
+
+  run fast_app
+}
+```
+
+<!---
+GET / slow-app
+[200, {}, ["long_poll slow-app\n"]]
+
+GET / fast-app
+[200, {}, ["fast_app  fast-app\n"]]
+-->
+
+<!---
+GET / slow-app
+[200, {}, ["long_poll slow-app\n"]]
+
+GET / fast-app
+[200, {}, ["fast_app  fast-app\n"]]
+-->
+
+##### Extension: Jellyfish::Builder#listen (`map "http://#{path}"`)
+
+Or if you really prefer the `Rack::URLMap` compatible way, then you could
+just add `http://host` to your path prefix. `https` works, too.
+
+``` ruby
+require 'jellyfish'
+
+long_poll = lambda{ |env| [200, {}, ["long_poll #{env['HTTP_HOST']}\n"]] }
+fast_app  = lambda{ |env| [200, {}, ["fast_app  #{env['HTTP_HOST']}\n"]] }
+
+run Jellyfish::Builder.app{
+  map 'http://slow-app' do
     run long_poll
   end
 
