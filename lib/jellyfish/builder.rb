@@ -29,8 +29,7 @@ module Jellyfish
     end
 
     def map path, to: nil, host: nil, &block
-      chomped = path.chomp('/')
-      key = if host then "http://#{host}/#{chomped}" else chomped end
+      key = if host then "http://#{host}/#{path}" else path end
       (@map ||= {})[key] = [block, to]
     end
 

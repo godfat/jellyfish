@@ -68,7 +68,7 @@ describe Jellyfish::URLMap do
   end
 
   would "dispatches hosts correctly" do
-    map = Rack::Lint.new(Rack::URLMap.new("http://foo.org/" => lambda { |env|
+    map = Rack::Lint.new(Jellyfish::URLMap.new("http://foo.org/" => lambda { |env|
                              [200,
                               { "Content-Type" => "text/plain",
                                 "X-Position" => "foo.org",
@@ -126,9 +126,9 @@ describe Jellyfish::URLMap do
   end
 
   would "be nestable" do
-    map = Rack::Lint.new(Rack::URLMap.new("/foo" =>
-      Rack::URLMap.new("/bar" =>
-        Rack::URLMap.new("/quux" =>  lambda { |env|
+    map = Rack::Lint.new(Jellyfish::URLMap.new("/foo" =>
+      Jellyfish::URLMap.new("/bar" =>
+        Jellyfish::URLMap.new("/quux" =>  lambda { |env|
                            [200,
                             { "Content-Type" => "text/plain",
                               "X-Position" => "/foo/bar/quux",
@@ -148,7 +148,7 @@ describe Jellyfish::URLMap do
   end
 
   would "route root apps correctly" do
-    map = Rack::Lint.new(Rack::URLMap.new("/" => lambda { |env|
+    map = Rack::Lint.new(Jellyfish::URLMap.new("/" => lambda { |env|
                              [200,
                               { "Content-Type" => "text/plain",
                                 "X-Position" => "root",
@@ -190,7 +190,7 @@ describe Jellyfish::URLMap do
   end
 
   would "not squeeze slashes" do
-    map = Rack::Lint.new(Rack::URLMap.new("/" => lambda { |env|
+    map = Rack::Lint.new(Jellyfish::URLMap.new("/" => lambda { |env|
                              [200,
                               { "Content-Type" => "text/plain",
                                 "X-Position" => "root",
@@ -214,7 +214,7 @@ describe Jellyfish::URLMap do
   end
 
   would "not be case sensitive with hosts" do
-    map = Rack::Lint.new(Rack::URLMap.new("http://example.org/" => lambda { |env|
+    map = Rack::Lint.new(Jellyfish::URLMap.new("http://example.org/" => lambda { |env|
                              [200,
                               { "Content-Type" => "text/plain",
                                 "X-Position" => "root",

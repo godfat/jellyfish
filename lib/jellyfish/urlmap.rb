@@ -1,7 +1,8 @@
 
 module Jellyfish
   class URLMap
-    def initialize mapped
+    def initialize mapped_not_chomped
+      mapped = mapped_not_chomped.transform_keys{ |k| k.sub(%r{/+\z}, '') }
       keys = mapped.keys
       @no_host = !keys.any?{ |k| k.match?(%r{\Ahttps?://}) }
 
@@ -10,7 +11,7 @@ module Jellyfish
         join('|')
 
       @mapped = mapped
-      @routes = Regexp.new("\\A(?:#{string})(?:/|\\z)", 'i', 'n')
+      @routes = %r{\A(?:#{string})(?:/|\z)}
     end
 
     def call env
@@ -19,24 +20,30 @@ module Jellyfish
       if @no_host
         if matched = @routes.match(path_info)
           cut_path = matched.to_s.chomp('/')
-          script_name = path = cut_path.squeeze('/')
+          script_name = key = cut_path.squeeze('/')
         end
       else
-        host = env['HTTP_HOST'].to_s
+        host = (env['HTTP_HOST'] || env['SERVER_NAME']).to_s.downcase
         if matched = @routes.match("#{host}/#{path_info}")
-          cut_path = matched.to_s.chomp('/')[host.size + 1..-1]
+          cut_path = matched.to_s[host.size + 1..-1].chomp('/')
           script_name = cut_path.squeeze('/')
 
-          path =
+          key =
             if matched[:host]
-              "#{env['rack.url_scheme']}://#{File.join(host, script_name)}"
+              host_with_path =
+                if script_name.empty?
+                  host
+                else
+                  File.join(host, script_name)
+                end
+              "#{env['rack.url_scheme']}://#{host_with_path}"
             else
               script_name
             end
         end
       end
 
-      if app = @mapped[path]
+      if app = @mapped[key]
         app.call(env.merge('PATH_INFO' => path_info[cut_path.size..-1],
                            'SCRIPT_NAME' => env['SCRIPT_NAME'] + script_name))
       else
