@@ -40,6 +40,20 @@ describe Jellyfish::URLMap do
     expect(call(app, 'lust', '/path')).eq 'ram lust'
   end
 
+  would 'map longest path first' do
+    app = Jellyfish::Builder.app do
+      map '/long/path' do
+        run lam
+      end
+
+      map '/', host: 'host' do
+        run ram
+      end
+    end
+
+    expect(call(app, 'host', '/long/path')).eq 'lam host'
+  end
+
   would 'listen' do
     app = Jellyfish::Builder.app do
       listen 'host' do

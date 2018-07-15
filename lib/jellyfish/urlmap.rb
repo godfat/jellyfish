@@ -1,4 +1,6 @@
 
+require 'uri'
+
 module Jellyfish
   class URLMap
     def initialize mapped_not_chomped
@@ -6,7 +8,7 @@ module Jellyfish
       keys = mapped.keys
       @no_host = !keys.any?{ |k| match?(k, %r{\Ahttps?://}) }
 
-      string = keys.sort_by{ |k| -k.size }.
+      string = sort_keys(keys).
         map{ |k| build_regexp(k) }.
         join('|')
 
@@ -85,6 +87,14 @@ module Jellyfish
         string.match?(regexp)
       else
         string =~ regexp
+      end
+    end
+
+    def sort_keys keys
+      keys.sort_by do |k|
+        uri = URI.parse(k)
+
+        [-uri.path.to_s.size, -uri.host.to_s.size]
       end
     end
   end
