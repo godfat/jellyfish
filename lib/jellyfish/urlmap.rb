@@ -38,7 +38,7 @@ module Jellyfish
                 else
                   File.join(host, script_name)
                 end
-              "#{env['rack.url_scheme']}://#{host_with_path}"
+              "http://#{host_with_path}"
             else
               script_name
             end
