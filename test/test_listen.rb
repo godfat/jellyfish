@@ -46,12 +46,13 @@ describe Jellyfish::URLMap do
         run lam
       end
 
-      map '/', host: 'host' do
+      map '/', host: 'super-long-host' do
         run ram
       end
     end
 
-    expect(call(app, 'host', '/long/path')).eq 'lam host'
+    expect(call(app, 'super-long-host', '/long/path')).
+      eq 'lam super-long-host'
   end
 
   would 'listen' do
