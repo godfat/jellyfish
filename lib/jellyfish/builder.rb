@@ -29,7 +29,7 @@ module Jellyfish
     end
 
     def map path, to: nil, host: nil, &block
-      key = if host then "http://#{host}/#{path}" else path end
+      key = if host then "http://#{File.join(host, path)}" else path end
       (@map ||= {})[key] = [block, to]
     end
 

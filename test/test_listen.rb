@@ -25,6 +25,21 @@ describe Jellyfish::URLMap do
     expect(call(app, 'lust')).eq 'ram lust'
   end
 
+  would 'map host with path' do
+    app = Jellyfish::Builder.app do
+      map '/path', host: 'host' do
+        run lam
+      end
+
+      map '/path' do
+        run ram
+      end
+    end
+
+    expect(call(app, 'host', '/path')).eq 'lam host'
+    expect(call(app, 'lust', '/path')).eq 'ram lust'
+  end
+
   would 'listen' do
     app = Jellyfish::Builder.app do
       listen 'host' do
