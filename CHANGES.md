@@ -1,5 +1,14 @@
 # CHANGES
 
+## Jellyfish 1.2.1 -- 2018-07-21
+
+### Bugs fixed
+
+* Fixed mapping with host in some cases (longest match goes first)
+* Fixed scheme matching with https. Now it won't try to map against https
+  because it's not that easy to implement and this is how `Rack::URLMap`
+  works anyway.
+
 ## Jellyfish 1.2.0 -- 2018-07-14
 
 ### Incompatible changes
