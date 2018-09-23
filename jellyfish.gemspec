@@ -1,14 +1,14 @@
 # -*- encoding: utf-8 -*-
-# stub: jellyfish 1.2.1 ruby lib
+# stub: jellyfish 1.2.2 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "jellyfish".freeze
-  s.version = "1.2.1"
+  s.version = "1.2.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
   s.authors = ["Lin Jen-Shin (godfat)".freeze]
-  s.date = "2018-07-21"
+  s.date = "2018-09-23"
   s.description = "Pico web framework for building API-centric web applications.\nFor Rack applications or Rack middleware. Around 250 lines of code.\n\nCheck [jellyfish-contrib][] for extra extensions.\n\n[jellyfish-contrib]: https://github.com/godfat/jellyfish-contrib".freeze
   s.email = ["godfat (XD) godfat.org".freeze]
   s.files = [

@@ -1,5 +1,11 @@
 # CHANGES
 
+## Jellyfish 1.2.2 -- 2018-09-23
+
+### Bugs fixed
+
+* Fixed `Jellyfish::Rewrite`. Should put rewritten path in the front.
+
 ## Jellyfish 1.2.1 -- 2018-07-21
 
 ### Bugs fixed
