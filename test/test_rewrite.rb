@@ -18,7 +18,7 @@ describe Jellyfish::Rewrite do
       end
     end
 
-    expect(call(app, '/from')).eq '/to'
+    expect(call(app, '/from/here')).eq '/to/here'
   end
 
   would 'rewrite and fallback' do
