@@ -31,7 +31,7 @@ module Jellyfish
 
     def map path, to: nil, host: nil, &block
       key = if host then "http://#{File.join(host, path)}" else path end
-      (@map ||= {})[key] = [block, to]
+      (@map ||= {})[key] = [block, path, to]
     end
 
     def listen host, &block
@@ -56,8 +56,8 @@ module Jellyfish
     private
     def generate_map current_map, app
       mapped = if app then {'' => app} else {} end
-      current_map.each do |path, (block, to)|
-        mapped[path] = self.class.app(app, path, to, &block)
+      current_map.each do |path, (block, from, to)|
+        mapped[path] = self.class.app(app, from, to, &block)
       end
       URLMap.new(mapped)
     end

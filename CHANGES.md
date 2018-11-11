@@ -1,5 +1,11 @@
 # CHANGES
 
+## Jellyfish 1.3.1 -- 2018-11-11
+
+### Bugs fixed
+
+* Fixed `Jellyfish::Rewrite` for SCRIPT_NAME when host is also used.
+
 ## Jellyfish 1.3.0 -- 2018-11-11
 
 ### Incompatible changes
