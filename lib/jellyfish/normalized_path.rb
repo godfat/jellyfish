@@ -1,7 +1,7 @@
+# frozen_string_literal: true
 
 require 'jellyfish'
 require 'uri'
-
 
 module Jellyfish
   module NormalizedPath

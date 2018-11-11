@@ -1,7 +1,7 @@
+# frozen_string_literal: true
 
 require 'jellyfish'
 require 'rack/request'
-
 
 module Jellyfish
   module NormalizedParams

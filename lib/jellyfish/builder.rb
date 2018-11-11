@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 
 require 'jellyfish/urlmap'
 
 module Jellyfish
   class Builder
-    def self.app app=nil, to=nil, &block
-      new(app, &block).to_app(to)
+    def self.app app=nil, from=nil, to=nil, &block
+      new(app, &block).to_app(from, to)
     end
 
     def initialize app=nil, &block
@@ -43,11 +44,11 @@ module Jellyfish
       end
     end
 
-    def to_app to=nil
+    def to_app from=nil, to=nil
       run = if @map then generate_map(@map, @run) else @run end
       fail 'missing run or map statement' unless run
       app = @use.inject(run){ |a, m| m.call(a) }
-      result = if to then Rewrite.new(app, to) else app end
+      result = if to then Rewrite.new(app, from, to) else app end
       @warmup.call(result) if @warmup
       result
     end
@@ -56,7 +57,7 @@ module Jellyfish
     def generate_map current_map, app
       mapped = if app then {'' => app} else {} end
       current_map.each do |path, (block, to)|
-        mapped[path] = self.class.app(app, to, &block)
+        mapped[path] = self.class.app(app, path, to, &block)
       end
       URLMap.new(mapped)
     end

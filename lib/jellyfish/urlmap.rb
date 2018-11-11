@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 require 'uri'
 
@@ -46,8 +47,9 @@ module Jellyfish
       end
 
       if app = @mapped[key]
-        app.call(env.merge('PATH_INFO' => path_info[cut_path.size..-1],
-                           'SCRIPT_NAME' => env['SCRIPT_NAME'] + script_name))
+        app.call(env.merge(
+          'SCRIPT_NAME' => env['SCRIPT_NAME'] + script_name,
+          'PATH_INFO' => path_info[cut_path.size..-1]))
       else
         [404, {}, []]
       end
