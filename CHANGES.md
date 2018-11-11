@@ -1,5 +1,18 @@
 # CHANGES
 
+## Jellyfish 1.3.0 -- 2018-11-11
+
+### Incompatible changes
+
+* Interface for `Builder.app`, and `Builder#to_app`, and `Rewrite.new`
+  slightly changed due to fixing the bug in `Rewrite`. You shouldn't use
+  those directly though.
+* Now all strings allocated from Jellyfish are frozen.
+
+### Bugs fixed
+
+* Fixed `Jellyfish::Rewrite`. Should properly handle SCRIPT_NAME.
+
 ## Jellyfish 1.2.2 -- 2018-09-23
 
 ### Bugs fixed
