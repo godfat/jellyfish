@@ -13,8 +13,8 @@ Gem::Specification.new do |s|
   s.email = ["godfat (XD) godfat.org".freeze]
   s.files = [
   ".gitignore".freeze,
+  ".gitlab-ci.yml".freeze,
   ".gitmodules".freeze,
-  ".travis.yml".freeze,
   "CHANGES.md".freeze,
   "Gemfile".freeze,
   "LICENSE".freeze,
