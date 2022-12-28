@@ -9,7 +9,8 @@ stages:
     GIT_DEPTH: "1"
     GIT_SUBMODULE_STRATEGY: recursive
     GIT_SUBMODULE_PATHS: task
-    RUBYOPT: --enable-frozen-string-literal
+    # websocket_parser does not work with frozen string literal
+    # RUBYOPT: --enable-frozen-string-literal
   before_script:
     - bundle install --retry=3
     - unset CI # Coverage doesn't work well with frozen literal
