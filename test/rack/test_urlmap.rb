@@ -2,6 +2,7 @@
 require 'jellyfish/test'
 require 'jellyfish/urlmap'
 
+gem 'rack', '<3'
 require 'rack/mock'
 
 describe Jellyfish::URLMap do

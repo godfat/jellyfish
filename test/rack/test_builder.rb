@@ -1,6 +1,7 @@
 
 require 'jellyfish/test'
 
+gem 'rack', '<3'
 require 'rack/lint'
 require 'rack/mock'
 require 'rack/show_exceptions'

@@ -30,7 +30,7 @@ describe 'from README.md' do
         sock = nil
         status, headers, body = File.open(File::NULL) do |input|
           app.call(
-            'HTTP_VERSION'   => 'HTTP/1.1',
+            'SERVER_PROTOCOL'=> 'HTTP/1.1',
             'REQUEST_METHOD' => method,
             'HTTP_HOST'      => host,
             'PATH_INFO'      => pinfo,

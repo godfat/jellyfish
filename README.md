@@ -1109,7 +1109,7 @@ GET /chunked
 [200,
  {'Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'},
  ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
-  "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n\r\n"]]
+  "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n", "\r\n"]]
 -->
 
 ### Chunked transfer encoding (streaming) with custom body
@@ -1136,7 +1136,7 @@ GET /chunked
 [200,
  {'Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'},
  ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
-  "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n\r\n"]]
+  "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n", "\r\n"]]
 -->
 
 ### Server Sent Event (SSE)
