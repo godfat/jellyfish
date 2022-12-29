@@ -22,6 +22,7 @@ describe Jellyfish do
 
   def mock_log
     log = []
+    log.singleton_class.send(:public, :puts)
     mock(log).puts(is_a(String)){ |msg| log << msg }
     log
   end
