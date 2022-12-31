@@ -1,6 +1,6 @@
 # Jellyfish [![Pipeline status](https://gitlab.com/godfat/jellyfish/badges/master/pipeline.svg)](https://gitlab.com/godfat/jellyfish/-/pipelines)
 
-by Lin Jen-Shin ([godfat](http://godfat.org))
+by Lin Jen-Shin ([godfat](https://godfat.org))
 
 ![logo](https://github.com/godfat/jellyfish/raw/master/jellyfish.png)
 
@@ -8,7 +8,7 @@ by Lin Jen-Shin ([godfat](http://godfat.org))
 
 * [github](https://github.com/godfat/jellyfish)
 * [rubygems](https://rubygems.org/gems/jellyfish)
-* [rdoc](http://rdoc.info/github/godfat/jellyfish)
+* [rdoc](https://rubydoc.info/github/godfat/jellyfish)
 * [issues](https://github.com/godfat/jellyfish/issues) (feel free to ask for support)
 
 ## DESCRIPTION:
@@ -42,7 +42,7 @@ Check [jellyfish-contrib][] for extra extensions.
 * Simple
 * Modular
 * No templates (You could use [tilt](https://github.com/rtomayko/tilt))
-* No ORM (You could use [sequel](http://sequel.jeremyevans.net/))
+* No ORM (You could use [sequel](https://sequel.jeremyevans.net))
 * No `dup` in `call`
 * Regular expression routes, e.g. `get %r{^/(?<id>\d+)$}`
 * String routes, e.g. `get '/'`
@@ -1201,9 +1201,9 @@ EventMachine is basically dead, we could see if there would be a
 [Celluloid-IO][] based web server production ready in the future,
 so that we could take the advantage of event based approach.
 
-[hijack]: http://www.rubydoc.info/github/rack/rack/file/SPEC#Hijacking
-[Rainbows!]: http://rainbows.bogomips.org/
-[Puma]: http://puma.io/
+[hijack]: https://github.com/rack/rack/blob/main/SPEC.rdoc#label-Hijacking
+[Rainbows!]: https://yhbt.net/rainbows/
+[Puma]: https://puma.io
 [Celluloid-IO]: https://github.com/celluloid/celluloid-io
 
 ``` ruby
@@ -1244,13 +1244,13 @@ HTTP
 
 Apache License 2.0 (Apache-2.0)
 
-Copyright (c) 2012-2021, Lin Jen-Shin (godfat)
+Copyright (c) 2012-2023, Lin Jen-Shin (godfat)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-<http://www.apache.org/licenses/LICENSE-2.0>
+<https://www.apache.org/licenses/LICENSE-2.0>
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
