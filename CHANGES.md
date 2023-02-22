@@ -1,5 +1,20 @@
 # CHANGES
 
+## Jellyfish 1.4.0 -- 2023-02-22
+
+### Incompatible changes
+
+* Adopted Rack 3. Technically, just lower the cases for headers.
+* Internal strings are all frozen now.
+* `log` and `log_error` now takes the `env` for the second argument,
+  rather than the error stream.
+* `handle` now takes the `env` for the third argument,
+  rather than the error stream.
+
+### Enhancements
+
+* The default error logging will now also show `env['PATH_INFO']`.
+
 ## Jellyfish 1.3.1 -- 2018-11-11
 
 ### Bugs fixed
