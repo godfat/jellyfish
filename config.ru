@@ -59,7 +59,6 @@ end
 
 App = Jellyfish::Builder.app do
   use Rack::CommonLogger
-  use Rack::Chunked
   use Rack::ContentLength
   use Rack::Deflater
 

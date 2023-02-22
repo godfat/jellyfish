@@ -1099,7 +1099,6 @@ class Tank
     }
   end
 end
-use Rack::Chunked
 use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
@@ -1107,9 +1106,8 @@ run Tank.new
 <!---
 GET /chunked
 [200,
- {'content-type' => 'text/plain', 'transfer-encoding' => 'chunked'},
- ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
-  "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n", "\r\n"]]
+ {'content-type' => 'text/plain'},
+ ["0\n", "1\n", "2\n", "3\n", "4\n"]]
 -->
 
 ### Chunked transfer encoding (streaming) with custom body
@@ -1126,7 +1124,6 @@ class Tank
     Body.new
   end
 end
-use Rack::Chunked
 use Rack::ContentType, 'text/plain'
 run Tank.new
 ```
@@ -1134,9 +1131,8 @@ run Tank.new
 <!---
 GET /chunked
 [200,
- {'content-type' => 'text/plain', 'transfer-encoding' => 'chunked'},
- ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
-  "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n", "\r\n"]]
+ {'content-type' => 'text/plain'},
+ ["0\n", "1\n", "2\n", "3\n", "4\n"]]
 -->
 
 ### Server Sent Event (SSE)
