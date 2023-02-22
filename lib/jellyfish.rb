@@ -190,7 +190,7 @@ module Jellyfish
     when Cascade
       cascade(ctrl, env)
     when Response
-      handle(ctrl, res, env['rack.errors'])
+      handle(ctrl, res, env)
     when Array
       res
     when NilClass # make sure we return rack triple
@@ -200,7 +200,7 @@ module Jellyfish
         " or Rack triple (Array), but got: #{res.inspect}")
     end
   rescue => error
-    handle(ctrl, error, env['rack.errors'])
+    handle(ctrl, error, env)
   end
 
   def log_error error, stderr
@@ -217,10 +217,10 @@ module Jellyfish
   def cascade ctrl, env
     app.call(env)
   rescue => error
-    handle(ctrl, error, env['rack.errors'])
+    handle(ctrl, error, env)
   end
 
-  def handle ctrl, error, stderr=nil
+  def handle ctrl, error, env
     if handler = best_handler(error)
       ctrl.block_call(error, handler)
     elsif !self.class.handle_exceptions
@@ -228,8 +228,8 @@ module Jellyfish
     elsif error.kind_of?(Response) # InternalError ends up here if no handlers
       [error.status, error.headers, error.body]
     else # fallback and see if there's any InternalError handler
-      log_error(error, stderr)
-      handle(ctrl, InternalError.new)
+      log_error(error, env['rack.errors'])
+      handle(ctrl, InternalError.new, env)
     end
   end
 
