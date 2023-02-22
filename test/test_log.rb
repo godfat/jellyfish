@@ -36,6 +36,6 @@ describe Jellyfish do
   would "log_error to env['rack.errors']" do
     log = mock_log
     get('/log_error', app, 'rack.errors' => log)
-    log.should.eq ['[Name] #<RuntimeError: RuntimeError> ["backtrace"]']
+    log.should.eq ['[Name] #<RuntimeError: RuntimeError> for /log_error ["backtrace"]']
   end
 end

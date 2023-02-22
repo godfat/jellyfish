@@ -206,7 +206,8 @@ module Jellyfish
 
   def log_error error, env
     env['rack.errors']&.
-      puts("[#{self.class.name}] #{error.inspect} #{error.backtrace}")
+      puts("[#{self.class.name}] #{error.inspect}" \
+           " for #{env['PATH_INFO'] || '/'} #{error.backtrace}")
   end
 
   def log msg, env
