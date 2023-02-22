@@ -199,13 +199,13 @@ module Jellyfish
       raise TypeError.new("Expect the response to be a Jellyfish::Response" \
         " or Rack triple (Array), but got: #{res.inspect}")
     end
-  rescue => e
-    handle(ctrl, e, env['rack.errors'])
+  rescue => error
+    handle(ctrl, error, env['rack.errors'])
   end
 
-  def log_error e, stderr
+  def log_error error, stderr
     return unless stderr
-    stderr.puts("[#{self.class.name}] #{e.inspect} #{e.backtrace}")
+    stderr.puts("[#{self.class.name}] #{error.inspect} #{error.backtrace}")
   end
 
   def log msg, stderr
@@ -216,30 +216,30 @@ module Jellyfish
   private
   def cascade ctrl, env
     app.call(env)
-  rescue => e
-    handle(ctrl, e, env['rack.errors'])
+  rescue => error
+    handle(ctrl, error, env['rack.errors'])
   end
 
-  def handle ctrl, e, stderr=nil
-    if handler = best_handler(e)
-      ctrl.block_call(e, handler)
+  def handle ctrl, error, stderr=nil
+    if handler = best_handler(error)
+      ctrl.block_call(error, handler)
     elsif !self.class.handle_exceptions
-      raise e
-    elsif e.kind_of?(Response) # InternalError ends up here if no handlers
-      [e.status, e.headers, e.body]
+      raise error
+    elsif error.kind_of?(Response) # InternalError ends up here if no handlers
+      [error.status, error.headers, error.body]
     else # fallback and see if there's any InternalError handler
-      log_error(e, stderr)
+      log_error(error, stderr)
       handle(ctrl, InternalError.new)
     end
   end
 
-  def best_handler e
+  def best_handler error
     handlers = self.class.handlers
-    if handlers.key?(e.class)
-      handlers[e.class]
+    if handlers.key?(error.class)
+      handlers[error.class]
     else # or find the nearest match and cache it
-      ancestors         = e.class.ancestors
-      handlers[e.class] = handlers.dup. # thread safe iteration
+      ancestors = error.class.ancestors
+      handlers[error.class] = handlers.dup. # thread safe iteration
         inject([nil, Float::INFINITY]){ |(handler, val), (klass, block)|
           idx = ancestors.index(klass) || Float::INFINITY # lower is better
           if idx < val then [block, idx] else [handler, val] end }.first
