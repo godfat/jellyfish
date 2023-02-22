@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'jellyfish'
-gem 'rack', '<3'
 require 'rack/request'
 
 module Jellyfish

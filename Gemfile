@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rake'
-gem 'rack', '<3'
+gem 'rack'
 gem 'pork'
 gem 'muack'
 gem 'websocket_parser'

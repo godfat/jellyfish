@@ -16,7 +16,7 @@ module Jellyfish
 
   class Response < RuntimeError
     def headers
-      @headers ||= {'Content-Type' => 'text/html'}
+      @headers ||= {'content-type' => 'text/html'}
     end
 
     def body
@@ -30,7 +30,7 @@ module Jellyfish
     attr_reader :url
     def initialize url; @url = url                             ; end
     def status        ; 302                                    ; end
-    def headers       ; super.merge('Location' => url)         ; end
+    def headers       ; super.merge('location' => url)         ; end
     def body          ; super.map{ |b| b.gsub('VAR_URL', url) }; end
   end
 

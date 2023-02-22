@@ -7,7 +7,7 @@ class Jelly
 
   controller_include Module.new{
     def dispatch
-      headers_merge 'Content-Type' => 'application/json; charset=utf-8',
+      headers_merge 'content-type' => 'application/json; charset=utf-8',
                     'Access-Control-Allow-Origin' => '*'
       super
     end

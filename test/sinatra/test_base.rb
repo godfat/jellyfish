@@ -38,7 +38,7 @@ describe 'Sinatra base_test.rb' do
 
   describe 'Jellyfish as a Rack middleware' do
     inner_app ||= lambda{ |env|
-      [210, {'X-Downstream' => 'true'}, ['Hello from downstream']]
+      [210, {'x-downstream' => 'true'}, ['Hello from downstream']]
     }
 
     app = Class.new{
@@ -55,7 +55,7 @@ describe 'Sinatra base_test.rb' do
       end
 
       get '/explicit-forward' do
-        headers_merge 'X-Middleware' => 'true'
+        headers_merge 'x-middleware' => 'true'
         status, headers, _ = jellyfish.app.call(env)
         self.status  status
         self.headers headers
@@ -80,14 +80,14 @@ describe 'Sinatra base_test.rb' do
     would 'forward requests downstream when no matching route found' do
       status, headers, body = get('/missing', app)
       status                 .should.eq 210
-      headers['X-Downstream'].should.eq 'true'
+      headers['x-downstream'].should.eq 'true'
       body                   .should.eq ['Hello from downstream']
     end
 
     would 'call the downstream app directly and return result' do
       status, headers, body = get('/low-level-forward', app)
       status                 .should.eq 210
-      headers['X-Downstream'].should.eq 'true'
+      headers['x-downstream'].should.eq 'true'
       body                   .should.eq ['Hello from downstream']
     end
 
@@ -96,8 +96,8 @@ describe 'Sinatra base_test.rb' do
         get('/explicit-forward', Rack::ContentLength.new(app))
 
       status                   .should.eq 210
-      headers['X-Downstream']  .should.eq 'true'
-      headers['Content-Length'].should.eq '28'
+      headers['x-downstream']  .should.eq 'true'
+      headers['content-length'].should.eq '28'
       body.to_a                .should.eq ['Hello after explicit forward']
     end
   end

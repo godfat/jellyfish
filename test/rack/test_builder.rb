@@ -1,7 +1,6 @@
 
 require 'jellyfish/test'
 
-gem 'rack', '<3'
 require 'rack/lint'
 require 'rack/mock'
 require 'rack/show_exceptions'
@@ -29,10 +28,10 @@ describe Jellyfish::Builder do
   would "supports mapping" do
     app = builder_to_app do
       map '/' do |outer_env|
-        run lambda { |inner_env| [200, {"Content-Type" => "text/plain"}, ['root']] }
+        run lambda { |inner_env| [200, {"content-type" => "text/plain"}, ['root']] }
       end
       map '/sub' do
-        run lambda { |inner_env| [200, {"Content-Type" => "text/plain"}, ['sub']] }
+        run lambda { |inner_env| [200, {"content-type" => "text/plain"}, ['sub']] }
       end
     end
     Rack::MockRequest.new(app).get("/").body.to_s.should.eq 'root'
@@ -57,7 +56,7 @@ describe Jellyfish::Builder do
         'secret' == password
       end
 
-      run lambda { |env| [200, {"Content-Type" => "text/plain"}, ['Hi Boss']] }
+      run lambda { |env| [200, {"content-type" => "text/plain"}, ['Hi Boss']] }
     end
 
     response = Rack::MockRequest.new(app).get("/")
@@ -85,9 +84,9 @@ describe Jellyfish::Builder do
   would "can mix map and run for endpoints" do
     app = builder_to_app do
       map '/sub' do
-        run lambda { |inner_env| [200, {"Content-Type" => "text/plain"}, ['sub']] }
+        run lambda { |inner_env| [200, {"content-type" => "text/plain"}, ['sub']] }
       end
-      run lambda { |inner_env| [200, {"Content-Type" => "text/plain"}, ['root']] }
+      run lambda { |inner_env| [200, {"content-type" => "text/plain"}, ['root']] }
     end
 
     Rack::MockRequest.new(app).get("/").body.to_s.should.eq 'root'
@@ -124,7 +123,7 @@ describe Jellyfish::Builder do
         def call(env)
           raise "bzzzt"  if @called > 0
         @called += 1
-          [200, {'Content-Type' => 'text/plain'}, ['OK']]
+          [200, {'content-type' => 'text/plain'}, ['OK']]
         end
       end
 

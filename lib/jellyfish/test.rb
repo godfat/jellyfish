@@ -3,7 +3,6 @@
 require 'pork/auto'
 require 'muack'
 require 'jellyfish'
-gem 'rack', '<3'
 require 'rack'
 
 Pork::Suite.include(Muack::API)

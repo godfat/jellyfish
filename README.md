@@ -84,7 +84,7 @@ run Tank.new
 <!---
 GET /
 [200,
- {'Content-Length' => '12', 'Content-Type' => 'text/plain'},
+ {'content-length' => '12', 'content-type' => 'text/plain'},
  ["Jelly Kelly\n"]]
 -->
 
@@ -106,7 +106,7 @@ run Tank.new
 <!---
 GET /123
 [200,
- {'Content-Length' => '11', 'Content-Type' => 'text/plain'},
+ {'content-length' => '11', 'content-type' => 'text/plain'},
  ["Jelly #123\n"]]
 -->
 
@@ -133,7 +133,7 @@ run Tank.new
 <!---
 GET /hctam
 [200,
- {'Content-Length' => '5', 'Content-Type' => 'text/plain'},
+ {'content-length' => '5', 'content-type' => 'text/plain'},
  ["true\n"]]
 -->
 
@@ -159,7 +159,7 @@ run Tank.new
 <!---
 POST /
 [201,
- {'Content-Length' => '18', 'Content-Type' => 'text/plain',
+ {'content-length' => '18', 'content-type' => 'text/plain',
   'X-Jellyfish-Life' => '100', 'X-Jellyfish-Mana' => '200'},
  ["Jellyfish 100/200\n"]]
 -->
@@ -185,8 +185,8 @@ body = File.read("#{File.dirname(
   File.expand_path(__FILE__))}/../lib/jellyfish/public/302.html").
   gsub('VAR_URL', 'http://host/')
 [302,
- {'Content-Length' => body.bytesize.to_s, 'Content-Type' => 'text/html',
-  'Location' => 'http://host/'},
+ {'content-length' => body.bytesize.to_s, 'content-type' => 'text/html',
+  'location' => 'http://host/'},
  [body]]
 -->
 
@@ -210,7 +210,7 @@ GET /crash
 body = File.read("#{File.dirname(
   File.expand_path(__FILE__))}/../lib/jellyfish/public/500.html")
 [500,
- {'Content-Length' => body.bytesize.to_s, 'Content-Type' => 'text/html'},
+ {'content-length' => body.bytesize.to_s, 'content-type' => 'text/html'},
  [body]]
 -->
 
@@ -244,7 +244,7 @@ body = case RUBY_ENGINE
          "No one hears you: (eval):9:in `block in <class:Tank>'\n"
        end
 [403,
- {'Content-Length' => body.bytesize.to_s, 'Content-Type' => 'text/plain'},
+ {'content-length' => body.bytesize.to_s, 'content-type' => 'text/plain'},
  [body]]
 -->
 
@@ -267,7 +267,7 @@ run Tank.new
 <!---
 GET /
 [404,
- {'Content-Length' => '18', 'Content-Type' => 'text/plain'},
+ {'content-length' => '18', 'content-type' => 'text/plain'},
  ["You found nothing."]]
 -->
 
@@ -293,7 +293,7 @@ run Tank.new
 <!---
 GET /
 [404,
- {'Content-Length' => '18', 'Content-Type' => 'text/plain'},
+ {'content-length' => '18', 'content-type' => 'text/plain'},
  ["You found nothing."]]
 -->
 
@@ -315,7 +315,7 @@ run Tank.new
 <!---
 GET /report?name=godfat
 [200,
- {'Content-Length' => '20', 'Content-Type' => 'text/plain'},
+ {'content-length' => '20', 'content-type' => 'text/plain'},
  ["Your name is godfat\n"]]
 -->
 
@@ -341,7 +341,7 @@ run Tank.new
 <!---
 GET /report
 [200,
- {'Content-Length' => '3', 'Content-Type' => 'text/plain'},
+ {'content-length' => '3', 'content-type' => 'text/plain'},
  ["OK\n"]]
 -->
 
@@ -374,7 +374,7 @@ run Heater.new
 <!---
 GET /status
 [200,
- {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
+ {'content-length' => '6', 'content-type' => 'text/plain'},
  ["30\u{2103}\n"]]
 -->
 
@@ -406,7 +406,7 @@ run Heater.new
 <!---
 GET /status
 [200,
- {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
+ {'content-length' => '6', 'content-type' => 'text/plain'},
  ["30\u{2103}\n"]]
 -->
 
@@ -438,7 +438,7 @@ run Tank.new
 <!---
 GET /123
 [200,
- {'Content-Length' => '13', 'Content-Type' => 'text/plain'},
+ {'content-length' => '13', 'content-type' => 'text/plain'},
  ["Jelly jumps.\n"]]
 -->
 
@@ -554,13 +554,13 @@ GET /m/x
 [200, {}, ["m\n"]]
 
 GET /
-[200, {'Content-Length' => '2'}, ["/\n"]]
+[200, {'content-length' => '2'}, ["/\n"]]
 
 GET /x
-[200, {'Content-Length' => '2'}, ["/\n"]]
+[200, {'content-length' => '2'}, ["/\n"]]
 
 GET /ab
-[200, {'Content-Length' => '2'}, ["/\n"]]
+[200, {'content-length' => '2'}, ["/\n"]]
 -->
 
 You could try a stupid benchmark yourself:
@@ -807,7 +807,7 @@ run Tank.new
 <!---
 GET /123
 [200,
- {'Content-Length' => '11', 'Content-Type' => 'text/plain'},
+ {'content-length' => '11', 'content-type' => 'text/plain'},
  ["Jelly #123\n"]]
 -->
 
@@ -831,7 +831,7 @@ run Tank.new
 <!---
 GET /%E5%9B%A7
 [200,
- {'Content-Length' => '16', 'Content-Type' => 'text/plain'},
+ {'content-length' => '16', 'content-type' => 'text/plain'},
  ["/%E5%9B%A7=/\u{56e7}\n"]]
 -->
 
@@ -862,7 +862,7 @@ run Tank.new
 <!---
 GET /123
 [200,
- {'Content-Length' => '18', 'Content-Type' => 'text/plain'},
+ {'content-length' => '18', 'content-type' => 'text/plain'},
  ["Jelly #123 jumps.\n"]]
 -->
 
@@ -896,7 +896,7 @@ run Tank.new
 <!---
 GET /
 [200,
- {'Content-Length' => '12', 'Content-Type' => 'text/plain'},
+ {'content-length' => '12', 'content-type' => 'text/plain'},
  ["Jelly Kelly\n"]]
 -->
 
@@ -934,7 +934,7 @@ run Tank.new
 <!---
 GET /status
 [200,
- {'Content-Length' => '25', 'Content-Type' => 'text/plain',
+ {'content-length' => '25', 'content-type' => 'text/plain',
   'X-Temperature'  => "30\u{2103}"},
  ["See header X-Temperature\n"]]
 -->
@@ -980,7 +980,7 @@ run Tank.new
 <!---
 GET /status
 [200,
- {'Content-Length' => '1', 'Content-Type' => 'text/plain',
+ {'content-length' => '1', 'content-type' => 'text/plain',
   'X-Temperature'  => "35\u{2103}"},
  ["\n"]]
 -->
@@ -1013,7 +1013,7 @@ run Tank.new
 <!---
 GET /status
 [200,
- {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
+ {'content-length' => '6', 'content-type' => 'text/plain'},
  ["30\u{2103}\n"]]
 -->
 
@@ -1048,7 +1048,7 @@ run HugeTank
 <!---
 GET /status
 [200,
- {'Content-Length' => '6', 'Content-Type' => 'text/plain'},
+ {'content-length' => '6', 'content-type' => 'text/plain'},
  ["30\u{2103}\n"]]
 -->
 
@@ -1081,7 +1081,7 @@ run Tank.new
 <!---
 GET /
 [200,
- {'Content-Length' => '29', 'Content-Type' => 'text/plain'},
+ {'content-length' => '29', 'content-type' => 'text/plain'},
  ["Protected: Oops, tank broken\n"]]
 -->
 
@@ -1107,7 +1107,7 @@ run Tank.new
 <!---
 GET /chunked
 [200,
- {'Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'},
+ {'content-type' => 'text/plain', 'transfer-encoding' => 'chunked'},
  ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
   "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n", "\r\n"]]
 -->
@@ -1134,7 +1134,7 @@ run Tank.new
 <!---
 GET /chunked
 [200,
- {'Content-Type' => 'text/plain', 'Transfer-Encoding' => 'chunked'},
+ {'content-type' => 'text/plain', 'transfer-encoding' => 'chunked'},
  ["2\r\n0\n\r\n", "2\r\n1\n\r\n", "2\r\n2\n\r\n",
   "2\r\n3\n\r\n", "2\r\n4\n\r\n", "0\r\n", "\r\n"]]
 -->
@@ -1150,7 +1150,7 @@ class Tank
     end
   end
   get '/sse' do
-    headers_merge('Content-Type' => 'text/event-stream')
+    headers_merge('content-type' => 'text/event-stream')
     Body.new
   end
 end
@@ -1160,7 +1160,7 @@ run Tank.new
 <!---
 GET /sse
 [200,
- {'Content-Type' => 'text/event-stream'},
+ {'content-type' => 'text/event-stream'},
  ["data: 0\n\n", "data: 1\n\n", "data: 2\n\n", "data: 3\n\n", "data: 4\n\n"]]
 -->
 
@@ -1171,7 +1171,7 @@ class Tank
   include Jellyfish
   get '/sse' do
     headers_merge(
-      'Content-Type' => 'text/event-stream',
+      'content-type' => 'text/event-stream',
       'rack.hijack'  => lambda do |sock|
         (0..4).each do |i|
           sock.write("data: #{i}\n\n")
@@ -1186,7 +1186,7 @@ run Tank.new
 <!---
 GET /sse
 [200,
- {'Content-Type' => 'text/event-stream'},
+ {'content-type' => 'text/event-stream'},
  ["data: 0\n\n", "data: 1\n\n", "data: 2\n\n", "data: 3\n\n", "data: 4\n\n"]]
 -->
 

@@ -70,7 +70,7 @@ describe 'Sinatra routing_test.rb' do
     app = Class.new{
       include Jellyfish
       get{
-        self.headers 'Content-Type' => 'text/plain'
+        self.headers 'content-type' => 'text/plain'
         status, headers, body = jellyfish.app.call(env)
         self.status  status
         self.body    body
@@ -79,7 +79,7 @@ describe 'Sinatra routing_test.rb' do
     }.new(Class.new{
       include Jellyfish
       handle Jellyfish::NotFound do
-        headers_merge 'Content-Type' => 'text/html'
+        headers_merge 'content-type' => 'text/html'
         status 404
         '<h1>Not Found</h1>'
       end
@@ -87,7 +87,7 @@ describe 'Sinatra routing_test.rb' do
 
     status, headers, body = get('/foo', app)
     status                 .should.eq 404
-    headers['Content-Type'].should.eq 'text/html'
+    headers['content-type'].should.eq 'text/html'
     body                   .should.eq ['<h1>Not Found</h1>']
   end
 
