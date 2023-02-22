@@ -55,8 +55,8 @@ module Jellyfish
       raise
     end
 
-    def log     message; jellyfish.log(    message, env['rack.errors']); end
-    def log_error error; jellyfish.log_error(error, env['rack.errors']); end
+    def log     message; jellyfish.log(    message, env); end
+    def log_error error; jellyfish.log_error(error, env); end
     def request   ; @request ||= Rack::Request.new(env); end
     def halt *args; throw(:halt, *args)                ; end
     def cascade   ;  halt(Jellyfish::Cascade)          ; end
@@ -203,14 +203,14 @@ module Jellyfish
     handle(ctrl, error, env)
   end
 
-  def log_error error, stderr
-    return unless stderr
-    stderr.puts("[#{self.class.name}] #{error.inspect} #{error.backtrace}")
+  def log_error error, env
+    env['rack.errors']&.
+      puts("[#{self.class.name}] #{error.inspect} #{error.backtrace}")
   end
 
-  def log msg, stderr
-    return unless stderr
-    stderr.puts("[#{self.class.name}] #{msg}")
+  def log msg, env
+    env['rack.errors']&.
+      puts("[#{self.class.name}] #{msg}")
   end
 
   private
@@ -228,7 +228,7 @@ module Jellyfish
     elsif error.kind_of?(Response) # InternalError ends up here if no handlers
       [error.status, error.headers, error.body]
     else # fallback and see if there's any InternalError handler
-      log_error(error, env['rack.errors'])
+      log_error(error, env)
       handle(ctrl, InternalError.new, env)
     end
   end
