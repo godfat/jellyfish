@@ -11,5 +11,7 @@ gem 'pork'
 gem 'muack'
 gem 'websocket_parser'
 
-gem 'simplecov', :require => false if ENV['COV']
-gem 'coveralls', :require => false if ENV['CI']
+platform :ruby do
+  gem 'simplecov', :require => false if ENV['COV']
+  gem 'coveralls', :require => false if ENV['CI']
+end
