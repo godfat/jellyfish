@@ -181,13 +181,10 @@ run Tank.new
 
 <!---
 GET /lookup host
-body = File.read("#{File.dirname(
-  File.expand_path(__FILE__))}/../lib/jellyfish/public/302.html").
-  gsub('VAR_URL', 'http://host/')
 [302,
- {'content-length' => body.bytesize.to_s, 'content-type' => 'text/html',
+ {'content-length' => '0', 'content-type' => 'text/html',
   'location' => 'http://host/'},
- [body]]
+ []]
 -->
 
 ### Crash-proof

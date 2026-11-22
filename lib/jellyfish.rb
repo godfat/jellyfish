@@ -37,7 +37,7 @@ module Jellyfish
     def initialize url; @url = url                             ; end
     def status        ; 302                                    ; end
     def headers       ; super.merge('location' => url)         ; end
-    def body          ; super.map{ |b| b.gsub('VAR_URL', url) }; end
+    def body          ; []                                     ; end
   end
 
   # -----------------------------------------------------------------

@@ -30,7 +30,6 @@ Gem::Specification.new do |s|
   "lib/jellyfish/json.rb".freeze,
   "lib/jellyfish/normalized_params.rb".freeze,
   "lib/jellyfish/normalized_path.rb".freeze,
-  "lib/jellyfish/public/302.html".freeze,
   "lib/jellyfish/public/404.html".freeze,
   "lib/jellyfish/public/500.html".freeze,
   "lib/jellyfish/rewrite.rb".freeze,
