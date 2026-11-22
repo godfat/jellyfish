@@ -11,8 +11,8 @@ module Jellyfish
   autoload :ChunkedBody, 'jellyfish/chunked_body'
   autoload :WebSocket  , 'jellyfish/websocket'
 
-  Cascade  = Object.new
-  GetValue = Object.new
+  Cascade  = Object.new.freeze
+  GetValue = Object.new.freeze
 
   class Response < RuntimeError
     def headers
