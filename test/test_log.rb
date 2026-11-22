@@ -12,8 +12,9 @@ describe Jellyfish do
     include Jellyfish
     get('/log')      { log('hi') }
     get('/log_error'){
-      log_error(
-        Muack::API.stub(RuntimeError.new).backtrace{ ['backtrace'] }.object)
+      error = RuntimeError.new
+      error.set_backtrace(['backtrace'])
+      log_error(error)
     }
     def self.name
       'Name'
