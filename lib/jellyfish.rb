@@ -39,6 +39,7 @@ module Jellyfish
     def headers       ; super.merge('location' => url)         ; end
     def body          ; []                                     ; end
   end
+  class Moved         < Found   ; def status; 301; end; end
 
   # -----------------------------------------------------------------
 
@@ -70,6 +71,7 @@ module Jellyfish
     def not_found ;  halt(Jellyfish::NotFound.new)     ; end
     def found  url;  halt(Jellyfish::   Found.new(url)); end
     alias_method :redirect, :found
+    def moved  url;  halt(Jellyfish::   Moved.new(url)); end
 
     def path_info     ; env['PATH_INFO']      || '/'  ; end
     def request_method; env['REQUEST_METHOD'] || 'GET'; end

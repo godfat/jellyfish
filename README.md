@@ -166,6 +166,8 @@ POST /
 
 ### Redirect helper
 
+This uses HTTP 302
+
 ``` ruby
 require 'jellyfish'
 class Tank
@@ -182,6 +184,31 @@ run Tank.new
 <!---
 GET /lookup host
 [302,
+ {'content-length' => '0', 'content-type' => 'text/html',
+  'location' => 'http://host/'},
+ []]
+-->
+
+### Moved permanently
+
+This uses HTTP 301
+
+``` ruby
+require 'jellyfish'
+class Tank
+  include Jellyfish
+  get '/lookup' do
+    moved "#{env['rack.url_scheme']}://#{env['HTTP_HOST']}/"
+  end
+end
+use Rack::ContentLength
+use Rack::ContentType, 'text/plain'
+run Tank.new
+```
+
+<!---
+GET /lookup host
+[301,
  {'content-length' => '0', 'content-type' => 'text/html',
   'location' => 'http://host/'},
  []]
