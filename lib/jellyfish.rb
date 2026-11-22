@@ -15,12 +15,18 @@ module Jellyfish
   GetValue = Object.new.freeze
 
   class Response < RuntimeError
+    def self.contents status
+      (@contents ||= Hash.new do |hash, key|
+        hash[key] = File.read("#{Jellyfish.public_root}/#{status}.html")
+      end)[status]
+    end
+
     def headers
       @headers ||= {'content-type' => 'text/html'}
     end
 
     def body
-      @body ||= [File.read("#{Jellyfish.public_root}/#{status}.html")]
+      @body ||= [self.class.contents(status)]
     end
   end
 
