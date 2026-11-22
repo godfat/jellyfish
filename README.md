@@ -222,7 +222,7 @@ class Tank
   include Jellyfish
   handle NameError do |e|
     status 403
-    "No one hears you: #{e.backtrace.first}\n"
+    "No one hears you: #{e.name}\n"
   end
   get '/yell' do
     yell
@@ -235,14 +235,7 @@ run Tank.new
 
 <!---
 GET /yell
-body = case RUBY_ENGINE
-       when 'jruby'
-         "No one hears you: (eval):9:in `block in Tank'\n"
-       when 'rbx'
-         "No one hears you: core/zed.rb:1370:in `yell (method_missing)'\n"
-       else
-         "No one hears you: (eval):9:in `block in <class:Tank>'\n"
-       end
+body = "No one hears you: yell\n"
 [403,
  {'content-length' => body.bytesize.to_s, 'content-type' => 'text/plain'},
  [body]]
@@ -1240,7 +1233,7 @@ HTTP
 
 Apache License 2.0 (Apache-2.0)
 
-Copyright (c) 2012-2023, Lin Jen-Shin (godfat)
+Copyright (c) 2012-2026, Lin Jen-Shin (godfat)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

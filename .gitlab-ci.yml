@@ -4,7 +4,7 @@ stages:
 
 .test:
   stage: test
-  image: ruby:${RUBY_VERSION}-bullseye
+  image: ruby:${RUBY_VERSION}-trixie
   variables:
     GIT_DEPTH: "1"
     GIT_SUBMODULE_STRATEGY: recursive
@@ -17,23 +17,23 @@ stages:
   script:
     - ruby -vr bundler/setup -S rake test
 
-ruby:3.0:
+ruby:3.3:
   extends:
     - .test
   variables:
-    RUBY_VERSION: '3.0'
+    RUBY_VERSION: '3.3'
 
-ruby:3.1:
+ruby:3.4:
   extends:
     - .test
   variables:
-    RUBY_VERSION: '3.1'
+    RUBY_VERSION: '3.4'
 
-ruby:3.2:
+ruby:4.0:
   extends:
     - .test
   variables:
-    RUBY_VERSION: '3.2'
+    RUBY_VERSION: '4.0'
 
 jruby:latest:
   extends:
