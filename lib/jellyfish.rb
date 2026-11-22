@@ -70,7 +70,6 @@ module Jellyfish
     def cascade   ;  halt(Jellyfish::Cascade)          ; end
     def not_found ;  halt(Jellyfish::NotFound.new)     ; end
     def found  url;  halt(Jellyfish::   Found.new(url)); end
-    alias_method :redirect, :found
     def moved  url;  halt(Jellyfish::   Moved.new(url)); end
 
     def path_info     ; env['PATH_INFO']      || '/'  ; end
