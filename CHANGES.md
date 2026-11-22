@@ -1,5 +1,17 @@
 # CHANGES
 
+## Jellyfish 1.5.0 -- 2026-11-22
+
+### Incompatible changes
+
+* Removed `redirect` which is an alias of `found`
+* Response from `found` with HTTP 302 no longer adds any response body
+
+### Enhancements
+
+* Added `moved` helper for HTTP 301
+* Static responses are now memorized to avoid I/O
+
 ## Jellyfish 1.4.0 -- 2023-02-22
 
 ### Incompatible changes
