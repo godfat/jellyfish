@@ -1,10 +1,9 @@
-
 stages:
   - test
 
 .test:
   stage: test
-  image: ruby:${RUBY_VERSION}-trixie
+  image: ruby:${RUBY_VERSION}-alpine
   variables:
     GIT_DEPTH: "1"
     GIT_SUBMODULE_STRATEGY: recursive
@@ -12,6 +11,7 @@ stages:
     # websocket_parser does not work with frozen string literal
     # RUBYOPT: --enable-frozen-string-literal
   before_script:
+    - if command -v apk > /dev/null; then apk add --no-cache git; fi
     - bundle install --retry=3
     - unset CI # Coverage doesn't work well with frozen literal
   script:
