@@ -17,18 +17,15 @@ stages:
     - ruby -vr bundler/setup -S rake test
 
 ruby:3.4:
-  extends:
-    - .test
+  extends: .test
   variables:
     RUBY_VERSION: '3.4'
 
 ruby:4.0:
-  extends:
-    - .test
+  extends: .test
   variables:
     RUBY_VERSION: '4.0'
 
 jruby:latest:
-  extends:
-    - .test
+  extends: .test
   image: jruby:latest
