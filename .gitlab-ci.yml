@@ -11,9 +11,8 @@ stages:
     # websocket_parser does not work with frozen string literal
     # RUBYOPT: --enable-frozen-string-literal
   before_script:
-    - if command -v apk > /dev/null; then apk add --no-cache git; fi
     - bundle install --retry=3
-    - unset CI # Coverage doesn't work well with frozen literal
+    - unset CI # Don't run coverage
   script:
     - ruby -vr bundler/setup -S rake test
 
